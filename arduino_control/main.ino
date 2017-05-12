@@ -95,7 +95,7 @@ void setup() {
   Serial.begin(115200);
   SPI.beginTransaction(SPISettings(10000000, MSBFIRST, SPI_MODE0));
 
-  delay(1000);
+  delay(50);
 
   while (CAN_OK != CAN.begin(CAN_1000KBPS))              // init can bus : baudrate = 1000k
   {
@@ -103,10 +103,32 @@ void setup() {
     Serial.println(" Init CAN BUS Shield again");
     delay(100);
   }
-
-  //  pinMode(analogInPin, setpoint_position);
-
     Serial.println("CAN BUS Shield init ok!");
+
+      // TIMER SETUP- the timer interrupt allows precise timed measurements of the reed switch
+  //for mor info about configuration of arduino timers see http://arduino.cc/playground/Code/Timer1
+
+  cli();//stop interrupts
+
+  //set timer1 interrupt at 1kHz
+  TCCR1A = 0;// set entire TCCR1A register to 0
+  TCCR1B = 0;// same for TCCR1B\
+  TCNT1  = 0;//initialize counter value to 0
+  // set timer count for 1khz increments
+  OCR1A = 1999;// = (16*10^6) / (1000*8) - 1
+  //had to use 16 bit timer1 for this bc 1999>255, but could switch to timers 0 or 2 with larger prescaler
+  // turn on CTC mode
+  TCCR1B |= (1 << WGM12);
+  // Set CS11 bit for 8 prescaler
+  TCCR1B |= (1 << CS11);
+  // enable timer compare interrupt
+  TIMSK1 |= (1 << OCIE1A);
+
+  sei();//allow interrupts
+
+  Serial.println("Timer Setup OK!");
+
+  //END TIMER SETUP
 }
 
 void serialEvent() {
