@@ -95,7 +95,7 @@ void setup() {
   Serial.begin(115200);
   SPI.beginTransaction(SPISettings(10000000, MSBFIRST, SPI_MODE0));
 
-  delay(1000);
+  delay(50);
 
   while (CAN_OK != CAN.begin(CAN_1000KBPS))              // init can bus : baudrate = 1000k
   {
@@ -103,24 +103,32 @@ void setup() {
     Serial.println(" Init CAN BUS Shield again");
     delay(100);
   }
-
-  //  pinMode(analogInPin, setpoint_position);
-
     Serial.println("CAN BUS Shield init ok!");
-}
 
-void serialEvent() {
-  while (Serial.available()) {
-    // get the new byte:
-    char inChar = (char)Serial.read();
-    // add it to the inputString:
-    inputString += inChar;
-    // if the incoming character is a newline, set a flag
-    // so the main loop can do something about it:
-    if (inChar == '\n') {
-      stringComplete = true;
-    }
-  }
+      // TIMER SETUP- the timer interrupt allows precise timed measurements of the reed switch
+  //for mor info about configuration of arduino timers see http://arduino.cc/playground/Code/Timer1
+
+  cli();//stop interrupts
+
+  //set timer1 interrupt at 1kHz
+  TCCR1A = 0;// set entire TCCR1A register to 0
+  TCCR1B = 0;// same for TCCR1B\
+  TCNT1  = 0;//initialize counter value to 0
+  // set timer count for 1khz increments
+  OCR1A = 1999;// = (16*10^6) / (1000*8) - 1
+  //had to use 16 bit timer1 for this bc 1999>255, but could switch to timers 0 or 2 with larger prescaler
+  // turn on CTC mode
+  TCCR1B |= (1 << WGM12);
+  // Set CS11 bit for 8 prescaler
+  TCCR1B |= (1 << CS11);
+  // enable timer compare interrupt
+  TIMSK1 |= (1 << OCIE1A);
+
+  sei();//allow interrupts
+
+  Serial.println("Timer Setup OK!");
+
+  //END TIMER SETUP
 }
 
 //***************
@@ -181,11 +189,10 @@ void PDOConfig(void) {
   State = Operational;
 }
 
+//***************
+// Position Setpoint
+//***************
 void PositionSetpoint(void) {
-
-  //***************
-  // OUTPUT
-  //***************
 
   unsigned char len = 0;
   unsigned char buf[8];
@@ -199,12 +206,10 @@ void PositionSetpoint(void) {
     delay(1000);
 }
 
+//***************
+// DATA READ
+//***************
 void DataRead(void) {
-
-  //***************
-  // DATA READ
-  //***************
-
   unsigned char len = 0;
   unsigned char buf[8];
 
@@ -269,22 +274,24 @@ void DataRead(void) {
     delay(300);
 }
 
-void loop() {
+//*****************************************
+// POTENTIOMETER INPUT
+//*****************************************
+void PotRead(void) {
 
-  //*****************************************
-  // POTENTIOMETER INPUT
-  //*****************************************
   // read the analog in value:
   sensorValue = analogRead(analogInPin);
   delay(10);
+
   // map it to the range of the analog out:
   uint32_t angulo = map(sensorValue, 0, 960, 0, 3600);
-      // print the results to the serial monitor:
-        Serial.print("sensor = ");
-        Serial.print(sensorValue);
-        Serial.print("\t");
-        Serial.print("\t output = ");
-        Serial.println(angulo);
+
+  // print the results to the serial monitor:
+  Serial.print("sensor = ");
+  Serial.print(sensorValue);
+  Serial.print("\t");
+  Serial.print("\t output = ");
+  Serial.println(angulo);
 
   //setpoint_position_position[6]+=10;
   angulo *= 200000 / 3600;
@@ -293,7 +300,10 @@ void loop() {
   setpoint_position[6] = (angulo >> 16) & 0xFF;
   setpoint_position[7] = (angulo >> 24) & 0xFF;
 
+}
+void loop() {
 
+  PotRead();
 
   switch (State) {
     case Startup:
@@ -304,7 +314,7 @@ void loop() {
       break;  
     case Operational:
       PositionSetpoint();
-      DataRead();
+//      DataRead();
       break;
   }
 }
