@@ -303,8 +303,7 @@ void PotRead(void) {
 }
 void loop() {
 
-
-  PotRead()
+  PotRead();
 
   switch (State) {
     case Startup:
@@ -315,7 +314,7 @@ void loop() {
       break;  
     case Operational:
       PositionSetpoint();
-      DataRead();
+//      DataRead();
       break;
   }
 }
