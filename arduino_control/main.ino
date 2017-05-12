@@ -189,11 +189,10 @@ void PDOConfig(void) {
   State = Operational;
 }
 
+//***************
+// Position Setpoint
+//***************
 void PositionSetpoint(void) {
-
-  //***************
-  // OUTPUT
-  //***************
 
   unsigned char len = 0;
   unsigned char buf[8];
@@ -207,12 +206,10 @@ void PositionSetpoint(void) {
     delay(1000);
 }
 
+//***************
+// DATA READ
+//***************
 void DataRead(void) {
-
-  //***************
-  // DATA READ
-  //***************
-
   unsigned char len = 0;
   unsigned char buf[8];
 
@@ -277,22 +274,24 @@ void DataRead(void) {
     delay(300);
 }
 
-void loop() {
+//*****************************************
+// POTENTIOMETER INPUT
+//*****************************************
+void PotRead(void) {
 
-  //*****************************************
-  // POTENTIOMETER INPUT
-  //*****************************************
   // read the analog in value:
   sensorValue = analogRead(analogInPin);
   delay(10);
+
   // map it to the range of the analog out:
   uint32_t angulo = map(sensorValue, 0, 960, 0, 3600);
-      // print the results to the serial monitor:
-        Serial.print("sensor = ");
-        Serial.print(sensorValue);
-        Serial.print("\t");
-        Serial.print("\t output = ");
-        Serial.println(angulo);
+
+  // print the results to the serial monitor:
+  Serial.print("sensor = ");
+  Serial.print(sensorValue);
+  Serial.print("\t");
+  Serial.print("\t output = ");
+  Serial.println(angulo);
 
   //setpoint_position_position[6]+=10;
   angulo *= 200000 / 3600;
@@ -301,7 +300,11 @@ void loop() {
   setpoint_position[6] = (angulo >> 16) & 0xFF;
   setpoint_position[7] = (angulo >> 24) & 0xFF;
 
+}
+void loop() {
 
+
+  PotRead()
 
   switch (State) {
     case Startup:
