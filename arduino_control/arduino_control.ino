@@ -302,16 +302,18 @@ void PotRead(void) {
 
 }
 void loop() {
+  
+  State = Operational;
 
   PotRead();
 
   switch (State) {
-    case Startup:
-      doStartup();
-      break;
-    case Pre_Operational:
-      PDOConfig();
-      break;  
+    // case Startup:
+    //   doStartup();
+    //   break;
+    // case Pre_Operational:
+    //   PDOConfig();
+    //   break;  
     case Operational:
       PositionSetpoint();
 //      DataRead();
