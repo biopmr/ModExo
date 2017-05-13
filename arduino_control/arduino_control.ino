@@ -105,7 +105,7 @@ void setup() {
   }
     Serial.println("CAN BUS Shield init ok!");
 
-      // TIMER SETUP- the timer interrupt allows precise timed measurements of the reed switch
+  // TIMER SETUP- the timer interrupt allows precise timed measurements of the reed switch
   //for mor info about configuration of arduino timers see http://arduino.cc/playground/Code/Timer1
 
   cli();//stop interrupts
