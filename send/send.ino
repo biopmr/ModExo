@@ -148,6 +148,8 @@ void dataRead(void)
     encoder_data = buf[4];
     encoder_data <<= 8;
     encoder_data = encoder_data | buf[5];
+    setpoint_position[4] = buf[4];
+    setpoint_position[5] = buf[5];
 
     // // load cell information is read from buf[1], buf[2] and buf[3] and converted to decimal
     // loadcell_data = buf[1];
@@ -159,7 +161,7 @@ void dataRead(void)
     // if (buf[1] >= 128) {
     //        loadcell_data = loadcell_data - 16777216;
     // }
-    
+
        Serial.print("Encoder: ");
        Serial.println(encoder_data, DEC);
 
@@ -174,12 +176,13 @@ void dataRead(void)
 void loop()
 {
 dataRead();
-setpoint_position = {0x22, 0x62, 0x20, 0, buf[4], buf[5], 0, 0};
 positionSetpoint();
 }
 
 /*********************************************************************************************************
   END FILE
 *********************************************************************************************************/
+
+
 
 
