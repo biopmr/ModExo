@@ -135,14 +135,6 @@ void positionSetpoint(double position)
   setpoint_position[6] = (angulo >> 16) & 0xFF;
   setpoint_position[7] = (angulo >> 24) & 0xFF;
 
-  Serial.println("Position: ");
-  Serial.println(position);
-
-  Serial.println("Angulo: ");
-  Serial.println(angulo);
-
-  Serial.println("Enviei a mensagem");
-  // Serial.println(setpoint_position,HEX);
   // clear the string:
   CAN.sendMsgBuf(0x601, 0, 8, setpoint_position);
   delay(10);
@@ -168,24 +160,23 @@ float dataRead()
     encoder_data = encoder_data | buf[5];
 
     // // load cell information is read from buf[1], buf[2] and buf[3] and converted to decimal
-    // loadcell_data = buf[1];
-    // loadcell_data <<= 8;
-    // loadcell_data = loadcell_data | buf[2];
-    // loadcell_data <<= 8;
-    // loadcell_data = loadcell_data | buf[3];
+    loadcell_data = buf[1];
+    loadcell_data <<= 8;
+    loadcell_data = loadcell_data | buf[2];
+    loadcell_data <<= 8;
+    loadcell_data = loadcell_data | buf[3];
 
-    // if (buf[1] >= 128) {
-    //        loadcell_data = loadcell_data - 16777216;
-    // }
+    if (buf[1] >= 128) {
+           loadcell_data = loadcell_data - 16777216;
+    }
 
-       Serial.print("Encoder: ");
-       Serial.println(encoder_data, DEC);
+    Serial.print("Encoder: ");
+    Serial.println(encoder_data, DEC);
 
-    // Serial.print("Loadcell: ");
-    // Serial.println(loadcell_data/1000, DEC);
+    Serial.print("Loadcell: ");
+    Serial.println(loadcell_data, DEC);
 
-    // delay(400);
-       return(encoder_data);
+    return(encoder_data);
   }
 
 }
@@ -208,4 +199,5 @@ void loop()
 /*********************************************************************************************************
   END FILE
 *********************************************************************************************************/
+
 
