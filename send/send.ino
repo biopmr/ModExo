@@ -16,52 +16,57 @@ MCP_CAN CAN(SPI_CS_PIN);                                    // Set CS pin
 
 void setup()
 {
-    Serial.begin(115200);
+  Serial.begin(115200);
 
-    while (CAN_OK != CAN.begin(CAN_1000KBPS))              // init can bus : baudrate = 500k
-    {
-        Serial.println("CAN BUS Shield init fail");
-        Serial.println(" Init CAN BUS Shield again");
-        delay(100);
-    }
-    Serial.println("CAN BUS Shield init ok!");
+  while (CAN_OK != CAN.begin(CAN_1000KBPS))              // init can bus : baudrate = 500k
+  {
+    Serial.println("CAN BUS Shield init fail");
+    Serial.println(" Init CAN BUS Shield again");
+    delay(100);
+  }
+  Serial.println("CAN BUS Shield init ok!");
 }
 
 
 void loop()
 {
-    unsigned char len = 0;
-    unsigned char buf[8];
+  unsigned char len = 0;
+  unsigned char buf[8];
 
-    if(CAN_MSGAVAIL == CAN.checkReceive())            // check if data coming
+  if (CAN_MSGAVAIL == CAN.checkReceive())           // check if data coming
+  {
+    CAN.readMsgBuf(&len, buf);    // read data,  len: data length, buf: data buf
+
+    unsigned int canId = CAN.getCanId();
+
+    Serial.println("-----------------------------");
+    Serial.print("Get data from ID: ");
+    Serial.println(canId, HEX);
+
+    for (int i = 0; i < len; i++) // print the data
     {
-        CAN.readMsgBuf(&len, buf);    // read data,  len: data length, buf: data buf
-
-        unsigned int canId = CAN.getCanId();
-        
-        Serial.println("-----------------------------");
-        Serial.print("Get data from ID: ");
-        Serial.println(canId, HEX);
-
-        for(int i = 0; i<len; i++)    // print the data
-        {
-            Serial.print(buf[i], HEX);
-            Serial.print("\t");
-        }
-        Serial.println();
+      Serial.print(buf[i], HEX);
+      Serial.print("\t");
     }
+    Serial.println();
 
-        // data = buf[1]*256*256 + buf[2]*256 + buf[3];
-    data = (buf[5]*256 + buf[6])*(360/4096);
-
+    // encoder information is read from buf[4] and buf[5] and converted to decimal
+        data = buf[4];
+        data <<= 8;
+        data = data | buf[5];
 
     // if (buf[1] >= 128) {
-        data = data - 16777216;
+    //        data = data - 16777216;
     // }
     
     Serial.print("Data: ");
-    Serial.println(data);
+    Serial.println(data, DEC);
+
+    delay(400);
+  }
+
 }
+
 
 /*********************************************************************************************************
   END FILE
