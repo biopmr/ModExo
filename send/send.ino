@@ -1,6 +1,24 @@
-// demo: CAN-BUS Shield, receive data with check mode
-// send data coming to fast, such as less than 10ms, you can use this way
-// loovee, 2014-6-13
+//**************************************************************************
+//------------ Escola Politecnica da Universidade de Sao Paulo -------------
+//
+// Version: 1.0
+// Date: 15.06.2017 [mm.dd.yyyy]
+// Description
+//  CAN Communication between Arduino and EPOS2 for Exoskeleton Control
+// Input files:
+// (None)
+//
+// Final Output files:
+//   (None)
+//
+// References
+//  http://wiki.seeed.cc/CAN-BUS_Shield_V1.2/
+//  http://www.instructables.com/id/Arduino-Timer-Interrupts/
+//  http://forum.arduino.cc/index.php?topic=225789.0
+//  
+//**************************************************************************
+// Steps
+//**************************************************************************
 
 
 #include <SPI.h>
