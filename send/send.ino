@@ -86,6 +86,7 @@ void setup()
     Serial.println(" Init CAN BUS Shield again");
     delay(100);
   }
+  State = Startup;
   Serial.println("CAN BUS Shield init ok!");
 }
 
@@ -107,9 +108,7 @@ void doStartup(void)
   Serial.println("Max Following Error set as 5000rpm/s");
   delay(10);
   CAN.sendMsgBuf(0x601, 0, 8, set_max_profile_velocity);
-  Serial.println("Max Profile Velocity set as 2000rpm");
-  delay(10);
-  
+  Serial.println("Max Profile Velocity set as 2000rpm");  
   delay(10);
   State = Operational;
 }
@@ -123,6 +122,7 @@ void positionSetpoint(void)
   unsigned char buf[8];
 
     Serial.println("Enviei a mensagem");
+    // Serial.println(setpoint_position,HEX);
     // clear the string:
     CAN.sendMsgBuf(0x601, 0, 8, setpoint_position);
     delay(10);
@@ -175,12 +175,10 @@ void dataRead(void)
 
 void loop()
 {
-  State = Startup;
-
   switch (State) 
   {
     case Startup:
-      do doStartup();
+      doStartup();
       break;
     case Operational:
       dataRead();
@@ -192,7 +190,5 @@ void loop()
 /*********************************************************************************************************
   END FILE
 *********************************************************************************************************/
-
-
 
 
