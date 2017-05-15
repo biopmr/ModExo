@@ -126,8 +126,6 @@ void positionSetpoint(void)
     // clear the string:
     CAN.sendMsgBuf(0x601, 0, 8, setpoint_position);
     delay(10);
-
-    delay(1000);
 }
 
 //***************
@@ -148,8 +146,9 @@ void dataRead(void)
     encoder_data = buf[4];
     encoder_data <<= 8;
     encoder_data = encoder_data | buf[5];
-    setpoint_position[4] = buf[4];
-    setpoint_position[5] = buf[5];
+    
+    setpoint_position[4] = buf[5]; // swaps data because for CAN, the Least Significant Bit comes first
+    setpoint_position[5] = buf[4]; // swaps data because for CAN, the Least Significant Bit comes first
 
     // // load cell information is read from buf[1], buf[2] and buf[3] and converted to decimal
     // loadcell_data = buf[1];
@@ -185,10 +184,10 @@ void loop()
       positionSetpoint();
       break;
   }
+  delay(100);
 }
 
 /*********************************************************************************************************
   END FILE
 *********************************************************************************************************/
-
 
