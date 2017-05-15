@@ -1,5 +1,5 @@
 //**************************************************************************
-//------------ Escola Politecnica da Universidade de Sao Paulo -------------
+//------- Laboratorio de Biomecatronica @ Universidade de Sao Paulo --------
 //
 // Version: 1.0
 // Date: 15.06.2017 [mm.dd.yyyy]
@@ -19,7 +19,6 @@
 //**************************************************************************
 // Steps
 //**************************************************************************
-
 
 #include <SPI.h>
 #include "mcp_can.h"
@@ -77,7 +76,7 @@ unsigned char get_actual_position[8] = {0x40, 0x64, 0x60, 0, 0, 0, 0, 0};
 unsigned char get_actual_velocity[8] = {0x40, 0x6C, 0x60, 0, 0, 0, 0, 0};
 unsigned char get_actual_current[8] = {0x40, 0x78, 0x60, 0, 0, 0, 0, 0};
 
-void setup()
+void setup() 
 {
   Serial.begin(115200);
 
@@ -90,6 +89,30 @@ void setup()
   Serial.println("CAN BUS Shield init ok!");
 }
 
+//***************
+// CAN STARTUP
+//***************
+void doStartup(void) 
+{
+  CAN.sendMsgBuf(0x601, 0, 8, disable_epos);
+  Serial.println("EPOS diabled");
+  delay(10);
+  CAN.sendMsgBuf(0x601, 0, 8, enable_epos);
+  Serial.println("EPOS enabled");
+  delay(10);
+  CAN.sendMsgBuf(0x601, 0, 8, set_max_following_error);
+  Serial.println("Max Following Error set as 2000qc");
+  delay(10);
+  CAN.sendMsgBuf(0x601, 0, 8, set_max_acceleration);
+  Serial.println("Max Following Error set as 5000rpm/s");
+  delay(10);
+  CAN.sendMsgBuf(0x601, 0, 8, set_max_profile_velocity);
+  Serial.println("Max Profile Velocity set as 2000rpm");
+  delay(10);
+  
+  delay(10);
+  State = Pre_Operational;
+}
 
 void loop()
 {
@@ -132,3 +155,4 @@ void loop()
 /*********************************************************************************************************
   END FILE
 *********************************************************************************************************/
+
