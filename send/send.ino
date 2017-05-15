@@ -114,7 +114,26 @@ void doStartup(void)
   State = Pre_Operational;
 }
 
-void loop()
+//*******************
+// POSITION SETPOINT
+//*******************
+void positionSetpoint(void) 
+{
+  unsigned char len = 0;
+  unsigned char buf[8];
+
+    Serial.println("Enviei a mensagem");
+    // clear the string:
+    CAN.sendMsgBuf(0x601, 0, 8, setpoint_position);
+    delay(10);
+
+    delay(1000);
+}
+
+//***************
+// DATA READ
+//***************
+void dataRead(void)
 {
   unsigned char len = 0;
   unsigned char buf[8];
@@ -152,7 +171,15 @@ void loop()
 
 }
 
+void loop()
+{
+dataRead();
+setpoint_position = {0x22, 0x62, 0x20, 0, buf[4], buf[5], 0, 0};
+positionSetpoint();
+}
+
 /*********************************************************************************************************
   END FILE
 *********************************************************************************************************/
+
 
