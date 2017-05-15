@@ -51,16 +51,26 @@ void loop()
     Serial.println();
 
     // encoder information is read from buf[4] and buf[5] and converted to decimal
-        data = buf[4];
-        data <<= 8;
-        data = data | buf[5];
+    enconder_data = buf[4];
+    enconder_data <<= 8;
+    enconder_data = data | buf[5];
 
-    // if (buf[1] >= 128) {
-    //        data = data - 16777216;
-    // }
+    // load cell information is read from buf[1], buf[2] and buf[3] and converted to decimal
+    loadcell_data = buf[1];
+    loadcell_data <<= 8;
+    loadcell_data = data | buf[2];
+    loadcell_data <<= 8;
+    loadcell_data = data | buf[3];
+
+    if (buf[1] >= 128) {
+           laodcell_data = loadcell_data - 16777216;
+    }
     
-    Serial.print("Data: ");
-    Serial.println(data, DEC);
+    Serial.print("Encoder: ");
+    Serial.println(encoder_data, DEC);
+
+    Serial.print("Loadcell: ");
+    Serial.println(laodcell_data, DEC);
 
     delay(400);
   }
