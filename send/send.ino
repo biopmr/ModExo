@@ -111,7 +111,7 @@ void doStartup(void)
   delay(10);
   
   delay(10);
-  State = Pre_Operational;
+  State = Operational;
 }
 
 //*******************
@@ -175,8 +175,18 @@ void dataRead(void)
 
 void loop()
 {
-dataRead();
-positionSetpoint();
+  State = Startup;
+
+  switch (State) 
+  {
+    case Startup:
+      do doStartup();
+      break;
+    case Operational:
+      dataRead();
+      positionSetpoint();
+      break;
+  }
 }
 
 /*********************************************************************************************************
