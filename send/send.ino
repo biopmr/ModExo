@@ -80,7 +80,7 @@ unsigned char get_actual_current[8] = {0x40, 0x78, 0x60, 0, 0, 0, 0, 0};
 // System Variables
 // *****************
 
-int enconder_resolution = 2000; //2000 counts per turn
+int encoder_resolution = 2000; //2000 counts per turn
 int reduction = 100; // harmonic drive reduction
 
 void setup() 
@@ -123,22 +123,35 @@ void doStartup(void)
 //*******************
 // POSITION SETPOINT
 //*******************
-void positionSetpoint(void) 
+void positionSetpoint(double position) 
 {
   unsigned char len = 0;
   unsigned char buf[8];
 
-    Serial.println("Enviei a mensagem");
-    // Serial.println(setpoint_position,HEX);
-    // clear the string:
-    CAN.sendMsgBuf(0x601, 0, 8, setpoint_position);
-    delay(10);
+  uint32_t angulo = (position/4096)*200000;
+
+  setpoint_position[4] = angulo & 0xFF; 
+  setpoint_position[5] = (angulo >> 8) & 0xFF;
+  setpoint_position[6] = (angulo >> 16) & 0xFF;
+  setpoint_position[7] = (angulo >> 24) & 0xFF;
+
+  Serial.println("Position: ");
+  Serial.println(position);
+
+  Serial.println("Angulo: ");
+  Serial.println(angulo);
+
+  Serial.println("Enviei a mensagem");
+  // Serial.println(setpoint_position,HEX);
+  // clear the string:
+  CAN.sendMsgBuf(0x601, 0, 8, setpoint_position);
+  delay(10);
 }
 
 //***************
 // DATA READ
 //***************
-void dataRead(void)
+float dataRead()
 {
   unsigned char len = 0;
   unsigned char buf[8];
@@ -153,12 +166,6 @@ void dataRead(void)
     encoder_data = buf[4];
     encoder_data <<= 8;
     encoder_data = encoder_data | buf[5];
-
-    // 200000 qc is one
-    encoder_data
-    
-    setpoint_position[4] = buf[5]; // swaps data because for CAN, the Least Significant Bit comes first
-    setpoint_position[5] = buf[4]; // swaps data because for CAN, the Least Significant Bit comes first
 
     // // load cell information is read from buf[1], buf[2] and buf[3] and converted to decimal
     // loadcell_data = buf[1];
@@ -178,6 +185,7 @@ void dataRead(void)
     // Serial.println(loadcell_data/1000, DEC);
 
     // delay(400);
+       return(encoder_data);
   }
 
 }
@@ -191,7 +199,7 @@ void loop()
       break;
     case Operational:
       dataRead();
-      positionSetpoint();
+      positionSetpoint(encoder_data);
       break;
   }
   delay(100);
