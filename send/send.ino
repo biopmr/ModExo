@@ -76,6 +76,13 @@ unsigned char get_actual_position[8] = {0x40, 0x64, 0x60, 0, 0, 0, 0, 0};
 unsigned char get_actual_velocity[8] = {0x40, 0x6C, 0x60, 0, 0, 0, 0, 0};
 unsigned char get_actual_current[8] = {0x40, 0x78, 0x60, 0, 0, 0, 0, 0};
 
+// *****************
+// System Variables
+// *****************
+
+int enconder_resolution = 2000; //2000 counts per turn
+int reduction = 100; // harmonic drive reduction
+
 void setup() 
 {
   Serial.begin(115200);
@@ -146,6 +153,9 @@ void dataRead(void)
     encoder_data = buf[4];
     encoder_data <<= 8;
     encoder_data = encoder_data | buf[5];
+
+    // 200000 qc is one
+    encoder_data
     
     setpoint_position[4] = buf[5]; // swaps data because for CAN, the Least Significant Bit comes first
     setpoint_position[5] = buf[4]; // swaps data because for CAN, the Least Significant Bit comes first
