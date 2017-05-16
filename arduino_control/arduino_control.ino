@@ -170,11 +170,13 @@ float dataRead()
            loadcell_data = loadcell_data - 16777216;
     }
 
-    Serial.print("Encoder: ");
-    Serial.println(encoder_data, DEC);
+    loadcell_data = loadcell_data - 4294000000;
 
-    Serial.print("Loadcell: ");
-    Serial.println(loadcell_data, DEC);
+     Serial.print("Encoder: ");
+     Serial.println(encoder_data, DEC);
+//
+//    Serial.print("Loadcell: ");
+//    Serial.println(loadcell_data, DEC);
 
     return(encoder_data);
   }
@@ -199,5 +201,3 @@ void loop()
 /*********************************************************************************************************
   END FILE
 *********************************************************************************************************/
-
-
