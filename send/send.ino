@@ -47,6 +47,8 @@ double loadcell_data_double = 0;
 // ***************************
 // EPOS2 CANOpen Communication
 // ***************************
+//
+// Data comes with Lowest Bit First
 
 // Statemachine
 unsigned char set_pre_operational[2] = {0x80, 0};
@@ -177,11 +179,12 @@ float amplificationBoardDataRead()
 //    Serial.print("Encoder: ");
 //    Serial.println(encoder_data, DEC);
 
-    // Serial.print("Loadcell: ");
-    // Serial.println(loadcell_data_double);
+     Serial.print("Loadcell: ");
+     Serial.println(loadcell_data_double);
 
     return(encoder_data);
   }
+}
 
 float currentDataRead()
 {
@@ -198,8 +201,25 @@ float currentDataRead()
 
     unsigned int canId = CAN.getCanId();
     
+    // Serial.print("Current: ");
+    
+    //   for(int i = 0; i<len; i++)    // print the data
+    //     {
+    //         Serial.print(buf[i], HEX);
+    //         Serial.print("\t");
+    //     }
+    // Serial.println();
+
+    current_data = buf[4];
+    current_data <<= 8;
+    current_data = current_data | buf[5];
+    current_data <<= 8;
+    current_data = current_data | buf[6];
+    current_data <<= 8;
+    current_data = current_data | buf[7];
+
     Serial.print("Current: ");
-    Serial.println(buf);
+    Serial.println(current_data);
 
     return(current_data);
   }
@@ -214,9 +234,9 @@ void loop()
       doStartup();
       break;
     case Operational:
-      amplificationBoardDataRead();
-      currentdataRead(current_data);
-      positionSetpoint(encoder_data);
+//      amplificationBoardDataRead();
+      currentDataRead();
+//      positionSetpoint(encoder_data);
       break;
   }
   delay(100);
