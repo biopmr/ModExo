@@ -41,6 +41,7 @@ MCP_CAN CAN(SPI_CS_PIN);
 // Sensor variables
 uint32_t encoder_data = 0;
 uint32_t loadcell_data = 0;
+double loadcell_data_double = 0;
 
 // ***************************
 // EPOS2 CANOpen Communication
@@ -165,16 +166,19 @@ float dataRead()
     loadcell_data = loadcell_data | buf[2];
     loadcell_data <<= 8;
     loadcell_data = loadcell_data | buf[3];
+//
+//    if (buf[1] >= 128) {
+//           loadcell_data = loadcell_data - 16777216;
+//    }
 
-    if (buf[1] >= 128) {
-           loadcell_data = loadcell_data - 16777216;
-    }
+  loadcell_data_double = loadcell_data;
+//  loadcell_data_double = loadcell_data_double-4294000000;
 
-    Serial.print("Encoder: ");
-    Serial.println(encoder_data, DEC);
+//    Serial.print("Encoder: ");
+//    Serial.println(encoder_data, DEC);
 
     Serial.print("Loadcell: ");
-    Serial.println(loadcell_data, DEC);
+    Serial.println(loadcell_data_double);
 
     return(encoder_data);
   }
