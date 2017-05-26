@@ -40,6 +40,7 @@ MCP_CAN CAN(SPI_CS_PIN);
 
 // Sensor variables
 uint32_t encoder_data = 0;
+uint32_t current_data = 0;
 uint32_t loadcell_data = 0;
 double loadcell_data_double = 0;
 
@@ -143,7 +144,7 @@ void positionSetpoint(double position)
 //***************
 // DATA READ
 //***************
-float dataRead()
+float amplificationBoardDataRead()
 {
   unsigned char len = 0;
   unsigned char buf[8];
@@ -176,10 +177,31 @@ float dataRead()
 //    Serial.print("Encoder: ");
 //    Serial.println(encoder_data, DEC);
 
-    Serial.print("Loadcell: ");
-    Serial.println(loadcell_data_double);
+    // Serial.print("Loadcell: ");
+    // Serial.println(loadcell_data_double);
 
     return(encoder_data);
+  }
+
+float currentDataRead()
+{
+  unsigned char len = 0;
+  unsigned char buf[8];
+
+// clear the string:
+  CAN.sendMsgBuf(0x601, 0, 8, get_actual_current);
+  delay(10);
+
+  if (CAN_MSGAVAIL == CAN.checkReceive())           // check if data coming
+  {
+    CAN.readMsgBuf(&len, buf);    // read data,  len: data length, buf: data buf
+
+    unsigned int canId = CAN.getCanId();
+    
+    Serial.print("Current: ");
+    Serial.println(buf);
+
+    return(current_data);
   }
 
 }
@@ -192,7 +214,8 @@ void loop()
       doStartup();
       break;
     case Operational:
-      dataRead();
+      amplificationBoardDataRead();
+      currentdataRead(current_data);
       positionSetpoint(encoder_data);
       break;
   }
