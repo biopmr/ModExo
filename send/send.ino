@@ -57,6 +57,8 @@ unsigned char enable_epos[8] = {0x2B, 0x40, 0x60, 0, 0x0F, 0, 0, 0};
 unsigned char disable_epos[8] = {0x2B, 0x40, 0x60, 0, 0x06, 0, 0, 0};
 
 // PDO Configuration
+unsigned char pdo_sync[1] = {0};
+
 unsigned char pdo_actual_position_1[8] = {0x22, 0x02, 0x18, 0x01, 0x81, 0x03, 0, 0};
 unsigned char pdo_actual_position_2[8] = {0x22, 0x02, 0x18, 0x02, 0x01, 0, 0, 0};
 
@@ -121,6 +123,47 @@ void doStartup(void)
   Serial.println("Max Profile Velocity set as 2000rpm");  
   delay(10);
   State = Operational;
+}
+
+//***************
+// PDO Config
+//***************
+void PDOConfig(void) {
+
+  CAN.sendMsgBuf(0x00, 0, 2, set_pre_operational);
+  delay(10);
+  CAN.sendMsgBuf(0x601, 0, 8, pdo_actual_position_1);
+  delay(10);
+  CAN.sendMsgBuf(0x601, 0, 8, pdo_actual_position_2);
+  delay(10);
+  CAN.sendMsgBuf(0x601, 0, 8, pdo_actual_velocity_1);
+  delay(10);
+  CAN.sendMsgBuf(0x601, 0, 8, pdo_actual_velocity_2);
+  delay(10);
+  CAN.sendMsgBuf(0x601, 0, 8, pdo_actual_current_1);
+  delay(10);
+  CAN.sendMsgBuf(0x601, 0, 8, pdo_actual_current_2);
+  delay(10);
+  CAN.sendMsgBuf(0x601, 0, 8, pdo_actual_current_3);
+  delay(10);
+  CAN.sendMsgBuf(0x601, 0, 8, pdo_actual_current_4);
+  delay(10);
+  CAN.sendMsgBuf(0x601, 0, 8, pdo_actual_current_5);
+  delay(10);
+  CAN.sendMsgBuf(0x00, 0, 2, set_operational);
+  delay(10);
+
+  Serial.println("TPDO Configured!");
+  
+  delay(10);
+  State = Operational;
+}
+
+//******
+// SYNC
+//******
+void sync(void) {
+  CAN.sendMsgBuf(0x80, 1, pdo_sync);
 }
 
 //*******************

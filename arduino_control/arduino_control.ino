@@ -40,11 +40,15 @@ MCP_CAN CAN(SPI_CS_PIN);
 
 // Sensor variables
 uint32_t encoder_data = 0;
+uint32_t current_data = 0;
 uint32_t loadcell_data = 0;
+double loadcell_data_double = 0;
 
 // ***************************
 // EPOS2 CANOpen Communication
 // ***************************
+//
+// Data comes with Lowest Bit First
 
 // Statemachine
 unsigned char set_pre_operational[2] = {0x80, 0};
@@ -53,6 +57,8 @@ unsigned char enable_epos[8] = {0x2B, 0x40, 0x60, 0, 0x0F, 0, 0, 0};
 unsigned char disable_epos[8] = {0x2B, 0x40, 0x60, 0, 0x06, 0, 0, 0};
 
 // PDO Configuration
+unsigned char pdo_sync[1] = {0};
+
 unsigned char pdo_actual_position_1[8] = {0x22, 0x02, 0x18, 0x01, 0x81, 0x03, 0, 0};
 unsigned char pdo_actual_position_2[8] = {0x22, 0x02, 0x18, 0x02, 0x01, 0, 0, 0};
 
@@ -103,7 +109,6 @@ void setup()
 void doStartup(void) 
 {
   CAN.sendMsgBuf(0x601, 0, 8, disable_epos);
-  Serial.println("EPOS diabled");
   delay(10);
   CAN.sendMsgBuf(0x601, 0, 8, enable_epos);
   Serial.println("EPOS enabled");
@@ -112,12 +117,53 @@ void doStartup(void)
   Serial.println("Max Following Error set as 2000qc");
   delay(10);
   CAN.sendMsgBuf(0x601, 0, 8, set_max_acceleration);
-  Serial.println("Max Following Error set as 5000rpm/s");
+  Serial.println("Max Aceeleration set as 5000rpm/s");
   delay(10);
   CAN.sendMsgBuf(0x601, 0, 8, set_max_profile_velocity);
   Serial.println("Max Profile Velocity set as 2000rpm");  
   delay(10);
   State = Operational;
+}
+
+//***************
+// PDO Config
+//***************
+void PDOConfig(void) {
+
+  CAN.sendMsgBuf(0x00, 0, 2, set_pre_operational);
+  delay(10);
+  CAN.sendMsgBuf(0x601, 0, 8, pdo_actual_position_1);
+  delay(10);
+  CAN.sendMsgBuf(0x601, 0, 8, pdo_actual_position_2);
+  delay(10);
+  CAN.sendMsgBuf(0x601, 0, 8, pdo_actual_velocity_1);
+  delay(10);
+  CAN.sendMsgBuf(0x601, 0, 8, pdo_actual_velocity_2);
+  delay(10);
+  CAN.sendMsgBuf(0x601, 0, 8, pdo_actual_current_1);
+  delay(10);
+  CAN.sendMsgBuf(0x601, 0, 8, pdo_actual_current_2);
+  delay(10);
+  CAN.sendMsgBuf(0x601, 0, 8, pdo_actual_current_3);
+  delay(10);
+  CAN.sendMsgBuf(0x601, 0, 8, pdo_actual_current_4);
+  delay(10);
+  CAN.sendMsgBuf(0x601, 0, 8, pdo_actual_current_5);
+  delay(10);
+  CAN.sendMsgBuf(0x00, 0, 2, set_operational);
+  delay(10);
+
+  Serial.println("TPDO Configured!");
+  
+  delay(10);
+  State = Operational;
+}
+
+//******
+// SYNC
+//******
+void sync(void) {
+  CAN.sendMsgBuf(0x80, 1, pdo_sync);
 }
 
 //*******************
@@ -143,7 +189,7 @@ void positionSetpoint(double position)
 //***************
 // DATA READ
 //***************
-float dataRead()
+float amplificationBoardDataRead()
 {
   unsigned char len = 0;
   unsigned char buf[8];
@@ -165,20 +211,60 @@ float dataRead()
     loadcell_data = loadcell_data | buf[2];
     loadcell_data <<= 8;
     loadcell_data = loadcell_data | buf[3];
-
-    if (buf[1] >= 128) {
-           loadcell_data = loadcell_data - 16777216;
-    }
-
-    loadcell_data = loadcell_data - 4294000000;
-
-     Serial.print("Encoder: ");
-     Serial.println(encoder_data, DEC);
 //
-//    Serial.print("Loadcell: ");
-//    Serial.println(loadcell_data, DEC);
+//    if (buf[1] >= 128) {
+//           loadcell_data = loadcell_data - 16777216;
+//    }
+
+  loadcell_data_double = loadcell_data;
+//  loadcell_data_double = loadcell_data_double-4294000000;
+
+//    Serial.print("Encoder: ");
+//    Serial.println(encoder_data, DEC);
+
+     Serial.print("Loadcell: ");
+     Serial.println(loadcell_data_double);
 
     return(encoder_data);
+  }
+}
+
+float currentDataRead()
+{
+  unsigned char len = 0;
+  unsigned char buf[8];
+
+// clear the string:
+  CAN.sendMsgBuf(0x601, 0, 8, get_actual_current);
+  delay(10);
+
+  if (CAN_MSGAVAIL == CAN.checkReceive())           // check if data coming
+  {
+    CAN.readMsgBuf(&len, buf);    // read data,  len: data length, buf: data buf
+
+    unsigned int canId = CAN.getCanId();
+    
+    // Serial.print("Current: ");
+    
+    //   for(int i = 0; i<len; i++)    // print the data
+    //     {
+    //         Serial.print(buf[i], HEX);
+    //         Serial.print("\t");
+    //     }
+    // Serial.println();
+
+    current_data = buf[4];
+    current_data <<= 8;
+    current_data = current_data | buf[5];
+    current_data <<= 8;
+    current_data = current_data | buf[6];
+    current_data <<= 8;
+    current_data = current_data | buf[7];
+
+    Serial.print("Current: ");
+    Serial.println(current_data);
+
+    return(current_data);
   }
 
 }
@@ -191,7 +277,8 @@ void loop()
       doStartup();
       break;
     case Operational:
-      dataRead();
+      amplificationBoardDataRead();
+//      currentDataRead();
       positionSetpoint(encoder_data);
       break;
   }
@@ -201,3 +288,4 @@ void loop()
 /*********************************************************************************************************
   END FILE
 *********************************************************************************************************/
+
