@@ -234,9 +234,9 @@ void loop()
       doStartup();
       break;
     case Operational:
-//      amplificationBoardDataRead();
-      currentDataRead();
-//      positionSetpoint(encoder_data);
+      amplificationBoardDataRead();
+//      currentDataRead();
+      positionSetpoint(encoder_data);
       break;
   }
   delay(100);
@@ -246,4 +246,3 @@ void loop()
   END FILE
 *********************************************************************************************************/
 
-TESSSTE
