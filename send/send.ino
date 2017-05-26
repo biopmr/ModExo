@@ -104,7 +104,6 @@ void setup()
 void doStartup(void) 
 {
   CAN.sendMsgBuf(0x601, 0, 8, disable_epos);
-  Serial.println("EPOS diabled");
   delay(10);
   CAN.sendMsgBuf(0x601, 0, 8, enable_epos);
   Serial.println("EPOS enabled");
@@ -113,7 +112,7 @@ void doStartup(void)
   Serial.println("Max Following Error set as 2000qc");
   delay(10);
   CAN.sendMsgBuf(0x601, 0, 8, set_max_acceleration);
-  Serial.println("Max Following Error set as 5000rpm/s");
+  Serial.println("Max Aceeleration set as 5000rpm/s");
   delay(10);
   CAN.sendMsgBuf(0x601, 0, 8, set_max_profile_velocity);
   Serial.println("Max Profile Velocity set as 2000rpm");  
