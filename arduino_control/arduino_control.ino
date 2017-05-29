@@ -57,7 +57,7 @@ unsigned char enable_epos[8] = {0x2B, 0x40, 0x60, 0, 0x0F, 0, 0, 0};
 unsigned char disable_epos[8] = {0x2B, 0x40, 0x60, 0, 0x06, 0, 0, 0};
 
 // PDO Configuration
-unsigned char pdo_sync[1] = {0};
+unsigned char pdo_sync[1] = {0x00};
 
 unsigned char pdo_actual_position_1[8] = {0x22, 0x02, 0x18, 0x01, 0x81, 0x03, 0, 0};
 unsigned char pdo_actual_position_2[8] = {0x22, 0x02, 0x18, 0x02, 0x01, 0, 0, 0};
@@ -163,7 +163,7 @@ void PDOConfig(void) {
 // SYNC
 //******
 void sync(void) {
-  CAN.sendMsgBuf(0x80, 1, pdo_sync);
+  CAN.sendMsgBuf(0x80, 0, 1, pdo_sync);
 }
 
 //*******************
@@ -231,12 +231,12 @@ float amplificationBoardDataRead()
 
 float currentDataRead()
 {
+  current_data = 0;
   unsigned char len = 0;
   unsigned char buf[8];
 
 // clear the string:
-  CAN.sendMsgBuf(0x601, 0, 8, get_actual_current);
-  delay(10);
+  sync();
 
   if (CAN_MSGAVAIL == CAN.checkReceive())           // check if data coming
   {
@@ -244,7 +244,7 @@ float currentDataRead()
 
     unsigned int canId = CAN.getCanId();
     
-    // Serial.print("Current: ");
+    Serial.print("Current: ");
     
     //   for(int i = 0; i<len; i++)    // print the data
     //     {
@@ -253,15 +253,14 @@ float currentDataRead()
     //     }
     // Serial.println();
 
-    current_data = buf[4];
+    current_data = buf[2];
     current_data <<= 8;
-    current_data = current_data | buf[5];
-    current_data <<= 8;
-    current_data = current_data | buf[6];
-    current_data <<= 8;
-    current_data = current_data | buf[7];
+    current_data = current_data | buf[3];
+    // current_data <<= 8;
+    // current_data = current_data | buf[6];
+    // current_data <<= 8;
+    // current_data = current_data | buf[7];
 
-    Serial.print("Current: ");
     Serial.println(current_data);
 
     return(current_data);
@@ -277,9 +276,9 @@ void loop()
       doStartup();
       break;
     case Operational:
-      amplificationBoardDataRead();
-//      currentDataRead();
-      positionSetpoint(encoder_data);
+      // amplificationBoardDataRead();
+      currentDataRead();
+      // positionSetpoint(encoder_data);
       break;
   }
   delay(100);
