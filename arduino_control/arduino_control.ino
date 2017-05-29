@@ -57,7 +57,7 @@ unsigned char enable_epos[8] = {0x2B, 0x40, 0x60, 0, 0x0F, 0, 0, 0};
 unsigned char disable_epos[8] = {0x2B, 0x40, 0x60, 0, 0x06, 0, 0, 0};
 
 // PDO Configuration
-unsigned char pdo_sync[1] = {0};
+unsigned char pdo_sync[1] = {0x00};
 
 unsigned char pdo_actual_position_1[8] = {0x22, 0x02, 0x18, 0x01, 0x81, 0x03, 0, 0};
 unsigned char pdo_actual_position_2[8] = {0x22, 0x02, 0x18, 0x02, 0x01, 0, 0, 0};
@@ -99,8 +99,33 @@ void setup()
     Serial.println(" Init CAN BUS Shield again");
     delay(100);
   }
+  
   State = Startup;
   Serial.println("CAN BUS Shield init ok!");
+
+//  // TIMER SETUP- the timer interrupt allows precise timed measurements of the reed switch
+//  //for mor info about configuration of arduino timers see http://arduino.cc/playground/Code/Timer1
+//
+//  cli();//stop interrupts
+//
+//  //set timer1 interrupt at 1kHz
+//  TCCR1A = 0;// set entire TCCR1A register to 0
+//  TCCR1B = 0;// same for TCCR1B\
+//  TCNT1  = 0;//initialize counter value to 0
+//  // set timer count for 1khz increments
+//  OCR1A = 1999;// = (16*10^6) / (1000*8) - 1
+//  //had to use 16 bit timer1 for this bc 1999>255, but could switch to timers 0 or 2 with larger prescaler
+//  // turn on CTC mode
+//  TCCR1B |= (1 << WGM12);
+//  // Set CS11 bit for 8 prescaler
+//  TCCR1B |= (1 << CS11);
+//  // enable timer compare interrupt
+//  TIMSK1 |= (1 << OCIE1A);
+//
+//  sei();//allow interrupts
+//  //END TIMER SETUP
+  
+  Serial.println("Interrupt init ok!");
 }
 
 //***************
@@ -163,8 +188,19 @@ void PDOConfig(void) {
 // SYNC
 //******
 void sync(void) {
-  CAN.sendMsgBuf(0x80, 1, pdo_sync);
+  CAN.sendMsgBuf(0x80, 0, 1, pdo_sync);
 }
+
+//int tests = 0;
+
+////******
+//// INTERRUPTION
+////******
+//ISR(TIMER1_COMPA_vect) { //timer1 interrupt 1Hz toggles pin 13 (LED)
+//  
+//  tests = tests + 1;
+//
+//}
 
 //*******************
 // POSITION SETPOINT
@@ -231,12 +267,12 @@ float amplificationBoardDataRead()
 
 float currentDataRead()
 {
+  current_data = 0;
   unsigned char len = 0;
   unsigned char buf[8];
 
 // clear the string:
-  CAN.sendMsgBuf(0x601, 0, 8, get_actual_current);
-  delay(10);
+  sync();
 
   if (CAN_MSGAVAIL == CAN.checkReceive())           // check if data coming
   {
@@ -244,25 +280,24 @@ float currentDataRead()
 
     unsigned int canId = CAN.getCanId();
     
-    // Serial.print("Current: ");
-    
-    //   for(int i = 0; i<len; i++)    // print the data
-    //     {
-    //         Serial.print(buf[i], HEX);
-    //         Serial.print("\t");
-    //     }
-    // Serial.println();
-
-    current_data = buf[4];
-    current_data <<= 8;
-    current_data = current_data | buf[5];
-    current_data <<= 8;
-    current_data = current_data | buf[6];
-    current_data <<= 8;
-    current_data = current_data | buf[7];
-
     Serial.print("Current: ");
-    Serial.println(current_data);
+    
+      for(int i = 0; i<len; i++)    // print the data
+        {
+            Serial.print(buf[i], HEX);
+            Serial.print("\t");
+        }
+    Serial.println();
+
+    current_data = buf[2];
+    current_data <<= 8;
+    current_data = current_data | buf[3];
+    // current_data <<= 8;
+    // current_data = current_data | buf[6];
+    // current_data <<= 8;
+    // current_data = current_data | buf[7];
+
+    // Serial.println(current_data);
 
     return(current_data);
   }
@@ -277,9 +312,9 @@ void loop()
       doStartup();
       break;
     case Operational:
-      amplificationBoardDataRead();
-//      currentDataRead();
-      positionSetpoint(encoder_data);
+//       amplificationBoardDataRead();
+      currentDataRead();
+//       positionSetpoint(encoder_data);
       break;
   }
   delay(100);
