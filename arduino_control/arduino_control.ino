@@ -31,7 +31,6 @@
 
 // Statemachine State variable and initial value
 byte State = Startup;
-byte variables = Position;
 
 // the cs pin of the version after v1.1 is default to D9
 // v0.9b and v1.0 is default D10
@@ -323,9 +322,21 @@ void CANDataRead()
 
     switch (canId) 
     {        
+      case 0x181:
+        Serial.println("-----------------------------");
+        Serial.print("CORRENTE: ");
+        Serial.println(canId, HEX);
+
+        for(int i = 0; i<len; i++)    // print the data
+        {
+            Serial.print(buf[i], HEX);
+            Serial.print("\t");
+        }
+        Serial.println();
+        break;
       case 0x381:
         Serial.println("-----------------------------");
-        Serial.print("POSICAO");
+        Serial.print("POSICAO: ");
         Serial.println(canId, HEX);
 
         for(int i = 0; i<len; i++)    // print the data
@@ -337,7 +348,7 @@ void CANDataRead()
         break;
       case 0x321:
         Serial.println("-----------------------------");
-        Serial.print("AMPLIFICACAO");
+        Serial.print("AMPLIFICACAO: ");
         Serial.println(canId, HEX);
 
         for(int i = 0; i<len; i++)    // print the data
@@ -347,19 +358,7 @@ void CANDataRead()
         }
         Serial.println();
         break;
-      case 0x181:
-        Serial.println("-----------------------------");
-        Serial.print("CORRENTE");
-        Serial.println(canId, HEX);
-
-        for(int i = 0; i<len; i++)    // print the data
-        {
-            Serial.print(buf[i], HEX);
-            Serial.print("\t");
-        }
-        Serial.println();
-        break;
-    }
+      }
   }
 }
 
