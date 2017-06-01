@@ -52,11 +52,27 @@
 	"buffers":
 	[
 		{
-			"file": "send/send.ino",
+			"file": "arduino_control/arduino_control.ino",
 			"settings":
 			{
-				"buffer_size": 7117,
+				"buffer_size": 10677,
 				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/ssraf/Google Drive/Documentos/Arduino/libraries/CAN_BUS_Shield-master/mcp_can.cpp",
+			"settings":
+			{
+				"buffer_size": 30213,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/ssraf/Google Drive/Documentos/Arduino/libraries/CAN_BUS_Shield-master/mcp_can.h",
+			"settings":
+			{
+				"buffer_size": 6219,
 				"line_ending": "Unix"
 			}
 		},
@@ -139,9 +155,16 @@
 		"side_bar_visible": false,
 		"status_bar_visible": false
 	},
+	"expanded_folders":
+	[
+		"/Users/ssraf/ModExo"
+	],
 	"file_history":
 	[
+		"/Users/ssraf/Google Drive/Documentos/Arduino/libraries/CAN_BUS_Shield-master/mcp_can_dfs.h",
+		"/Users/ssraf/Google Drive/Documentos/Poli/Mestrado/Disciplinas/Biomecatronica/modular_exoskeleton-master/Modular-Exoskeleton/interrupt_setting/interrupt_setting.ino",
 		"/Users/ssraf/ModExo/send/send.ino",
+		"/Users/ssraf/Google Drive/Documentos/NAVE/2017/01_Tech_Startups_Suporte/notas_ts_santa_cruz",
 		"/Users/ssraf/Google Drive/Documentos/Poli/Mestrado/ModExo/System Description",
 		"/Users/ssraf/Google Drive/Documentos/NAVE/2017/03_senna/20170615_reuniao_amaral",
 		"/Users/ssraf/Google Drive/Documentos/Poli/Mestrado/ModExo/Communication/CAN/Arduino/Exemplo/MaxonEPOS2_DemonstratorV01/MaxonEPOS2_DemonstratorV01.ino",
@@ -151,7 +174,6 @@
 		"/Users/ssraf/Google Drive/Documentos/Poli/Mestrado/Disciplinas/Biomecatronica/modular_exoskeleton-master/Modular-Exoskeleton/arduino_control_v3/arduino_control_v3.ino",
 		"/Users/ssraf/Dropbox/documents/Pessoal/Casinha/mudanca/Rafa/certi/perguntas 2",
 		"/Users/ssraf/Google Drive/Documentos/Poli/Mestrado/Financeiro/Google/sketch",
-		"/Users/ssraf/Google Drive/Documentos/Poli/Mestrado/Disciplinas/Biomecatronica/modular_exoskeleton-master/Modular-Exoskeleton/interrupt_setting/interrupt_setting.ino",
 		"/Users/ssraf/ModExo/arduino_control/main.ino",
 		"/Users/ssraf/Google Drive/Documentos/Arduino/Casos/Salvador/code/teste14_ajuste_interrupcao/sketch_apr08a_2/sketch_apr08a_2.ino",
 		"/Users/ssraf/Google Drive/Documentos/Poli/Mestrado/Disciplinas/Biomecatronica/modular_exoskeleton-master/Modular-Exoskeleton/arduino_control_v2/arduino_control_v2.ino",
@@ -266,13 +288,11 @@
 		"/Users/ssraf/Google Drive/Documentos/Poli/Mestrado/Github/poli/pmr5005/desenvolvimento",
 		"/Users/ssraf/Google Drive/Documentos/Poli/Mestrado/PPGEM/coloquios/6o coloquio/notas_6o_coloquio",
 		"/Users/ssraf/Dropbox/documents/Pessoal/Casinha/meninas",
-		"/Users/ssraf/Google Drive/Documentos/Poli/Mestrado/Disciplinas/Biomecatronica/modular_exoskeleton-master/comandos markdown",
-		"/Users/ssraf/Google Drive/Documentos/Poli/Mestrado/PPGEM/coloquios/6o coloquio/email",
-		"/Users/ssraf/Google Drive/Documentos/Poli/Mestrado/Github/poli/pme2603/aprendizagem com projetos de desenvolvimento social"
+		"/Users/ssraf/Google Drive/Documentos/Poli/Mestrado/Disciplinas/Biomecatronica/modular_exoskeleton-master/comandos markdown"
 	],
 	"find":
 	{
-		"height": 41.0
+		"height": 43.0
 	},
 	"find_in_files":
 	{
@@ -288,6 +308,12 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"Current",
+			"State",
+			"current",
+			"PDO ",
+			"sync",
+			"SYNC",
 			"loadcell",
 			"curre",
 			"encoder",
@@ -409,13 +435,7 @@
 			"aprofundando",
 			"Fig.",
 			"desi",
-			"captio",
-			"figura",
-			"figur",
-			"tip",
-			"design",
-			"coupled_diagr",
-			"coupled"
+			"captio"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -444,19 +464,19 @@
 			[
 				{
 					"buffer": 0,
-					"file": "send/send.ino",
+					"file": "arduino_control/arduino_control.ino",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 7117,
+						"buffer_size": 10677,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1372,
-								1372
+								10116,
+								10116
 							]
 						],
 						"settings":
@@ -466,10 +486,70 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 4846.0,
+						"translation.y": 8716.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/Users/ssraf/Google Drive/Documentos/Arduino/libraries/CAN_BUS_Shield-master/mcp_can.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 30213,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 3069.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/Users/ssraf/Google Drive/Documentos/Arduino/libraries/CAN_BUS_Shield-master/mcp_can.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6219,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2980.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
 					"type": "text"
 				}
 			]
@@ -479,7 +559,7 @@
 			"sheets":
 			[
 				{
-					"buffer": 1,
+					"buffer": 3,
 					"file": "/Users/ssraf/Desktop/CAN_BUS_Shield-master/examples/receive_check/receive_check.ino",
 					"semi_transient": false,
 					"settings":
@@ -502,10 +582,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 607.0,
+						"translation.y": 655.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 3,
 					"type": "text"
 				}
 			]
@@ -513,7 +593,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 33.0
+		"height": 35.0
 	},
 	"input":
 	{
@@ -539,7 +619,7 @@
 		"cols":
 		[
 			0.0,
-			0.587217881944,
+			0.799142795139,
 			1.0
 		],
 		"rows":
@@ -569,7 +649,7 @@
 	"project": "modexo.sublime-project",
 	"replace":
 	{
-		"height": 62.0
+		"height": 66.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -578,6 +658,10 @@
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"ardui",
+				"arduino_control/arduino_control.ino"
+			],
 			[
 				"system",
 				"Mestrado/ModExo/System Description"
@@ -1085,10 +1169,6 @@
 			[
 				"feed",
 				"versao_3/feedback_afc_fs"
-			],
-			[
-				"root",
-				"versao_3/root.tex"
 			]
 		],
 		"width": 0.0
