@@ -29,8 +29,14 @@
 #define Pre_Operational     2
 #define Operational         3
 
+// Define CANDataRead States
+#define Current_State       1
+#define Position_State      2
+#define Amplification_State 3
+
 // Statemachine State variable and initial value
 byte State = Startup;
+byte DataReadState = Current_State;
 
 // the cs pin of the version after v1.1 is default to D9
 // v0.9b and v1.0 is default D10
@@ -319,10 +325,14 @@ void CANDataRead()
   {
     CAN.readMsgBuf(&len, buf);    // read data,  len: data length, buf: data buf
     unsigned int canId = CAN.getCanId();
+    Serial.println("Entrou Leitura");
 
-    switch (canId) 
+    switch (DataReadState) 
     {        
-      case 0x181:
+      case Current_State:
+        Serial.println("Entrou Current State");
+        if(canId == 0x381) 
+        {
         Serial.println("-----------------------------");
         Serial.print("CORRENTE: ");
         Serial.println(canId, HEX);
@@ -333,30 +343,40 @@ void CANDataRead()
             Serial.print("\t");
         }
         Serial.println();
-        break;
-      case 0x381:
-        Serial.println("-----------------------------");
-        Serial.print("POSICAO: ");
-        Serial.println(canId, HEX);
-
-        for(int i = 0; i<len; i++)    // print the data
-        {
-            Serial.print(buf[i], HEX);
-            Serial.print("\t");
+        DataReadState = Position_State;
         }
-        Serial.println();
         break;
-      case 0x321:
-        Serial.println("-----------------------------");
-        Serial.print("AMPLIFICACAO: ");
-        Serial.println(canId, HEX);
-
-        for(int i = 0; i<len; i++)    // print the data
+      case Position_State:
+        if(canId == 0x181)
         {
-            Serial.print(buf[i], HEX);
-            Serial.print("\t");
+          Serial.println("-----------------------------");
+          Serial.print("POSICAO: ");
+          Serial.println(canId, HEX);
+
+          for(int i = 0; i<len; i++)    // print the data
+          {
+              Serial.print(buf[i], HEX);
+              Serial.print("\t");
+          }
+          Serial.println();
+          DataReadState = Amplification_State;
         }
-        Serial.println();
+        break;
+      case Amplification_State:
+        if(canId == 0x321)
+        {
+          Serial.println("-----------------------------");
+          Serial.print("AMPLIFICACAO: ");
+          Serial.println(canId, HEX);
+
+          for(int i = 0; i<len; i++)    // print the data
+          {
+              Serial.print(buf[i], HEX);
+              Serial.print("\t");
+          }
+          Serial.println();
+          DataReadState = Current_State;
+        }
         break;
       }
   }
@@ -379,7 +399,7 @@ void loop()
       // positionSetpoint(encoder_data);
       break;
   }
-  delay(100);
+  delay(50);
 }
 
 /*********************************************************************************************************
