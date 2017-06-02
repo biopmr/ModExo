@@ -29,14 +29,8 @@
 #define Pre_Operational     2
 #define Operational         3
 
-// Define CANDataRead States
-#define Current_State       1
-#define Position_State      2
-#define Amplification_State 3
-
 // Statemachine State variable and initial value
 byte State = Startup;
-byte DataReadState = Current_State;
 
 // the cs pin of the version after v1.1 is default to D9
 // v0.9b and v1.0 is default D10
@@ -163,11 +157,11 @@ void doStartup(void)
 void PDOConfig(void) {
 
   CAN.sendMsgBuf(0x00, 0, 2, set_pre_operational);
-  delay(100);
+  delay(10);
   CAN.sendMsgBuf(0x601, 0, 8, pdo_actual_position_1);
-  delay(100);
+  delay(10);
   CAN.sendMsgBuf(0x601, 0, 8, pdo_actual_position_2);
-  delay(100);
+  delay(10);
   // CAN.sendMsgBuf(0x601, 0, 8, pdo_actual_velocity_1);
   // delay(10);
   // CAN.sendMsgBuf(0x601, 0, 8, pdo_actual_velocity_2);
@@ -198,14 +192,15 @@ void sync(void) {
   CAN.sendMsgBuf(0x80, 0, 1, pdo_sync);
 }
 
-//int tests = 0;
+int tests = 0;
+bool sync_flag = 0; 
 
 //******
 // INTERRUPTION
 //******
-ISR(TIMER1_COMPA_vect) { //timer1 interrupt 1Hz toggles pin 13 (LED)
+ISR(TIMER1_COMPA_vect) { 
  
- sync();
+  sync_flag = 1;
 
 }
 
@@ -316,69 +311,74 @@ float currentDataRead()
 //****************
 // CAN DATA READ
 //****************
-void CANDataRead()
+float CANDataRead()
 {
   unsigned char len = 0;
   unsigned char buf[8];
+  
 
   if(CAN_MSGAVAIL == CAN.checkReceive())            // check if data coming
   {
     CAN.readMsgBuf(&len, buf);    // read data,  len: data length, buf: data buf
     unsigned int canId = CAN.getCanId();
-    Serial.println("Entrou Leitura");
 
-    switch (DataReadState) 
+    switch (canId) 
     {        
-      case Current_State:
-        Serial.println("Entrou Current State");
-        if(canId == 0x381) 
-        {
-        Serial.println("-----------------------------");
-        Serial.print("CORRENTE: ");
-        Serial.println(canId, HEX);
+      case 0x181:
+        // Serial.println("-----------------------------");
+        // Serial.print("CORRENTE: ");
+        // Serial.println(canId, HEX);
 
-        for(int i = 0; i<len; i++)    // print the data
-        {
-            Serial.print(buf[i], HEX);
-            Serial.print("\t");
-        }
-        Serial.println();
-        DataReadState = Position_State;
-        }
+        // for(int i = 0; i<len; i++)    // print the data
+        // {
+        //     Serial.print(buf[i], HEX);
+        //     Serial.print("\t");
+        // }
+        // Serial.println();
+        current_data = buf[2];
+        current_data <<= 8;
+        current_data = current_data | buf[3];
         break;
-      case Position_State:
-        if(canId == 0x181)
-        {
-          Serial.println("-----------------------------");
-          Serial.print("POSICAO: ");
-          Serial.println(canId, HEX);
+      case 0x381:
+        // Serial.println("-----------------------------");
+        // Serial.print("POSICAO: ");
+        // Serial.println(canId, HEX);
 
-          for(int i = 0; i<len; i++)    // print the data
-          {
-              Serial.print(buf[i], HEX);
-              Serial.print("\t");
-          }
-          Serial.println();
-          DataReadState = Amplification_State;
-        }
+        // for(int i = 0; i<len; i++)    // print the data
+        // {
+        //     Serial.print(buf[i], HEX);
+        //     Serial.print("\t");
+        // }
+        // Serial.println();
         break;
-      case Amplification_State:
-        if(canId == 0x321)
-        {
-          Serial.println("-----------------------------");
-          Serial.print("AMPLIFICACAO: ");
-          Serial.println(canId, HEX);
+      case 0x321:
+        // Serial.println("-----------------------------");
+        // Serial.print("AMPLIFICACAO: ");
+        // Serial.println(canId, HEX);
 
-          for(int i = 0; i<len; i++)    // print the data
-          {
-              Serial.print(buf[i], HEX);
-              Serial.print("\t");
-          }
-          Serial.println();
-          DataReadState = Current_State;
-        }
+        // for(int i = 0; i<len; i++)    // print the data
+        // {
+        //     Serial.print(buf[i], HEX);
+        //     Serial.print("\t");
+        // }
+        // Serial.println();
+        encoder_data = buf[4];
+        encoder_data <<= 8;
+        encoder_data = encoder_data | buf[5];
+
+        // // load cell information is read from buf[1], buf[2] and buf[3] and converted to decimal
+        loadcell_data = buf[1];
+        loadcell_data <<= 8;
+        loadcell_data = loadcell_data | buf[2];
+        loadcell_data <<= 8;
+        loadcell_data = loadcell_data | buf[3];
+
+        Serial.print("Loadcell: ");
+        Serial.println(loadcell_data);
+
         break;
       }
+      return(encoder_data);
   }
 }
 
@@ -396,10 +396,13 @@ void loop()
       // amplificationBoardDataRead();
 //       currentDataRead();
     CANDataRead();
+    if (sync_flag){
+      sync_flag=0;
+      sync();
+    }
       // positionSetpoint(encoder_data);
       break;
   }
-  delay(50);
 }
 
 /*********************************************************************************************************
