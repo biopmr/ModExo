@@ -99,31 +99,32 @@ void setup()
     Serial.println(" Init CAN BUS Shield again");
     delay(100);
   }
-  
-  State = Startup;
+
   Serial.println("CAN BUS Shield init ok!");
 
-//  // TIMER SETUP- the timer interrupt allows precise timed measurements of the reed switch
-//  //for mor info about configuration of arduino timers see http://arduino.cc/playground/Code/Timer1
-//
-//  cli();//stop interrupts
-//
-//  //set timer1 interrupt at 1kHz
-//  TCCR1A = 0;// set entire TCCR1A register to 0
-//  TCCR1B = 0;// same for TCCR1B\
-//  TCNT1  = 0;//initialize counter value to 0
-//  // set timer count for 1khz increments
-//  OCR1A = 1999;// = (16*10^6) / (1000*8) - 1
-//  //had to use 16 bit timer1 for this bc 1999>255, but could switch to timers 0 or 2 with larger prescaler
-//  // turn on CTC mode
-//  TCCR1B |= (1 << WGM12);
-//  // Set CS11 bit for 8 prescaler
-//  TCCR1B |= (1 << CS11);
-//  // enable timer compare interrupt
-//  TIMSK1 |= (1 << OCIE1A);
-//
-//  sei();//allow interrupts
-//  //END TIMER SETUP
+ // TIMER SETUP- the timer interrupt allows precise timed measurements of the reed switch
+ //for mor info about configuration of arduino timers see http://arduino.cc/playground/Code/Timer1
+
+ cli();//stop interrupts
+
+ //set timer1 interrupt at 1kHz
+ TCCR1A = 0;// set entire TCCR1A register to 0
+ TCCR1B = 0;// same for TCCR1B\
+ TCNT1  = 0;//initialize counter value to 0
+ // set timer count for 1khz increments
+
+ // OCR1A 1999 to 1kHZ, 19999 to 0.1kHz
+ OCR1A = 19999;// = (16*10^6) / (1000*8) - 1
+ //had to use 16 bit timer1 for this bc 1999>255, but could switch to timers 0 or 2 with larger prescaler
+ // turn on CTC mode
+ TCCR1B |= (1 << WGM12);
+ // Set CS11 bit for 8 prescaler
+ TCCR1B |= (1 << CS11);
+ // enable timer compare interrupt
+ TIMSK1 |= (1 << OCIE1A);
+
+ sei();//allow interrupts
+ //END TIMER SETUP
   
   Serial.println("Interrupt init ok!");
 }
@@ -147,7 +148,7 @@ void doStartup(void)
   CAN.sendMsgBuf(0x601, 0, 8, set_max_profile_velocity);
   Serial.println("Max Profile Velocity set as 2000rpm");  
   delay(10);
-  State = Operational;
+  State = Pre_Operational;
 }
 
 //***************
@@ -161,9 +162,9 @@ void PDOConfig(void) {
   delay(10);
   CAN.sendMsgBuf(0x601, 0, 8, pdo_actual_position_2);
   delay(10);
-  CAN.sendMsgBuf(0x601, 0, 8, pdo_actual_velocity_1);
-  delay(10);
-  CAN.sendMsgBuf(0x601, 0, 8, pdo_actual_velocity_2);
+  // CAN.sendMsgBuf(0x601, 0, 8, pdo_actual_velocity_1);
+  // delay(10);
+  // CAN.sendMsgBuf(0x601, 0, 8, pdo_actual_velocity_2);
   delay(10);
   CAN.sendMsgBuf(0x601, 0, 8, pdo_actual_current_1);
   delay(10);
@@ -176,7 +177,7 @@ void PDOConfig(void) {
   CAN.sendMsgBuf(0x601, 0, 8, pdo_actual_current_5);
   delay(10);
   CAN.sendMsgBuf(0x00, 0, 2, set_operational);
-  delay(10);
+  delay(100);
 
   Serial.println("TPDO Configured!");
   
@@ -191,16 +192,17 @@ void sync(void) {
   CAN.sendMsgBuf(0x80, 0, 1, pdo_sync);
 }
 
-//int tests = 0;
+int tests = 0;
+bool sync_flag = 0; 
 
-////******
-//// INTERRUPTION
-////******
-//ISR(TIMER1_COMPA_vect) { //timer1 interrupt 1Hz toggles pin 13 (LED)
-//  
-//  tests = tests + 1;
-//
-//}
+//******
+// INTERRUPTION
+//******
+ISR(TIMER1_COMPA_vect) { 
+ 
+  sync_flag = 1;
+
+}
 
 //*******************
 // POSITION SETPOINT
@@ -222,9 +224,9 @@ void positionSetpoint(double position)
   delay(10);
 }
 
-//***************
-// DATA READ
-//***************
+//******************************
+// AMPLIFICATION BOARD DATA READ
+//******************************
 float amplificationBoardDataRead()
 {
   unsigned char len = 0;
@@ -247,16 +249,16 @@ float amplificationBoardDataRead()
     loadcell_data = loadcell_data | buf[2];
     loadcell_data <<= 8;
     loadcell_data = loadcell_data | buf[3];
-//
-//    if (buf[1] >= 128) {
-//           loadcell_data = loadcell_data - 16777216;
-//    }
+    //
+    //    if (buf[1] >= 128) {
+    //           loadcell_data = loadcell_data - 16777216;
+    //    }
 
-  loadcell_data_double = loadcell_data;
-//  loadcell_data_double = loadcell_data_double-4294000000;
+    loadcell_data_double = loadcell_data;
+    //  loadcell_data_double = loadcell_data_double-4294000000;
 
-//    Serial.print("Encoder: ");
-//    Serial.println(encoder_data, DEC);
+    //    Serial.print("Encoder: ");
+    //    Serial.println(encoder_data, DEC);
 
      Serial.print("Loadcell: ");
      Serial.println(loadcell_data_double);
@@ -265,13 +267,16 @@ float amplificationBoardDataRead()
   }
 }
 
+//******************************
+// CURRENT DATA READ
+//******************************
 float currentDataRead()
 {
   current_data = 0;
   unsigned char len = 0;
   unsigned char buf[8];
 
-// clear the string:
+  // clear the string:
   sync();
 
   if (CAN_MSGAVAIL == CAN.checkReceive())           // check if data coming
@@ -301,7 +306,80 @@ float currentDataRead()
 
     return(current_data);
   }
+}
 
+//****************
+// CAN DATA READ
+//****************
+float CANDataRead()
+{
+  unsigned char len = 0;
+  unsigned char buf[8];
+  
+
+  if(CAN_MSGAVAIL == CAN.checkReceive())            // check if data coming
+  {
+    CAN.readMsgBuf(&len, buf);    // read data,  len: data length, buf: data buf
+    unsigned int canId = CAN.getCanId();
+
+    switch (canId) 
+    {        
+      case 0x181:
+        // Serial.println("-----------------------------");
+        // Serial.print("CORRENTE: ");
+        // Serial.println(canId, HEX);
+
+        // for(int i = 0; i<len; i++)    // print the data
+        // {
+        //     Serial.print(buf[i], HEX);
+        //     Serial.print("\t");
+        // }
+        // Serial.println();
+        current_data = buf[2];
+        current_data <<= 8;
+        current_data = current_data | buf[3];
+        break;
+      case 0x381:
+        // Serial.println("-----------------------------");
+        // Serial.print("POSICAO: ");
+        // Serial.println(canId, HEX);
+
+        // for(int i = 0; i<len; i++)    // print the data
+        // {
+        //     Serial.print(buf[i], HEX);
+        //     Serial.print("\t");
+        // }
+        // Serial.println();
+        break;
+      case 0x321:
+        // Serial.println("-----------------------------");
+        // Serial.print("AMPLIFICACAO: ");
+        // Serial.println(canId, HEX);
+
+        // for(int i = 0; i<len; i++)    // print the data
+        // {
+        //     Serial.print(buf[i], HEX);
+        //     Serial.print("\t");
+        // }
+        // Serial.println();
+        encoder_data = buf[4];
+        encoder_data <<= 8;
+        encoder_data = encoder_data | buf[5];
+
+        // // load cell information is read from buf[1], buf[2] and buf[3] and converted to decimal
+        loadcell_data = buf[1];
+        loadcell_data <<= 8;
+        loadcell_data = loadcell_data | buf[2];
+        loadcell_data <<= 8;
+        loadcell_data = loadcell_data | buf[3];
+
+        Serial.print("Loadcell: ");
+        Serial.println(loadcell_data);
+
+        break;
+      }
+      return(encoder_data);
+  }
 }
 
 void loop()
@@ -311,13 +389,20 @@ void loop()
     case Startup:
       doStartup();
       break;
+    case Pre_Operational:
+      PDOConfig();
+      break;
     case Operational:
-//       amplificationBoardDataRead();
-      currentDataRead();
-//       positionSetpoint(encoder_data);
+      // amplificationBoardDataRead();
+//       currentDataRead();
+    CANDataRead();
+    if (sync_flag){
+      sync_flag=0;
+      sync();
+    }
+      // positionSetpoint(encoder_data);
       break;
   }
-  delay(100);
 }
 
 /*********************************************************************************************************
