@@ -4,6 +4,22 @@
 		"selected_items":
 		[
 			[
+				"curre",
+				"currentDataRead"
+			],
+			[
+				"Data",
+				"DataReadState"
+			],
+			[
+				"Da",
+				"DataReadState"
+			],
+			[
+				"Current",
+				"Current_State"
+			],
+			[
 				"encode",
 				"enconder_resolution"
 			],
@@ -55,9 +71,31 @@
 			"file": "arduino_control/arduino_control.ino",
 			"settings":
 			{
+<<<<<<< Updated upstream
 				"buffer_size": 11390,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
+=======
+				"buffer_size": 10250,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/ssraf/Desktop/CAN_BUS_Shield-master/examples/receive_check/receive_check.ino",
+			"settings":
+			{
+				"buffer_size": 1545,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/ssraf/Google Drive/Documentos/Poli/Mestrado/ModExo/Communication/CAN/Arduino/Exemplo/MaxonEPOS2_DemonstratorV01/MaxonEPOS2_DemonstratorV01.ino",
+			"settings":
+			{
+				"buffer_size": 18042,
+				"line_ending": "Unix"
+>>>>>>> Stashed changes
 			}
 		}
 	],
@@ -137,9 +175,15 @@
 	],
 	"file_history":
 	[
+<<<<<<< Updated upstream
 		"/Users/ssraf/Google Drive/Documentos/Arduino/libraries/CAN_BUS_Shield-master/mcp_can.h",
 		"/Users/ssraf/Google Drive/Documentos/Arduino/libraries/CAN_BUS_Shield-master/mcp_can.cpp",
 		"/Users/ssraf/Desktop/CAN_BUS_Shield-master/examples/receive_check/receive_check.ino",
+=======
+		"/Users/ssraf/ModExo/logs/20170601_serial_monitor.txt",
+		"/Users/ssraf/Google Drive/Documentos/Arduino/libraries/CAN_BUS_Shield-master/mcp_can.h",
+		"/Users/ssraf/Google Drive/Documentos/Arduino/libraries/CAN_BUS_Shield-master/mcp_can.cpp",
+>>>>>>> Stashed changes
 		"/Users/ssraf/Google Drive/Documentos/Arduino/libraries/CAN_BUS_Shield-master/mcp_can_dfs.h",
 		"/Users/ssraf/Google Drive/Documentos/Poli/Mestrado/Disciplinas/Biomecatronica/modular_exoskeleton-master/Modular-Exoskeleton/interrupt_setting/interrupt_setting.ino",
 		"/Users/ssraf/ModExo/send/send.ino",
@@ -284,6 +328,9 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"SPI",
+			"canId",
+			"CanId",
 			"Current",
 			"State",
 			"current",
@@ -408,10 +455,7 @@
 			"abstra",
 			"pre",
 			"chapt",
-			"aprofundando",
-			"Fig.",
-			"desi",
-			"captio"
+			"aprofundando"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -444,15 +488,18 @@
 					"semi_transient": false,
 					"settings":
 					{
+<<<<<<< Updated upstream
 						"buffer_size": 11390,
+=======
+						"buffer_size": 10250,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								9734,
+								9734
 							]
 						],
 						"settings":
@@ -465,14 +512,122 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
+					"stack_index": 3,
+					"type": "text"
+				}
+			]
+		},
+		{
+			"selected": 1,
+			"sheets":
+			[
+				{
+					"buffer": 1,
+					"file": "/Users/ssraf/Desktop/CAN_BUS_Shield-master/examples/receive_check/receive_check.ino",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1545,
+>>>>>>> Stashed changes
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								705,
+								705
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Arduino-like IDE/Arduino.sublime-syntax",
+<<<<<<< Updated upstream
+=======
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 685.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 0,
+					"file": "arduino_control/arduino_control.ino",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 10250,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								8721,
+								8721
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Arduino-like IDE/Arduino.sublime-syntax",
+>>>>>>> Stashed changes
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+<<<<<<< Updated upstream
+						"translation.y": 0.0,
+=======
+						"translation.y": 7881.0,
+>>>>>>> Stashed changes
+						"zoom_level": 1.0
+					},
 					"stack_index": 0,
 					"type": "text"
+<<<<<<< Updated upstream
 				}
 			]
 		},
 		{
 			"sheets":
 			[
+=======
+				},
+				{
+					"buffer": 2,
+					"file": "/Users/ssraf/Google Drive/Documentos/Poli/Mestrado/ModExo/Communication/CAN/Arduino/Exemplo/MaxonEPOS2_DemonstratorV01/MaxonEPOS2_DemonstratorV01.ino",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 18042,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1888,
+								1926
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Arduino-like IDE/Arduino.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 3758.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				}
+>>>>>>> Stashed changes
 			]
 		}
 	],
@@ -504,7 +659,7 @@
 		"cols":
 		[
 			0.0,
-			0.799142795139,
+			0.0347222222222,
 			1.0
 		],
 		"rows":
@@ -544,6 +699,10 @@
 		"selected_items":
 		[
 			[
+				"arduino",
+				"arduino_control/arduino_control.ino"
+			],
+			[
 				"ardui",
 				"arduino_control/arduino_control.ino"
 			],
@@ -566,10 +725,6 @@
 			[
 				"interru",
 				"Mestrado/Disciplinas/Biomecatronica/modular_exoskeleton-master/Modular-Exoskeleton/interrupt_setting/interrupt_setting.ino"
-			],
-			[
-				"arduino",
-				"ModExo/arduino_control/arduino_control.ino"
 			],
 			[
 				"interr",

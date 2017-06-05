@@ -209,6 +209,9 @@ ISR(TIMER1_COMPA_vect) {
 //*******************
 void positionSetpoint(double position) 
 {
+  unsigned char len = 0;
+  unsigned char buf[8];
+
   uint32_t angulo = (position/4096)*200000;
 
   setpoint_position[4] = angulo & 0xFF; 
@@ -218,7 +221,7 @@ void positionSetpoint(double position)
 
   // clear the string:
   CAN.sendMsgBuf(0x601, 0, 8, setpoint_position);
-  delay(100);
+  delay(10);
 }
 
 //******************************
@@ -267,42 +270,16 @@ float amplificationBoardDataRead()
 //******************************
 // CURRENT DATA READ
 //******************************
-float currentDataRead()
+void currentDataRead(char buf)
 {
-  current_data = 0;
-  unsigned char len = 0;
-  unsigned char buf[8];
+  current_data = buf[2];
+  current_data <<= 8;
+  current_data = current_data | buf[3];
 
-  // clear the string:
-  sync();
+  Serial.print("Current: ");
+  Serial.println(current_data);
 
-  if (CAN_MSGAVAIL == CAN.checkReceive())           // check if data coming
-  {
-    CAN.readMsgBuf(&len, buf);    // read data,  len: data length, buf: data buf
-
-    unsigned int canId = CAN.getCanId();
-    
-    Serial.print("Current: ");
-    
-      for(int i = 0; i<len; i++)    // print the data
-        {
-            Serial.print(buf[i], HEX);
-            Serial.print("\t");
-        }
-    Serial.println();
-
-    current_data = buf[2];
-    current_data <<= 8;
-    current_data = current_data | buf[3];
-    // current_data <<= 8;
-    // current_data = current_data | buf[6];
-    // current_data <<= 8;
-    // current_data = current_data | buf[7];
-
-    // Serial.println(current_data);
-
-    return(current_data);
-  }
+  // return(current_data);
 }
 
 //****************
@@ -313,7 +290,6 @@ float CANDataRead()
   unsigned char len = 0;
   unsigned char buf[8];
   
-
   if(CAN_MSGAVAIL == CAN.checkReceive())            // check if data coming
   {
     CAN.readMsgBuf(&len, buf);    // read data,  len: data length, buf: data buf
@@ -322,19 +298,16 @@ float CANDataRead()
     switch (canId) 
     {        
       case 0x181:
-        // Serial.println("-----------------------------");
-        // Serial.print("CORRENTE: ");
-        // Serial.println(canId, HEX);
+        // current_data = buf[2];
+        // current_data <<= 8;
+        // current_data = current_data | buf[3];
 
-        // for(int i = 0; i<len; i++)    // print the data
-        // {
-        //     Serial.print(buf[i], HEX);
-        //     Serial.print("\t");
-        // }
-        // Serial.println();
-        current_data = buf[2];
-        current_data <<= 8;
-        current_data = current_data | buf[3];
+        // Serial.print("Current: ");
+        // Serial.println(current_data);
+
+        // return(current_data);
+      currentDataRead();
+      
         break;
       case 0x381:
         // Serial.println("-----------------------------");
@@ -349,16 +322,6 @@ float CANDataRead()
         // Serial.println();
         break;
       case 0x321:
-        // Serial.println("-----------------------------");
-        // Serial.print("AMPLIFICACAO: ");
-        // Serial.println(canId, HEX);
-
-        // for(int i = 0; i<len; i++)    // print the data
-        // {
-        //     Serial.print(buf[i], HEX);
-        //     Serial.print("\t");
-        // }
-        // Serial.println();
         encoder_data = buf[4];
         encoder_data <<= 8;
         encoder_data = encoder_data | buf[5];
@@ -370,15 +333,12 @@ float CANDataRead()
         loadcell_data <<= 8;
         loadcell_data = loadcell_data | buf[3];
 
-//        Serial.print("Loadcell: ");
-//        Serial.println(loadcell_data);
+        // Serial.print("Loadcell: ");
+        // Serial.println(loadcell_data);
 
-//
-        Serial.print("Encoder: ");
-        Serial.println(encoder_data);
+        return(encoder_data);
         break;
       }
-      return(encoder_data);
   }
 }
 
@@ -395,10 +355,7 @@ void loop()
     case Operational:
       // amplificationBoardDataRead();
 //       currentDataRead();
-//    reads CAN networks
     CANDataRead();
-
-    
     if (sync_flag){
       sync_flag=0;
       sync();
@@ -411,3 +368,4 @@ void loop()
 /*********************************************************************************************************
   END FILE
 *********************************************************************************************************/
+
