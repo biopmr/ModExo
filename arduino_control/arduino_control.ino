@@ -267,18 +267,16 @@ float amplificationBoardDataRead()
 //******************************
 // POSITION DATA READ
 //******************************
-void positionDataRead(double buf)
+float encoderDataRead(unsigned char buf[])
 {
+    unsigned char encoder_data[8];
+
     encoder_data = buf[4];
     encoder_data <<= 8;
     encoder_data = encoder_data | buf[5];
 
     Serial.print("Encoder: ");
     Serial.println(encoder_data);
-
-    // Serial.println(current_data);
-
-    return(current_data);
 }
 
 //****************
@@ -327,7 +325,7 @@ float CANDataRead()
 
       // ID 321 message has information sent by the amplification board
       case 0x321:
-        encoderDataRead();
+        encoderDataRead(buf);
 
         // // load cell information is read from buf[1], buf[2] and buf[3] and converted to decimal
         loadcell_data = buf[1];
