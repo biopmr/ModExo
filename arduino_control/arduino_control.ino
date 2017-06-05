@@ -265,44 +265,20 @@ float amplificationBoardDataRead()
 }
 
 //******************************
-// CURRENT DATA READ
+// POSITION DATA READ
 //******************************
-float currentDataRead()
+void positionDataRead(double buf)
 {
-  current_data = 0;
-  unsigned char len = 0;
-  unsigned char buf[8];
+    encoder_data = buf[4];
+    encoder_data <<= 8;
+    encoder_data = encoder_data | buf[5];
 
-  // clear the string:
-  sync();
-
-  if (CAN_MSGAVAIL == CAN.checkReceive())           // check if data coming
-  {
-    CAN.readMsgBuf(&len, buf);    // read data,  len: data length, buf: data buf
-
-    unsigned int canId = CAN.getCanId();
-    
-    Serial.print("Current: ");
-    
-      for(int i = 0; i<len; i++)    // print the data
-        {
-            Serial.print(buf[i], HEX);
-            Serial.print("\t");
-        }
-    Serial.println();
-
-    current_data = buf[2];
-    current_data <<= 8;
-    current_data = current_data | buf[3];
-    // current_data <<= 8;
-    // current_data = current_data | buf[6];
-    // current_data <<= 8;
-    // current_data = current_data | buf[7];
+    Serial.print("Encoder: ");
+    Serial.println(encoder_data);
 
     // Serial.println(current_data);
 
     return(current_data);
-  }
 }
 
 //****************
@@ -348,20 +324,10 @@ float CANDataRead()
         // }
         // Serial.println();
         break;
-      case 0x321:
-        // Serial.println("-----------------------------");
-        // Serial.print("AMPLIFICACAO: ");
-        // Serial.println(canId, HEX);
 
-        // for(int i = 0; i<len; i++)    // print the data
-        // {
-        //     Serial.print(buf[i], HEX);
-        //     Serial.print("\t");
-        // }
-        // Serial.println();
-        encoder_data = buf[4];
-        encoder_data <<= 8;
-        encoder_data = encoder_data | buf[5];
+      // ID 321 message has information sent by the amplification board
+      case 0x321:
+        encoderDataRead();
 
         // // load cell information is read from buf[1], buf[2] and buf[3] and converted to decimal
         loadcell_data = buf[1];
@@ -374,11 +340,9 @@ float CANDataRead()
 //        Serial.println(loadcell_data);
 
 //
-        Serial.print("Encoder: ");
-        Serial.println(encoder_data);
         break;
       }
-      return(encoder_data);
+      // return(encoder_data);
   }
 }
 
@@ -394,8 +358,9 @@ void loop()
       break;
     case Operational:
       // amplificationBoardDataRead();
-//       currentDataRead();
-//    reads CAN networks
+      //       currentDataRead();
+    
+    //    reads CAN BUS
     CANDataRead();
 
     
