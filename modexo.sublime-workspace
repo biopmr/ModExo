@@ -71,6 +71,7 @@
 			"file": "arduino_control/arduino_control.ino",
 			"settings":
 			{
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 				"buffer_size": 11390,
 				"encoding": "UTF-8",
@@ -78,24 +79,51 @@
 =======
 				"buffer_size": 10250,
 				"encoding": "UTF-8",
+=======
+				"buffer_size": 10677,
+				"encoding": "UTF-8",
+>>>>>>> parent of 3eb1872... control tests
 				"line_ending": "Unix"
 			}
 		},
 		{
+<<<<<<< HEAD
 			"file": "/Users/ssraf/Desktop/CAN_BUS_Shield-master/examples/receive_check/receive_check.ino",
 			"settings":
 			{
 				"buffer_size": 1545,
+=======
+			"file": "/Users/ssraf/Google Drive/Documentos/Arduino/libraries/CAN_BUS_Shield-master/mcp_can.cpp",
+			"settings":
+			{
+				"buffer_size": 30213,
 				"line_ending": "Unix"
 			}
 		},
 		{
+			"file": "/Users/ssraf/Google Drive/Documentos/Arduino/libraries/CAN_BUS_Shield-master/mcp_can.h",
+			"settings":
+			{
+				"buffer_size": 6219,
+>>>>>>> parent of 3eb1872... control tests
+				"line_ending": "Unix"
+			}
+		},
+		{
+<<<<<<< HEAD
 			"file": "/Users/ssraf/Google Drive/Documentos/Poli/Mestrado/ModExo/Communication/CAN/Arduino/Exemplo/MaxonEPOS2_DemonstratorV01/MaxonEPOS2_DemonstratorV01.ino",
 			"settings":
 			{
 				"buffer_size": 18042,
 				"line_ending": "Unix"
 >>>>>>> Stashed changes
+=======
+			"file": "/Users/ssraf/Desktop/CAN_BUS_Shield-master/examples/receive_check/receive_check.ino",
+			"settings":
+			{
+				"buffer_size": 1545,
+				"line_ending": "Unix"
+>>>>>>> parent of 3eb1872... control tests
 			}
 		}
 	],
@@ -171,10 +199,11 @@
 	},
 	"expanded_folders":
 	[
-		"/C/Users/bioroblap/Documents/GitHub/ModExo"
+		"/Users/ssraf/ModExo"
 	],
 	"file_history":
 	[
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 		"/Users/ssraf/Google Drive/Documentos/Arduino/libraries/CAN_BUS_Shield-master/mcp_can.h",
 		"/Users/ssraf/Google Drive/Documentos/Arduino/libraries/CAN_BUS_Shield-master/mcp_can.cpp",
@@ -184,6 +213,8 @@
 		"/Users/ssraf/Google Drive/Documentos/Arduino/libraries/CAN_BUS_Shield-master/mcp_can.h",
 		"/Users/ssraf/Google Drive/Documentos/Arduino/libraries/CAN_BUS_Shield-master/mcp_can.cpp",
 >>>>>>> Stashed changes
+=======
+>>>>>>> parent of 3eb1872... control tests
 		"/Users/ssraf/Google Drive/Documentos/Arduino/libraries/CAN_BUS_Shield-master/mcp_can_dfs.h",
 		"/Users/ssraf/Google Drive/Documentos/Poli/Mestrado/Disciplinas/Biomecatronica/modular_exoskeleton-master/Modular-Exoskeleton/interrupt_setting/interrupt_setting.ino",
 		"/Users/ssraf/ModExo/send/send.ino",
@@ -308,11 +339,14 @@
 		"/Users/ssraf/Google Drive/Documentos/Receitas/Pimentas/Festa Mexicana",
 		"/Users/ssraf/Google Drive/Documentos/Poli/Mestrado/Control/control_code/20150817_tests/dscud.h",
 		"/Users/ssraf/Google Drive/Documentos/Poli/Mestrado/Disciplinas/Biomecatronica/modular_exoskeleton-master/Modular-Exoskeleton/main.c",
-		"/Users/ssraf/Google Drive/Documentos/Poli/Mestrado/Github/poli/pmr5005/desenvolvimento"
+		"/Users/ssraf/Google Drive/Documentos/Poli/Mestrado/Github/poli/pmr5005/desenvolvimento",
+		"/Users/ssraf/Google Drive/Documentos/Poli/Mestrado/PPGEM/coloquios/6o coloquio/notas_6o_coloquio",
+		"/Users/ssraf/Dropbox/documents/Pessoal/Casinha/meninas",
+		"/Users/ssraf/Google Drive/Documentos/Poli/Mestrado/Disciplinas/Biomecatronica/modular_exoskeleton-master/comandos markdown"
 	],
 	"find":
 	{
-		"height": 23.0
+		"height": 43.0
 	},
 	"find_in_files":
 	{
@@ -488,18 +522,27 @@
 					"semi_transient": false,
 					"settings":
 					{
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 						"buffer_size": 11390,
 =======
 						"buffer_size": 10250,
+=======
+						"buffer_size": 10677,
+>>>>>>> parent of 3eb1872... control tests
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
+<<<<<<< HEAD
 								9734,
 								9734
+=======
+								10116,
+								10116
+>>>>>>> parent of 3eb1872... control tests
 							]
 						],
 						"settings":
@@ -509,7 +552,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 8716.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 3,
@@ -588,13 +631,78 @@
 					},
 					"stack_index": 0,
 					"type": "text"
+<<<<<<< HEAD
 <<<<<<< Updated upstream
+=======
+				},
+				{
+					"buffer": 1,
+					"file": "/Users/ssraf/Google Drive/Documentos/Arduino/libraries/CAN_BUS_Shield-master/mcp_can.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 30213,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 3069.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/Users/ssraf/Google Drive/Documentos/Arduino/libraries/CAN_BUS_Shield-master/mcp_can.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6219,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2980.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+>>>>>>> parent of 3eb1872... control tests
 				}
 			]
 		},
 		{
+			"selected": 0,
 			"sheets":
 			[
+<<<<<<< HEAD
 =======
 				},
 				{
@@ -604,19 +712,34 @@
 					"settings":
 					{
 						"buffer_size": 18042,
+=======
+				{
+					"buffer": 3,
+					"file": "/Users/ssraf/Desktop/CAN_BUS_Shield-master/examples/receive_check/receive_check.ino",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1545,
+>>>>>>> parent of 3eb1872... control tests
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
+<<<<<<< HEAD
 								1888,
 								1926
+=======
+								1309,
+								1137
+>>>>>>> parent of 3eb1872... control tests
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/Arduino-like IDE/Arduino.sublime-syntax",
+<<<<<<< HEAD
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
 						},
@@ -628,12 +751,24 @@
 					"type": "text"
 				}
 >>>>>>> Stashed changes
+=======
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 655.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				}
+>>>>>>> parent of 3eb1872... control tests
 			]
 		}
 	],
 	"incremental_find":
 	{
-		"height": 23.0
+		"height": 35.0
 	},
 	"input":
 	{
@@ -689,7 +824,7 @@
 	"project": "modexo.sublime-project",
 	"replace":
 	{
-		"height": 42.0
+		"height": 66.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -1231,7 +1366,7 @@
 		],
 		"width": 488.0
 	},
-	"selected_group": 1,
+	"selected_group": 0,
 	"settings":
 	{
 	},
