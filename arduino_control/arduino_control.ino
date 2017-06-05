@@ -209,9 +209,6 @@ ISR(TIMER1_COMPA_vect) {
 //*******************
 void positionSetpoint(double position) 
 {
-  unsigned char len = 0;
-  unsigned char buf[8];
-
   uint32_t angulo = (position/4096)*200000;
 
   setpoint_position[4] = angulo & 0xFF; 
@@ -221,7 +218,7 @@ void positionSetpoint(double position)
 
   // clear the string:
   CAN.sendMsgBuf(0x601, 0, 8, setpoint_position);
-  delay(10);
+  delay(100);
 }
 
 //******************************
@@ -373,9 +370,12 @@ float CANDataRead()
         loadcell_data <<= 8;
         loadcell_data = loadcell_data | buf[3];
 
-        Serial.print("Loadcell: ");
-        Serial.println(loadcell_data);
+//        Serial.print("Loadcell: ");
+//        Serial.println(loadcell_data);
 
+//
+        Serial.print("Encoder: ");
+        Serial.println(encoder_data);
         break;
       }
       return(encoder_data);
@@ -395,7 +395,10 @@ void loop()
     case Operational:
       // amplificationBoardDataRead();
 //       currentDataRead();
+//    reads CAN networks
     CANDataRead();
+
+    
     if (sync_flag){
       sync_flag=0;
       sync();
@@ -408,4 +411,3 @@ void loop()
 /*********************************************************************************************************
   END FILE
 *********************************************************************************************************/
-
