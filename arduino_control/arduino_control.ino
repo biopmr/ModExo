@@ -207,18 +207,17 @@ ISR(TIMER1_COMPA_vect) {
 //*******************
 // POSITION SETPOINT
 //*******************
-void positionSetpoint(double position) 
+void positionSetpoint(uint32_t angle) 
 {
-  uint32_t angulo = (position/4096)*200000;
+  angle *= 200000 / 4096; //conversion to quadrature counts
 
-  setpoint_position[4] = angulo & 0xFF; 
-  setpoint_position[5] = (angulo >> 8) & 0xFF;
-  setpoint_position[6] = (angulo >> 16) & 0xFF;
-  setpoint_position[7] = (angulo >> 24) & 0xFF;
+  setpoint_position[4] = angle & 0xFF; 
+  setpoint_position[5] = (angle >> 8) & 0xFF;
+  setpoint_position[6] = (angle >> 16) & 0xFF;
+  setpoint_position[7] = (angle >> 24) & 0xFF;
 
   // clear the string:
   CAN.sendMsgBuf(0x601, 0, 8, setpoint_position);
-  delay(100);
 }
 
 //******************************
@@ -264,20 +263,20 @@ float amplificationBoardDataRead()
   }
 }
 
-//******************************
-// POSITION DATA READ
-//******************************
-float encoderDataRead(unsigned char buf[])
-{
-    unsigned char encoder_data[8];
+// //******************************
+// // POSITION DATA READ
+// //******************************
+// float encoderDataRead(unsigned char buf[])
+// {
+//     unsigned char encoder_data[8];
 
-    encoder_data = buf[4];
-    encoder_data <<= 8;
-    encoder_data = encoder_data | buf[5];
+//     encoder_data = buf[4];
+//     encoder_data <<= 8;
+//     encoder_data = encoder_data | buf[5];
 
-    Serial.print("Encoder: ");
-    Serial.println(encoder_data);
-}
+//     Serial.print("Encoder: ");
+//     Serial.println(encoder_data);
+// }
 
 //****************
 // CAN DATA READ
@@ -324,8 +323,12 @@ float CANDataRead()
         break;
 
       // ID 321 message has information sent by the amplification board
+      // Messages coming from the amp_board has most significative bits coming first
       case 0x321:
-        encoderDataRead(buf);
+        // encoderDataRead();
+        encoder_data = buf[4];
+        encoder_data <<= 8; // bitshift equals times 2^8
+        encoder_data = encoder_data | buf[5]; // sum operation
 
         // // load cell information is read from buf[1], buf[2] and buf[3] and converted to decimal
         loadcell_data = buf[1];
@@ -334,13 +337,18 @@ float CANDataRead()
         loadcell_data <<= 8;
         loadcell_data = loadcell_data | buf[3];
 
-//        Serial.print("Loadcell: ");
-//        Serial.println(loadcell_data);
+        positionSetpoint(encoder_data);
 
-//
+        //        Serial.print("Loadcell: ");
+        //        Serial.println(loadcell_data);
+
+        Serial.print("Encoder Position: ");
+        Serial.println(encoder_data);
+
         break;
       }
-      // return(encoder_data);
+      return(encoder_data);
+      return(loadcell_data);
   }
 }
 
@@ -360,7 +368,6 @@ void loop()
     
     //    reads CAN BUS
     CANDataRead();
-
     
     if (sync_flag){
       sync_flag=0;
