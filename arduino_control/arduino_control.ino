@@ -295,19 +295,12 @@ float CANDataRead()
     switch (canId) 
     {        
       case 0x181:
-        // Serial.println("-----------------------------");
-        // Serial.print("CORRENTE: ");
-        // Serial.println(canId, HEX);
-
-        // for(int i = 0; i<len; i++)    // print the data
-        // {
-        //     Serial.print(buf[i], HEX);
-        //     Serial.print("\t");
-        // }
-        // Serial.println();
-        current_data = buf[2];
+        current_data = buf[1];
         current_data <<= 8;
-        current_data = current_data | buf[3];
+        current_data = current_data | buf[0];
+
+        // Serial.print("Current Data: ");
+        // Serial.println(current_data);
         break;
       case 0x381:
         // Serial.println("-----------------------------");
@@ -330,7 +323,7 @@ float CANDataRead()
         encoder_data <<= 8; // bitshift equals times 2^8
         encoder_data = encoder_data | buf[5]; // sum operation
 
-        // // load cell information is read from buf[1], buf[2] and buf[3] and converted to decimal
+        // // load_cell information is read from buf[1], buf[2] and buf[3] and converted to decimal
         loadcell_data = buf[1];
         loadcell_data <<= 8;
         loadcell_data = loadcell_data | buf[2];
@@ -339,11 +332,11 @@ float CANDataRead()
 
         positionSetpoint(encoder_data);
 
-        //        Serial.print("Loadcell: ");
-        //        Serial.println(loadcell_data);
+        Serial.print("Loadcell: ");
+        Serial.println(loadcell_data);
 
-        Serial.print("Encoder Position: ");
-        Serial.println(encoder_data);
+        // Serial.print("Encoder Position: ");
+        // Serial.println(encoder_data);
 
         break;
       }
