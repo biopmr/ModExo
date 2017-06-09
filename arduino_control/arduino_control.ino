@@ -71,13 +71,25 @@ unsigned char pdo_actual_current_3[8] = {0x22, 0x00, 0x1A, 0x02, 0x10, 0, 0x27, 
 unsigned char pdo_actual_current_4[8] = {0x22, 0x00, 0x18, 0x02, 0x01, 0, 0, 0};
 unsigned char pdo_actual_current_5[8] = {0x22, 0x00, 0x1A, 0x00, 0x01, 0, 0, 0};
 
-// Objects Writing
+// *****************
+// Object Writing
+// *****************
+
+// Parameters
 unsigned char set_max_following_error[8] = {0x22, 0x65, 0x60, 0, 0xD0, 7, 0, 0};
 unsigned char set_max_acceleration[8] = {0x22, 0xC5, 0x60, 0, 0x88, 0x13, 0, 0};
 unsigned char set_max_profile_velocity[8] = {0x22, 0x7F, 0x60, 0, 0xD0, 7, 0, 0};
+unsigned char set_min_position_limit[8] = {0x22, 0x7D, 0x60, 0x01, 0x20, 0x6C, 0xFB, 0xFF}; // -300000qc = 0xFFFB6C20
+unsigned char set_max_position_limit[8] = {0x22, 0x7D, 0x60, 0x02, 0xE0, 0x93, 0x04, 0}; // 300000qc = 0x0493E0
+
+// Commanding
 unsigned char setpoint_position[8] = {0x22, 0x62, 0x20, 0, 0, 0, 0, 0};
 
-// Objects Reading
+// *****************
+// Object Reading
+// *****************
+
+// Actual Values
 unsigned char get_actual_position[8] = {0x40, 0x64, 0x60, 0, 0, 0, 0, 0};
 unsigned char get_actual_velocity[8] = {0x40, 0x6C, 0x60, 0, 0, 0, 0, 0};
 unsigned char get_actual_current[8] = {0x40, 0x78, 0x60, 0, 0, 0, 0, 0};
@@ -148,6 +160,12 @@ void doStartup(void)
   CAN.sendMsgBuf(0x601, 0, 8, set_max_profile_velocity);
   Serial.println("Max Profile Velocity set as 2000rpm");  
   delay(10);
+  CAN.sendMsgBuf(0x601, 0, 8, set_min_position_limit);
+  Serial.println("Min Position Limit defined as -300000qc");  
+  delay(10);
+  CAN.sendMsgBuf(0x601, 0, 8, set_max_position_limit);
+  Serial.println("Min Position Limit defined as 300000qc");  
+  delay(10);  
   State = Pre_Operational;
 }
 
@@ -318,6 +336,20 @@ float CANDataRead()
       // ID 321 message has information sent by the amplification board
       // Messages coming from the amp_board has most significative bits coming first
       case 0x321:
+        // buf[1] = buf[1] - 0x98;
+        // buf[2] = buf[2] - 0x96;
+        // buf[3] = buf[3] - 0x80;
+        // Serial.println("-----------------------------");
+        // Serial.print("AMP ");
+        // Serial.println(canId, HEX);
+
+        // for(int i = 0; i<len; i++)    // print the data
+        // {
+        //     Serial.print(buf[i], HEX);
+        //     Serial.print("\t");
+        // }
+        // Serial.println();
+
         // encoderDataRead();
         encoder_data = buf[4];
         encoder_data <<= 8; // bitshift equals times 2^8
@@ -329,6 +361,8 @@ float CANDataRead()
         loadcell_data = loadcell_data | buf[2];
         loadcell_data <<= 8;
         loadcell_data = loadcell_data | buf[3];
+
+        // loadcell_data = loadcell_data - 10000000; 
 
         positionSetpoint(encoder_data);
 
