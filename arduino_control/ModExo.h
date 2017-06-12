@@ -45,6 +45,10 @@ uint32_t actualposition_data = 0;
 int32_t loadcell_data = 0;
 double loadcell_data_double = 0;
 
+// Sensor variables
+double user_setpoint = 0;
+double targetposition = 0;
+
 // ***************************
 // EPOS2 CANOpen Communication
 // ***************************
@@ -228,8 +232,6 @@ ISR(TIMER1_COMPA_vect) {
 //*******************
 void positionSetpoint(uint32_t angle) 
 {
-  angle *= 200000 / 4096; //conversion to quadrature counts
-
   setpoint_position[4] = angle & 0xFF; 
   setpoint_position[5] = (angle >> 8) & 0xFF;
   setpoint_position[6] = (angle >> 16) & 0xFF;
@@ -298,9 +300,9 @@ float amplificationBoardDataRead()
 // }
 
 //****************
-// CAN DATA READ
+// POT CONTROL
 //****************
-float CANDataRead()
+float PotControl()
 {
   unsigned char len = 0;
   unsigned char buf[8]; 
@@ -332,6 +334,7 @@ float CANDataRead()
 
         Serial.print("Actual Position: ");
         Serial.println(actualposition_data);
+
         return(actualposition_data);
 
         break;
@@ -356,10 +359,92 @@ float CANDataRead()
 
         double loadcell_data_double = loadcell_data; 
 
+        encoder_data *= 200000 / 4096; //conversion to quadrature counts
+
         positionSetpoint(encoder_data);
 
-        // Serial.print("Loadcell: ");
-        // Serial.println(loadcell_data_double);
+        double loadcell_data_double = loadcell_data; 
+        loadcell_data_double = loadcell_data_double + 128000;
+
+        Serial.print("Loadcell: ");
+        Serial.println(loadcell_data_double);
+
+        // Serial.print("Encoder Position: ");
+        // Serial.println(encoder_data);
+
+        break;
+      }
+      return(encoder_data);
+      return(loadcell_data_double);
+  }
+}
+
+//**********************
+// PROPORTIONAL CONTROL
+//**********************
+float kcontrol()
+{
+  unsigned char len = 0;
+  unsigned char buf[8]; 
+
+  if(CAN_MSGAVAIL == CAN.checkReceive())            // check if data coming
+  {
+    int k = 10; //proportional gain
+    CAN.readMsgBuf(&len, buf);    // read data,  len: data length, buf: data buf
+    unsigned int canId = CAN.getCanId();
+
+    switch (canId) 
+    {        
+      // ID 321 message has information sent by the amplification board
+      // Messages coming from the amp_board has most significative bits coming first
+      case 0x381: // reads Position Actual Value
+
+        actualposition_data = buf[5];
+        actualposition_data <<= 8;
+        actualposition_data = actualposition_data | buf[4];
+        actualposition_data <<= 8;
+        actualposition_data = actualposition_data | buf[3];
+        actualposition_data <<= 8;
+        actualposition_data = actualposition_data | buf[2];
+
+        // Serial.print("Actual Position: ");
+        // Serial.println(actualposition_data);
+        return(actualposition_data);
+
+        break;
+      case 0x321:
+        // // load_cell information is read from buf[1], buf[2] and buf[3] and converted to decimal
+        loadcell_data = buf[1];
+        loadcell_data <<= 8;
+        loadcell_data = loadcell_data | buf[2];
+        loadcell_data <<= 8;
+        loadcell_data = loadcell_data | buf[3];
+
+        if(buf[1] >= 128)
+          loadcell_data |= 0xFF000000;
+
+        loadcell_data_double = loadcell_data; 
+        loadcell_data_double = loadcell_data_double + 128000;
+
+        int loadcell_sup_limit = 5000;
+        int loadcell_inf_limit = 0000;
+
+        if (loadcell_data < loadcell_inf_limit)
+        {
+          user_setpoint = loadcell_inf_limit + loadcell_data_double;
+        }
+        
+        else if (loadcell_data > loadcell_sup_limit)
+        {
+          user_setpoint = loadcell_data_double - loadcell_sup_limit;
+        }
+
+        targetposition = actualposition_data + k*user_setpoint;
+
+        positionSetpoint(targetposition);
+
+        Serial.print("Loadcell: ");
+        Serial.println(loadcell_data_double);
 
         // Serial.print("Encoder Position: ");
         // Serial.println(encoder_data);
@@ -382,7 +467,8 @@ void loopModExo()
       PDOConfig();
       break;
     case Operational:
-      CANDataRead();
+      // PotControl();
+      kcontrol();
     if (sync_flag){
       sync_flag=0;
       sync();
