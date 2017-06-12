@@ -106,6 +106,8 @@ unsigned char get_actual_current[8] = {0x40, 0x78, 0x60, 0, 0, 0, 0, 0};
 int encoder_resolution = 2000; //2000 counts per turn
 int reduction = 100; // harmonic drive reduction
 
+int CT_K = 0; // generic constant to be tweaked during runtime
+
 void setupModExo() 
 {
   Serial.begin(115200);
@@ -456,6 +458,41 @@ float kcontrol()
   }
 }
 
+int readSerialInteger() // (not sure if this works, must test)
+{
+	while(1)
+	{
+		if(Serial.available())
+		{ 
+			return (Serial.parseInt());
+		}
+	}
+}
+
+void serialController(char command)
+{
+	switch(command)
+	{
+		case 's': // Startup
+			State = Startup;
+			Serial.println("State: Startup");
+		break;
+		case 'p': // Pre_Operational
+			State = Pre_Operational;
+			Serial.println("State: Pre_Operational");
+		break;
+		case 'o': // Operational
+			State = Operational;
+			Serial.println("State: Operational");
+		break;
+		case 'c': // Constant CT_K (generic constant)
+			CT_K = readSerialInteger();
+			Serial.print("CT_K value: ");
+			Serial.println(CT_K);
+		break;
+	}	
+}
+
 void loopModExo()
 {
   switch (State) 
@@ -469,13 +506,18 @@ void loopModExo()
     case Operational:
       // PotControl();
       kcontrol();
-    if (sync_flag){
-      sync_flag=0;
-      sync();
-    }
+	  if (sync_flag){
+	    sync_flag=0;
+	    sync();
+	  }
       // positionSetpoint(encoder_data);
       break;
-  }
+	}
+	
+	if(Serial.available())
+	{ 
+		serialController(Serial.read());
+	}
 }
 
 /*********************************************************************************************************
