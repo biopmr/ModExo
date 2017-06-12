@@ -41,6 +41,7 @@ MCP_CAN CAN(SPI_CS_PIN);
 // Sensor variables
 uint32_t encoder_data = 0;
 uint32_t current_data = 0;
+uint32_t actualposition_data = 0;
 int32_t loadcell_data = 0;
 double loadcell_data_double = 0;
 
@@ -319,7 +320,8 @@ float CANDataRead()
         // Serial.print("Current Data: ");
         // Serial.println(current_data);
         break;
-      case 0x381:
+      case 0x381: // reads Position Actual Value
+
         // Serial.println("-----------------------------");
         // Serial.print("POSICAO: ");
         // Serial.println(canId, HEX);
@@ -330,38 +332,30 @@ float CANDataRead()
         //     Serial.print("\t");
         // }
         // Serial.println();
+
+        actualposition_data = buf[7];
+        actualposition_data <<= 8;
+        actualposition_data = actualposition_data | buf[6];
+        actualposition_data <<= 8;
+        actualposition_data = actualposition_data | buf[5];
+        actualposition_data <<= 8;
+        actualposition_data = actualposition_data | buf[4];
+
+        Serial.print("Actual Position: ");
+        Serial.println(actualposition_data);
+        return(actualposition_data);
+
         break;
 
       // ID 321 message has information sent by the amplification board
       // Messages coming from the amp_board has most significative bits coming first
       case 0x321:
-
-        // buf[1] = buf[1] - 152;
-        // buf[2] = buf[2] - 150;
-        // buf[3] = buf[3] - 128;
-        // Serial.println("-----------------------------");
-        // Serial.print("AMP ");
-        // Serial.println(canId, HEX);
-
-        // for(int i = 0; i<len; i++)    // print the data
-        // {
-        //     Serial.print(buf[i], HEX);
-        //     Serial.print("\t");
-        // }
-        // Serial.println();
-
         // encoderDataRead();
         encoder_data = buf[4];
         encoder_data <<= 8; // bitshift equals times 2^8
         encoder_data = encoder_data | buf[5]; // sum operation
 
         // // load_cell information is read from buf[1], buf[2] and buf[3] and converted to decimal
-        //   if (buf[1] <= 128) {
-        //     loadcell_data = loadcell_data + buf[1];
-        // }
-        // else 
-        //   loadcell_data = loadcell_data - buf[1];
-
         loadcell_data = buf[1];
         loadcell_data <<= 8;
         loadcell_data = loadcell_data | buf[2];
@@ -375,8 +369,8 @@ float CANDataRead()
 
         positionSetpoint(encoder_data);
 
-        Serial.print("Loadcell: ");
-        Serial.println(loadcell_data_double);
+        // Serial.print("Loadcell: ");
+        // Serial.println(loadcell_data_double);
 
         // Serial.print("Encoder Position: ");
         // Serial.println(encoder_data);
