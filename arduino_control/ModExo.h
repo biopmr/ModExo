@@ -333,13 +333,13 @@ float CANDataRead()
         // }
         // Serial.println();
 
-        actualposition_data = buf[7];
-        actualposition_data <<= 8;
-        actualposition_data = actualposition_data | buf[6];
-        actualposition_data <<= 8;
-        actualposition_data = actualposition_data | buf[5];
+        actualposition_data = buf[5];
         actualposition_data <<= 8;
         actualposition_data = actualposition_data | buf[4];
+        actualposition_data <<= 8;
+        actualposition_data = actualposition_data | buf[3];
+        actualposition_data <<= 8;
+        actualposition_data = actualposition_data | buf[2];
 
         Serial.print("Actual Position: ");
         Serial.println(actualposition_data);
