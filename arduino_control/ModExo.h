@@ -322,17 +322,6 @@ float CANDataRead()
         break;
       case 0x381: // reads Position Actual Value
 
-        // Serial.println("-----------------------------");
-        // Serial.print("POSICAO: ");
-        // Serial.println(canId, HEX);
-
-        // for(int i = 0; i<len; i++)    // print the data
-        // {
-        //     Serial.print(buf[i], HEX);
-        //     Serial.print("\t");
-        // }
-        // Serial.println();
-
         actualposition_data = buf[5];
         actualposition_data <<= 8;
         actualposition_data = actualposition_data | buf[4];
