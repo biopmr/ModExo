@@ -41,7 +41,7 @@ MCP_CAN CAN(SPI_CS_PIN);
 // Sensor variables
 uint32_t encoder_data = 0;
 uint32_t current_data = 0;
-uint32_t loadcell_data = 0;
+int32_t loadcell_data = 0;
 double loadcell_data_double = 0;
 
 // ***************************
@@ -302,8 +302,7 @@ float amplificationBoardDataRead()
 float CANDataRead()
 {
   unsigned char len = 0;
-  unsigned char buf[8];
-  
+  unsigned char buf[8]; 
 
   if(CAN_MSGAVAIL == CAN.checkReceive())            // check if data coming
   {
@@ -369,12 +368,15 @@ float CANDataRead()
         loadcell_data <<= 8;
         loadcell_data = loadcell_data | buf[3];
 
-        // loadcell_data = loadcell_data - 10000000; 
+        if(buf[1] >= 128)
+          loadcell_data |= 0xFF000000;
+
+        double loadcell_data_double = loadcell_data; 
 
         positionSetpoint(encoder_data);
 
         Serial.print("Loadcell: ");
-        Serial.println(loadcell_data);
+        Serial.println(loadcell_data_double);
 
         // Serial.print("Encoder Position: ");
         // Serial.println(encoder_data);
@@ -382,7 +384,7 @@ float CANDataRead()
         break;
       }
       return(encoder_data);
-      return(loadcell_data);
+      return(loadcell_data_double);
   }
 }
 
@@ -397,12 +399,7 @@ void loopModExo()
       PDOConfig();
       break;
     case Operational:
-      // amplificationBoardDataRead();
-      //       currentDataRead();
-    
-    //    reads CAN BUS
-    CANDataRead();
-    
+      CANDataRead();
     if (sync_flag){
       sync_flag=0;
       sync();
