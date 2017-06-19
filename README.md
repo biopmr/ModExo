@@ -1,4 +1,4 @@
-[![ModExo](https://biopmr.github.io/images/logo/modexo.svg)](https://biopmr.github.io/images/logo/modexo.svg | width=48)
+[![ModExo](https://biopmr.github.io/images/logo/modexo.svg)](https://biopmr.github.io/images/logo/modexo.svg)
 
 # ModExo
 
