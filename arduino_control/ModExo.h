@@ -28,7 +28,7 @@
 #define Startup               1
 #define Pre_Operational       2
 #define Operational           3
-#define OperationalPotControl 4
+#define OperationalEncoderControl 4
 #define OperationalKControl   5 
 
 // Statemachine State variable and initial value
@@ -219,15 +219,15 @@ void sync(void) {
   CAN.sendMsgBuf(0x80, 0, 1, pdo_sync);
 }
 
-int tests = 0;
-bool sync_flag = 0; 
+  int tests = 0;
+  bool sync_flag = 0; 
 
-//******
-// INTERRUPTION
-//******
-ISR(TIMER1_COMPA_vect) { 
- 
-  sync_flag = 1;
+  //******
+  // INTERRUPTION
+  //******
+  ISR(TIMER1_COMPA_vect) { 
+   
+    sync_flag = 1;
 
 }
 
@@ -304,9 +304,9 @@ float amplificationBoardDataRead()
 // }
 
 //****************
-// POT CONTROL
+// ENCODER CONTROL
 //****************
-float PotControl()
+float EncoderControl()
 {
   unsigned char len = 0;
   unsigned char buf[8]; 
@@ -373,7 +373,7 @@ float PotControl()
 
         // Serial.print("Encoder Position: ");
         // Serial.println(encoder_data);
-
+        
         break;
       }
       return(encoder_data);
@@ -485,9 +485,9 @@ void serialController(char command)
       State = OperationalKControl;
       Serial.println("State: KControl");
     break;
-    case 'q': // Por Control
-      State = OperationalPotControl;
-      Serial.println("State: PotControl");
+    case 'q': // Pot Control
+      State = OperationalEncoderControl;
+      Serial.println("State: EncoderControl");
     break;
     case 'w': // K Control
       State = OperationalKControl;
@@ -512,11 +512,11 @@ void loopModExo()
       PDOConfig();
     case Operational:
       Serial.println("State: Operational");
-      State = OperationalPotControl;
-    // PotControl();
+      State = OperationalEncoderControl;
+    // EncoderControl();
       break;
-    case OperationalPotControl:
-      PotControl();
+    case OperationalEncoderControl:
+      EncoderControl();
       break;
     case OperationalKControl:
       kcontrol();

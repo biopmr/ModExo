@@ -4,36 +4,20 @@
 		"selected_items":
 		[
 			[
-				"en",
-				"encoder_data"
+				"Opera",
+				"OperationalPotControl"
 			],
 			[
-				"angulo",
-				"angulo_double"
+				"load",
+				"loadcell_data_double"
 			],
 			[
-				"posi",
-				"positionSetpoint"
+				"loadcell_data",
+				"loadcell_data_double"
 			],
 			[
-				"endo",
-				"encoderDataRead"
-			],
-			[
-				"curre",
-				"currentDataRead"
-			],
-			[
-				"Data",
-				"DataReadState"
-			],
-			[
-				"Da",
-				"DataReadState"
-			],
-			[
-				"Current",
-				"Current_State"
+				"loadc",
+				"loadcell_data_double"
 			],
 			[
 				"encode",
@@ -42,10 +26,6 @@
 			[
 				"encoder",
 				"encoder_data"
-			],
-			[
-				"load",
-				"loadcell_data"
 			],
 			[
 				"Read",
@@ -84,27 +64,37 @@
 	"buffers":
 	[
 		{
+			"file": "arduino_control/ModExo.h",
+			"settings":
+			{
+				"buffer_size": 15250,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
 			"file": "arduino_control/arduino_control.ino",
 			"settings":
 			{
-				"buffer_size": 10619,
+				"buffer_size": 1018,
 				"encoding": "UTF-8",
+				"line_ending": "Windows",
+				"name": "//************************************************"
+			}
+		},
+		{
+			"file": "/C/Users/bioroblap/Desktop/Modexo/mrac/mrac_main.m",
+			"settings":
+			{
+				"buffer_size": 6731,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "/Users/ssraf/Desktop/CAN_BUS_Shield-master/examples/receive_check/receive_check.ino",
+			"file": "/C/Users/bioroblap/Desktop/Modexo/mrac/exo_gravity.m",
 			"settings":
 			{
-				"buffer_size": 1545,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "/Users/ssraf/Google Drive/Documentos/Poli/Mestrado/ModExo/Communication/CAN/Arduino/Exemplo/MaxonEPOS2_DemonstratorV01/MaxonEPOS2_DemonstratorV01.ino",
-			"settings":
-			{
-				"buffer_size": 18042,
+				"buffer_size": 5801,
 				"line_ending": "Unix"
 			}
 		}
@@ -181,15 +171,17 @@
 	},
 	"expanded_folders":
 	[
-		"/Users/ssraf/ModExo"
+		"/C/Users/bioroblap/Documents/GitHub/ModExo"
 	],
 	"file_history":
 	[
-		"/Users/ssraf/Desktop/exemple/untitled.h",
-		"/Users/ssraf/ModExo/logs/20170601_serial_monitor.txt",
-		"/Users/ssraf/ModExo/arduino_control/arduino_control.ino",
+		"/C/Users/bioroblap/Documents/GitHub/ModExo/arduino_control/ModExo_v2.h",
+		"/C/Users/bioroblap/Documents/GitHub/ModExo/arduino_control/ModExo.h",
+		"/C/Users/bioroblap/Documents/GitHub/ModExo/arduino_control/loopModExo.c",
+		"/C/Users/bioroblap/Documents/GitHub/ModExo/arduino_control/ModExo.c",
 		"/Users/ssraf/Google Drive/Documentos/Arduino/libraries/CAN_BUS_Shield-master/mcp_can.h",
 		"/Users/ssraf/Google Drive/Documentos/Arduino/libraries/CAN_BUS_Shield-master/mcp_can.cpp",
+		"/Users/ssraf/Desktop/CAN_BUS_Shield-master/examples/receive_check/receive_check.ino",
 		"/Users/ssraf/Google Drive/Documentos/Arduino/libraries/CAN_BUS_Shield-master/mcp_can_dfs.h",
 		"/Users/ssraf/Google Drive/Documentos/Poli/Mestrado/Disciplinas/Biomecatronica/modular_exoskeleton-master/Modular-Exoskeleton/interrupt_setting/interrupt_setting.ino",
 		"/Users/ssraf/ModExo/send/send.ino",
@@ -310,13 +302,11 @@
 		"/Users/ssraf/Google Drive/Documentos/Poli/Mestrado/Disciplinas/Biomecatronica/modular_exoskeleton-master/Modular-Exoskeleton/quali/chapters/numerical.tex",
 		"/Users/ssraf/Google Drive/Documentos/Poli/Mestrado/Disciplinas/Biomecatronica/modular_exoskeleton-master/Modular-Exoskeleton/quali/chapters/modelling.tex",
 		"/Users/ssraf/Google Drive/Documentos/Poli/Mestrado/Disciplinas/Biomecatronica/modular_exoskeleton-master/Modular-Exoskeleton/quali/poliabnt.sty",
-		"/Users/ssraf/Google Drive/Documentos/Pessoal/Viagens/2017/Chinaaaaa/compras china",
-		"/Users/ssraf/Google Drive/Documentos/Receitas/Pimentas/Festa Mexicana",
-		"/Users/ssraf/Google Drive/Documentos/Poli/Mestrado/Control/control_code/20150817_tests/dscud.h"
+		"/Users/ssraf/Google Drive/Documentos/Pessoal/Viagens/2017/Chinaaaaa/compras china"
 	],
 	"find":
 	{
-		"height": 43.0
+		"height": 35.0
 	},
 	"find_in_files":
 	{
@@ -332,20 +322,14 @@
 		"case_sensitive": false,
 		"find_history":
 		[
-			"DataRea",
-			"Data",
+			"angle",
+			"l",
+			"strain_gauge_",
+			"positionSet",
 			"position",
-			"angulo",
-			"setpoint",
-			"setpoit",
-			"position",
-			"encoder",
-			"angulo",
-			"float",
-			"buf",
-			"SPI",
-			"canId",
-			"CanId",
+			"encoder_data",
+			"loadcell_data",
+			"setuModExo_",
 			"Current",
 			"State",
 			"current",
@@ -459,7 +443,13 @@
 			"butt",
 			"babel",
 			"rosen",
-			"engli"
+			"engli",
+			"souza",
+			"darpa",
+			"captionof",
+			"busca",
+			"\\\\",
+			"//"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -488,32 +478,61 @@
 			[
 				{
 					"buffer": 0,
-					"file": "arduino_control/arduino_control.ino",
+					"file": "arduino_control/ModExo.h",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 10619,
+						"buffer_size": 15250,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								8218,
-								8218
+								14729,
+								14729
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Arduino-like IDE/Arduino.sublime-syntax",
+							"syntax": "Packages/C++/C++.sublime-syntax",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 7527.0,
+						"translation.y": 4769.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "arduino_control/arduino_control.ino",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1018,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								792,
+								322
+							]
+						],
+						"settings":
+						{
+							"auto_name": "//************************************************",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 110.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
 					"type": "text"
 				}
 			]
@@ -523,93 +542,63 @@
 			"sheets":
 			[
 				{
-					"buffer": 1,
-					"file": "/Users/ssraf/Desktop/CAN_BUS_Shield-master/examples/receive_check/receive_check.ino",
+					"buffer": 2,
+					"file": "/C/Users/bioroblap/Desktop/Modexo/mrac/mrac_main.m",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1545,
+						"buffer_size": 6731,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								705,
-								705
+								0,
+								0
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Arduino-like IDE/Arduino.sublime-syntax",
-							"tab_size": 4,
+							"syntax": "Packages/Objective-C/Objective-C.sublime-syntax",
+							"tab_size": 2,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 0,
-					"file": "arduino_control/arduino_control.ino",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 10619,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								9772,
-								9772
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Arduino-like IDE/Arduino.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 7472.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "/Users/ssraf/Google Drive/Documentos/Poli/Mestrado/ModExo/Communication/CAN/Arduino/Exemplo/MaxonEPOS2_DemonstratorV01/MaxonEPOS2_DemonstratorV01.ino",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 18042,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1888,
-								1926
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Arduino-like IDE/Arduino.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 3758.0,
-						"zoom_level": 1.0
-					},
 					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "/C/Users/bioroblap/Desktop/Modexo/mrac/exo_gravity.m",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5801,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								540,
+								540
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Objective-C/Objective-C.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2310.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
 					"type": "text"
 				}
 			]
@@ -617,7 +606,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 35.0
+		"height": 27.0
 	},
 	"input":
 	{
@@ -643,7 +632,7 @@
 		"cols":
 		[
 			0.0,
-			0.694826931424,
+			0.963396778917,
 			1.0
 		],
 		"rows":
@@ -673,7 +662,7 @@
 	"project": "modexo.sublime-project",
 	"replace":
 	{
-		"height": 66.0
+		"height": 50.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -683,12 +672,16 @@
 		"selected_items":
 		[
 			[
-				"arduin",
-				"arduino_control/arduino_control.ino"
+				"mod",
+				"arduino_control\\ModExo_v2.h"
 			],
 			[
-				"arduino",
-				"arduino_control/arduino_control.ino"
+				"control",
+				"arduino_control\\arduino_control.ino"
+			],
+			[
+				"set",
+				"arduino_control\\setupModExo.c"
 			],
 			[
 				"ardui",
@@ -713,6 +706,10 @@
 			[
 				"interru",
 				"Mestrado/Disciplinas/Biomecatronica/modular_exoskeleton-master/Modular-Exoskeleton/interrupt_setting/interrupt_setting.ino"
+			],
+			[
+				"arduino",
+				"ModExo/arduino_control/arduino_control.ino"
 			],
 			[
 				"interr",
@@ -1185,14 +1182,6 @@
 			[
 				"goa",
 				"Artigo/goals"
-			],
-			[
-				"blbio",
-				"Artigo/versao_3/biblio.bib"
-			],
-			[
-				"artigo_requisitos2",
-				"Artigo/latex/artigo_requisitos_2.tex"
 			]
 		],
 		"width": 0.0
