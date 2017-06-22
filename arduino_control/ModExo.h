@@ -369,11 +369,21 @@ float EncoderControl()
         loadcell_data_double = loadcell_data_double + 128000;
 
         Serial.print("Loadcell: ");
-        Serial.println(loadcell_data_double);
+        //Serial.println(loadcell_data_double);
+
+        //Conversão dado-torque
+        //reta de calibração: [[loadcell_data_double = A*(forca) + B]]
+        float A = 8681.91; //inclinação
+        float B = 42712.7; //offset
+        float d = 0.105; ////distancia entre os centros dos aros da celula de carga=10,5cm
+
+        float forca = (loadcell_data_double + B)/A;
+        float torque = forca*d;
+        Serial.println(torque);
 
         // Serial.print("Encoder Position: ");
         // Serial.println(encoder_data);
-        
+
         break;
       }
       return(encoder_data);
