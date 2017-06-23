@@ -29,7 +29,8 @@
 #define Pre_Operational       2
 #define Operational           3
 #define OperationalEncoderControl 4
-#define OperationalKControl   5 
+#define OperationalKControl 5
+#define OperationalDifferentialControl   6 
 
 // Statemachine State variable and initial value
 byte State = Startup;
@@ -114,7 +115,9 @@ int CT_K = 0; // generic constant to be tweaked during runtime
 // ******************
 // System Parameters
 // ******************
-double x_1[4];
+double x_1[3];
+double x_2[3];
+double x_3[3];
 // x_1[1] = 0;
 // x_1[2] = 0;
 // x_1[3] = 0;
@@ -399,7 +402,7 @@ float EncoderControl()
 //**********************
 // PROPORTIONAL CONTROL
 //**********************
-float kcontrol()
+float KControl()
 {
   unsigned char len = 0;
   unsigned char buf[8]; 
@@ -476,7 +479,7 @@ float kcontrol()
 //***********************
 // DIFFERENTIAL EQUATION
 //***********************
-float DifferentialEquation()
+double DifferentialEquation()
 {
   unsigned char len = 0;
   unsigned char buf[8]; 
@@ -516,11 +519,6 @@ float DifferentialEquation()
       // ID 321 message has information sent by the amplification board
       // Messages coming from the amp_board has most significative bits coming first
       case 0x321:
-        // encoderDataRead();
-        encoder_data = buf[4];
-        encoder_data <<= 8; // bitshift equals times 2^8
-        encoder_data = encoder_data | buf[5]; // sum operation
-
         // // load_cell information is read from buf[1], buf[2] and buf[3] and converted to decimal
         loadcell_data = buf[1];
         loadcell_data <<= 8;
@@ -534,37 +532,50 @@ float DifferentialEquation()
         encoder_data *= 200000 / 4096; //conversion to quadrature counts
 
         loadcell_data_double = loadcell_data; 
-        loadcell_data_double = loadcell_data_double + 135000;
+        loadcell_data_double = loadcell_data_double + 120000;
+
+        if(loadcell_data_double>-4000&&loadcell_data_double<4000)
+          loadcell_data_double = 0;
 
         // dynamic model 
         dt1 = millis();
         dt = (dt1 - dt0);
         dt = dt/1000.0;
-        // dt = 0.5;
-        x_1[1] = x_1[1] + dt*x_1[2];
-        x_1[2] = x_1[2] + dt*x_1[3];
-        x_1[3] = 1/j_eq*(-b_eq*x_1[2] - k_eq*x_1[1] + loadcell_data_double/10000);
+        
+        // x_1[1] = x_1[1] + dt*x_1[2];
+        // x_1[2] = x_1[2] + dt*x_1[3];
+        // x_1[3] = 1/j_eq*(-b_eq*x_1[2] - k_eq*x_1[1] + loadcell_data_double/10000);
+
+        // x_1[2] = x_1[2] + dt*x_1[2];
+        // x_2[2] = x_2[2] + dt*x_3[2];
+        x_1[2] = x_1[2] + 0.005*x_2[2];
+        x_2[2] = x_2[2] + 0.005*x_3[2];
+        // x_3[2] = 1/j_eq*(-b_eq*x_2[2] - k_eq*x_1[2] + loadcell_data_double/10000);
+        x_3[2] = 10*(-5*x_2[2] - 30*x_1[2] + loadcell_data_double*0.01);
+        
+        targetposition = 10000*x_1[2];
+        positionSetpoint(targetposition);
+
         dt0 = millis();
 
-        // Serial.print("Load: ");
+        // // Serial.print("Load: ");
         Serial.print(loadcell_data_double);
         Serial.print(",");
 
         // Serial.print("X_1: ");
-        Serial.print(x_1[1]);
-        Serial.print(",");
-
-        // Serial.print("X_2: ");
         Serial.print(x_1[2]);
         Serial.print(",");
 
+        // Serial.print("X_2: ");
+        Serial.print(x_2[2]);
+        Serial.print(",");
+
         // Serial.print("X_3: ");
-        Serial.println(x_1[3]);
+        Serial.println(x_3[2]);
 
         // Serial.print("dt: ");
-        // Serial.print(dt);
+        // Serial.println(dt);
 
-        // delay(500);
         break;
       }
   }
@@ -594,16 +605,19 @@ void serialController(char command)
       Serial.println("State: Pre_Operational");
     break;
     case 'o': // Operational
-      State = OperationalKControl;
+      State = OperationalDifferentialControl;
       Serial.println("State: KControl");
     break;
-    case 'q': // Pot Control
+    case 'q': // Encoder Control
       State = OperationalEncoderControl;
       Serial.println("State: EncoderControl");
     break;
-    case 'w': // K Control
+    case 'k': // K Control
       State = OperationalKControl;
-      Serial.println("State: KControl");
+      Serial.println("State: K-Control");
+    case 'd': // K Control
+      State = OperationalDifferentialControl;
+      Serial.println("State: DifferentialControl");
     break;
     case 'c': // Constant CT_K (generic constant)
       CT_K = readSerialInteger();
@@ -624,15 +638,27 @@ void loopModExo()
       PDOConfig();
     case Operational:
       Serial.println("State: Operational");
-      State = OperationalEncoderControl;
+      State = OperationalDifferentialControl;
     // EncoderControl();
       break;
     case OperationalEncoderControl:
       EncoderControl();
       break;
     case OperationalKControl:
-      // kcontrol();
+      KControl();
+      break;  
+    case OperationalDifferentialControl:
       DifferentialEquation();
+        // // Serial.print("X_1: ");
+        // Serial.print(x_1[2]);
+        // Serial.print(",");
+
+        // // Serial.print("X_2: ");
+        // Serial.print(x_2[2]);
+        // Serial.print(",");
+
+        // // Serial.print("X_3: ");
+        // Serial.println(x_3[2]);
       break;
   }
 
