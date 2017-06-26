@@ -1,6 +1,10 @@
-[![ModExo](https://biopmr.github.io/images/logo/modexo.svg)](https://biopmr.github.io/images/logo/modexo.svg)
+[![ModExo](https://biopmr.github.io/images/modexo-logo.svg)](https://biopmr.github.io/images/logo/modexo.svg)
 
 # ModExo
+
+## Subsection
+
+### Subsubsection
 
 
 Gear by i cons from the Noun Project

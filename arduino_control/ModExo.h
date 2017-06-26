@@ -29,7 +29,8 @@
 #define Pre_Operational       2
 #define Operational           3
 #define OperationalEncoderControl 4
-#define OperationalKControl   5 
+#define OperationalKControl 5
+#define OperationalDifferentialControl   6 
 
 // Statemachine State variable and initial value
 byte State = Startup;
@@ -109,6 +110,38 @@ int encoder_resolution = 2000; //2000 counts per turn
 int reduction = 100; // harmonic drive reduction
 
 int CT_K = 0; // generic constant to be tweaked during runtime
+
+
+// ******************
+// System Parameters
+// ******************
+double x_1[3];
+double x_2[3];
+double x_3[3];
+// x_1[1] = 0;
+// x_1[2] = 0;
+// x_1[3] = 0;
+unsigned long dt0 = 0;
+unsigned long dt1 = 0;
+unsigned long dt = 0;
+
+// human parameters (plant) {from Olaya cap5}
+// long j_h = 0.115; // Nms^2/rad
+// long b_h = 2.52; // Nms/rad [2.5-4.7]
+// long k_h = 8.6; // Nm/rad [5.3-13.1]
+long j_h = 0; // Nms^2/rad
+long b_h = 0; // Nms/rad [2.5-4.7]
+long k_h = 0; // Nm/rad [5.3-13.1]
+
+// Thus our values for the parameters for the exoskeleton mechanism were Ie = 0.199 kg-m, be = 1.32 N-m-s/rad, ke = 5.12 N-m/rad
+long j_exo = 0.199; // Nms^2/rad
+long b_exo = 1.32; // Nms/rad [2.5-4.7]
+long k_exo = 5.12; // Nm/rad [5.3-13.1]
+
+// coupled system (plant)
+long j_eq = j_h + j_exo; // Nms^2/rad
+long b_eq = b_h + b_exo; // Nms/rad 
+long k_eq = k_h + k_exo; // Nm/rad
 
 void setupModExo() 
 {
@@ -281,27 +314,12 @@ float amplificationBoardDataRead()
     //    Serial.print("Encoder: ");
     //    Serial.println(encoder_data, DEC);
 
-     Serial.print("Loadcell: ");
-     Serial.println(loadcell_data_double);
+     // Serial.print("Loadcell: ");
+     // Serial.println(loadcell_data_double);
 
     return(encoder_data);
   }
 }
-
-// //******************************
-// // POSITION DATA READ
-// //******************************
-// float encoderDataRead(unsigned char buf[])
-// {
-//     unsigned char encoder_data[8];
-
-//     encoder_data = buf[4];
-//     encoder_data <<= 8;
-//     encoder_data = encoder_data | buf[5];
-
-//     Serial.print("Encoder: ");
-//     Serial.println(encoder_data);
-// }
 
 //****************
 // ENCODER CONTROL
@@ -381,6 +399,9 @@ float EncoderControl()
         float torque = forca*d;
         Serial.println(torque);
 
+        // // Serial.print("Loadcell: ");
+        // Serial.println(loadcell_data_double);
+
         // Serial.print("Encoder Position: ");
         // Serial.println(encoder_data);
 
@@ -394,7 +415,7 @@ float EncoderControl()
 //**********************
 // PROPORTIONAL CONTROL
 //**********************
-float kcontrol()
+float KControl()
 {
   unsigned char len = 0;
   unsigned char buf[8]; 
@@ -455,7 +476,7 @@ float kcontrol()
 
         positionSetpoint(targetposition);
 
-        Serial.print("Loadcell: ");
+        // Serial.print("Loadcell: ");
         Serial.println(loadcell_data_double);
 
         // Serial.print("Encoder Position: ");
@@ -465,6 +486,111 @@ float kcontrol()
       }
       return(encoder_data);
       return(loadcell_data_double);
+  }
+}
+
+//***********************
+// DIFFERENTIAL EQUATION
+//***********************
+double DifferentialEquation()
+{
+  unsigned char len = 0;
+  unsigned char buf[8]; 
+
+  if(CAN_MSGAVAIL == CAN.checkReceive())            // check if data coming
+  {
+    CAN.readMsgBuf(&len, buf);    // read data,  len: data length, buf: data buf
+    unsigned int canId = CAN.getCanId();
+
+    switch (canId) 
+    {        
+      case 0x181:
+        current_data = buf[1];
+        current_data <<= 8;
+        current_data = current_data | buf[0];
+
+        // Serial.print("Current Data: ");
+        // Serial.println(current_data);
+        break;
+      case 0x381: // reads Position Actual Value
+
+        actualposition_data = buf[5];
+        actualposition_data <<= 8;
+        actualposition_data = actualposition_data | buf[4];
+        actualposition_data <<= 8;
+        actualposition_data = actualposition_data | buf[3];
+        actualposition_data <<= 8;
+        actualposition_data = actualposition_data | buf[2];
+
+        // Serial.print("Actual Position: ");
+        // Serial.println(actualposition_data);
+
+        return(actualposition_data);
+
+        break;
+
+      // ID 321 message has information sent by the amplification board
+      // Messages coming from the amp_board has most significative bits coming first
+      case 0x321:
+        // // load_cell information is read from buf[1], buf[2] and buf[3] and converted to decimal
+        loadcell_data = buf[1];
+        loadcell_data <<= 8;
+        loadcell_data = loadcell_data | buf[2];
+        loadcell_data <<= 8;
+        loadcell_data = loadcell_data | buf[3];
+
+        if(buf[1] >= 128)
+          loadcell_data |= 0xFF000000;
+
+        encoder_data *= 200000 / 4096; //conversion to quadrature counts
+
+        loadcell_data_double = loadcell_data; 
+        loadcell_data_double = loadcell_data_double + 120000;
+
+        if(loadcell_data_double>-4000&&loadcell_data_double<4000)
+          loadcell_data_double = 0;
+
+        // dynamic model 
+        dt1 = millis();
+        dt = (dt1 - dt0);
+        dt = dt/1000.0;
+        
+        // x_1[1] = x_1[1] + dt*x_1[2];
+        // x_1[2] = x_1[2] + dt*x_1[3];
+        // x_1[3] = 1/j_eq*(-b_eq*x_1[2] - k_eq*x_1[1] + loadcell_data_double/10000);
+
+        // x_1[2] = x_1[2] + dt*x_1[2];
+        // x_2[2] = x_2[2] + dt*x_3[2];
+        x_1[2] = x_1[2] + 0.005*x_2[2];
+        x_2[2] = x_2[2] + 0.005*x_3[2];
+        // x_3[2] = 1/j_eq*(-b_eq*x_2[2] - k_eq*x_1[2] + loadcell_data_double/10000);
+        x_3[2] = 10*(-5*x_2[2] - 30*x_1[2] + loadcell_data_double*0.01);
+        
+        targetposition = 10000*x_1[2];
+        positionSetpoint(targetposition);
+
+        dt0 = millis();
+
+        // // Serial.print("Load: ");
+        Serial.print(loadcell_data_double);
+        Serial.print(",");
+
+        // Serial.print("X_1: ");
+        Serial.print(x_1[2]);
+        Serial.print(",");
+
+        // Serial.print("X_2: ");
+        Serial.print(x_2[2]);
+        Serial.print(",");
+
+        // Serial.print("X_3: ");
+        Serial.println(x_3[2]);
+
+        // Serial.print("dt: ");
+        // Serial.println(dt);
+
+        break;
+      }
   }
 }
 
@@ -492,16 +618,19 @@ void serialController(char command)
       Serial.println("State: Pre_Operational");
     break;
     case 'o': // Operational
-      State = OperationalKControl;
+      State = OperationalDifferentialControl;
       Serial.println("State: KControl");
     break;
-    case 'q': // Pot Control
+    case 'q': // Encoder Control
       State = OperationalEncoderControl;
       Serial.println("State: EncoderControl");
     break;
-    case 'w': // K Control
+    case 'k': // K Control
       State = OperationalKControl;
-      Serial.println("State: KControl");
+      Serial.println("State: K-Control");
+    case 'd': // K Control
+      State = OperationalDifferentialControl;
+      Serial.println("State: DifferentialControl");
     break;
     case 'c': // Constant CT_K (generic constant)
       CT_K = readSerialInteger();
@@ -522,14 +651,27 @@ void loopModExo()
       PDOConfig();
     case Operational:
       Serial.println("State: Operational");
-      State = OperationalEncoderControl;
+      State = OperationalDifferentialControl;
     // EncoderControl();
       break;
     case OperationalEncoderControl:
       EncoderControl();
       break;
     case OperationalKControl:
-      kcontrol();
+      KControl();
+      break;  
+    case OperationalDifferentialControl:
+      DifferentialEquation();
+        // // Serial.print("X_1: ");
+        // Serial.print(x_1[2]);
+        // Serial.print(",");
+
+        // // Serial.print("X_2: ");
+        // Serial.print(x_2[2]);
+        // Serial.print(",");
+
+        // // Serial.print("X_3: ");
+        // Serial.println(x_3[2]);
       break;
   }
 
