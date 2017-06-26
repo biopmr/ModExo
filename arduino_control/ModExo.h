@@ -29,8 +29,9 @@
 #define Pre_Operational       2
 #define Operational           3
 #define OperationalEncoderControl 4
-#define OperationalKControl 5
+#define EnterPreOperational 5
 #define OperationalDifferentialControl   6 
+#define EnterOperational 7
 
 // Statemachine State variable and initial value
 byte State = Startup;
@@ -115,12 +116,9 @@ int CT_K = 0; // generic constant to be tweaked during runtime
 // ******************
 // System Parameters
 // ******************
-double x_1[3];
-double x_2[3];
-double x_3[3];
-// x_1[1] = 0;
-// x_1[2] = 0;
-// x_1[3] = 0;
+double x_1;
+double x_2;
+double x_3;
 unsigned long dt0 = 0;
 unsigned long dt1 = 0;
 unsigned long dt = 0;
@@ -142,6 +140,14 @@ long k_exo = 5.12; // Nm/rad [5.3-13.1]
 long j_eq = j_h + j_exo; // Nms^2/rad
 long b_eq = b_h + b_exo; // Nms/rad 
 long k_eq = k_h + k_exo; // Nm/rad
+
+// LoadCell Calibration
+// [[loadcell_data_double = A*(force) + B]]
+float A = 0.0764; //slop steepness
+float B = 118712.7; //offset
+float d = 0.105; ////distancia entre os centros dos aros da celula de carga=10,5cm
+double contactForce;
+double contactTorque;
 
 void setupModExo() 
 {
@@ -381,26 +387,11 @@ float EncoderControl()
 
         encoder_data *= 200000 / 4096; //conversion to quadrature counts
 
-        positionSetpoint(encoder_data);
+        // positionSetpoint(encoder_data);
 
-        loadcell_data_double = loadcell_data; 
-        loadcell_data_double = loadcell_data_double + 124000;
-
-        // Serial.print("Loadcell: ");
-        //Serial.println(loadcell_data_double);
-
-        //Conversão dado-torque
-        //reta de calibração: [[loadcell_data_double = A*(forca) + B]]
-        float A = 8681.91; //inclinação
-        float B = 42712.7; //offset
-        float d = 0.105; ////distancia entre os centros dos aros da celula de carga=10,5cm
-
-        float forca = (loadcell_data_double + B)/A;
-        float torque = forca*d*1000;
-        Serial.println(torque);
-
-        // // Serial.print("Loadcell: ");
-        // Serial.println(loadcell_data_double);
+        contactForce = (loadcell_data + B)*A;
+        contactTorque = contactForce*d; // mNm
+        Serial.println(contactTorque); // mNm
 
         // Serial.print("Encoder Position: ");
         // Serial.println(encoder_data);
@@ -467,47 +458,46 @@ double DifferentialEquation()
 
         encoder_data *= 200000 / 4096; //conversion to quadrature counts
 
-        loadcell_data_double = loadcell_data; 
-        loadcell_data_double = loadcell_data_double + 124000;
+        // loadcell_data_double = loadcell_data; 
+        // loadcell_data_double = loadcell_data_double + 130000;
 
-        if(loadcell_data_double>-4000&&loadcell_data_double<4000)
-          loadcell_data_double = 0;
+        // if(loadcell_data_double>-4000&&loadcell_data_double<4000)
+        //   loadcell_data_double = 0;
+
+        contactForce = (loadcell_data + B)*A;
+        contactTorque = contactForce*d; // mNm
+        Serial.println(contactTorque); // mNm
 
         // dynamic model 
         dt1 = millis();
         dt = (dt1 - dt0);
         dt = dt/1000.0;
-        
-        // x_1[1] = x_1[1] + dt*x_1[2];
-        // x_1[2] = x_1[2] + dt*x_1[3];
-        // x_1[3] = 1/j_eq*(-b_eq*x_1[2] - k_eq*x_1[1] + loadcell_data_double/10000);
 
-        // x_1[2] = x_1[2] + dt*x_1[2];
-        // x_2[2] = x_2[2] + dt*x_3[2];
-        x_1[2] = x_1[2] + 0.005*x_2[2];
-        x_2[2] = x_2[2] + 0.005*x_3[2];
-        // x_3[2] = 1/j_eq*(-b_eq*x_2[2] - k_eq*x_1[2] + loadcell_data_double/10000);
-        x_3[2] = 10*(-5*x_2[2] - 30*x_1[2] + loadcell_data_double*0.01);
+        x_1 = x_1 + 0.005*x_2;
+        x_2 = x_2 + 0.005*x_3;
+        // x_3 = j_eq*(-b_eq*x_2 - k_eq*x_1 + contactTorque);
+        x_3 = 20*(-5*x_2 - 50*x_1 + contactTorque); // works
+        // x_3 = 20*(-5*x_2 - 50*x_1 + contactTorque + 10*sin(x_1*(pi/(4*50000))); // anti gravity
         
-        targetposition = 10000*x_1[2];
+        targetposition = 10000*x_1;
         positionSetpoint(targetposition);
 
         dt0 = millis();
 
         // // Serial.print("Load: ");
-        Serial.print(loadcell_data_double);
+        Serial.print(contactTorque);
         Serial.print(",");
 
         // Serial.print("X_1: ");
-        Serial.print(x_1[2]);
+        Serial.print(x_1);
         Serial.print(",");
 
         // Serial.print("X_2: ");
-        Serial.print(x_2[2]);
+        Serial.print(x_2);
         Serial.print(",");
 
         // Serial.print("X_3: ");
-        Serial.println(x_3[2]);
+        Serial.println(x_3);
 
         // Serial.print("dt: ");
         // Serial.println(dt);
@@ -548,10 +538,13 @@ void serialController(char command)
       State = OperationalEncoderControl;
       Serial.println("State: EncoderControl");
     break;
-    case 'k': // K Control
-      State = OperationalKControl;
-      Serial.println("State: K-Control");
-    case 'd': // Differential Control
+    case 'k':
+      State = EnterPreOperational;
+      Serial.println("State: Disabled");
+    case 'l':
+      State = EnterOperational;
+      Serial.println("State: Enabled");
+    case 'd': 
       State = OperationalDifferentialControl;
       Serial.println("State: DifferentialControl");
     break;
@@ -580,21 +573,26 @@ void loopModExo()
     case OperationalEncoderControl:
       EncoderControl();
       break;
-    case OperationalKControl:
-      KControl();
+    case EnterPreOperational:
+      CAN.sendMsgBuf(0x00, 0, 2, set_pre_operational);
+      delay(10);
+      break; 
+    case EnterOperational:
+      CAN.sendMsgBuf(0x00, 0, 2, set_operational);
+      delay(10);
       break;  
     case OperationalDifferentialControl:
       DifferentialEquation();
         // // Serial.print("X_1: ");
-        // Serial.print(x_1[2]);
+        // Serial.print(x_1);
         // Serial.print(",");
 
         // // Serial.print("X_2: ");
-        // Serial.print(x_2[2]);
+        // Serial.print(x_2);
         // Serial.print(",");
 
         // // Serial.print("X_3: ");
-        // Serial.println(x_3[2]);
+        // Serial.println(x_3);
       break;
   }
 
