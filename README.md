@@ -8,7 +8,7 @@ In this project, we desire to investigate the human joint and robotic joint inte
 This project is on it's initial stages. If you want to contribute, take a look at the [Issues](https://github.com/biopmr/ModExo/issues) for already identified needs or at the [main code](https://github.com/biopmr/ModExo/blob/master/arduino_control/arduino_control.ino) and identify issues yourself!
 
 ## Testing
-The hardware is not easy to set up by yourself. An workflow to test remote contributions is still needed. For now, just contact the e-mail below and we'll upload the changes and publish the results.
+The hardware is not easy to set up by yourself. A workflow to test remote contributions is still needed. For now, just contact the e-mail below and we'll upload the changes and publish the results.
 
 ## Contact
 rafaelsanchezsouza@gmail.com
