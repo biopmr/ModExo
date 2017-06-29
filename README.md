@@ -10,7 +10,7 @@ This project is on it's initial stages. If you want to contribute, take a look a
 ## Testing
 The hardware is not easy to set up by yourself. A workflow to test remote contributions is still needed. For now, just contact the e-mail below and we'll upload the changes and publish the results.
 
-https://www.youtube.com/watch?v=oU2QiyaPxdo
+https://www.youtube.com/watch?v=oU2QiyaPxdo  
 https://www.youtube.com/watch?v=PE7NVD3MYoc
 
 ## Contact
