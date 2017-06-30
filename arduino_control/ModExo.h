@@ -84,6 +84,12 @@ unsigned char pdo_actual_current_5[8] = {0x22, 0x00, 0x1A, 0x00, 0x01, 0, 0, 0};
 // Object Writing
 // *****************
 
+// // Objects [Index(LSB), Index(MSB), Sub-Index]
+// unsigned char modes_of_operation[8] = {0x60, 0x60, 0x00};
+// unsigned char set_homing_method[8] = {0x98, 0x60, 0x00};
+// unsigned char controlword[8] = {0x40, 0x60, 0x00};
+// unsigned char position_setting_value[8] = {0x00, 0x62, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00};
+
 // Parameters
 unsigned char set_max_following_error[8] = {0x22, 0x65, 0x60, 0, 0xD0, 7, 0, 0};
 unsigned char set_max_acceleration[8] = {0x22, 0xC5, 0x60, 0, 0x88, 0x13, 0, 0};
@@ -92,7 +98,7 @@ unsigned char set_min_position_limit[8] = {0x22, 0x7D, 0x60, 0x01, 0x20, 0x6C, 0
 unsigned char set_max_position_limit[8] = {0x22, 0x7D, 0x60, 0x02, 0xE0, 0x93, 0x04, 0}; // 300000qc = 0x0493E0
 
 // Commanding
-unsigned char setpoint_position[8] = {0x22, 0x62, 0x20, 0, 0, 0, 0, 0};
+unsigned char setpoint_position[8] = {0x22, 0x62, 0x20, 0x00, 0, 0, 0, 0};
 
 // *****************
 // Object Reading
@@ -144,7 +150,8 @@ long k_eq = k_h + k_exo; // Nm/rad
 // LoadCell Calibration
 // [[loadcell_data_double = A*(force) + B]]
 float A = 0.0764; //slop steepness
-float B = 118712.7; //offset
+// float B = 118712.7; //offset
+float B = 118712.7+5000; //offset
 float d = 0.105; ////distancia entre os centros dos aros da celula de carga=10,5cm
 double contactForce;
 double contactTorque;
@@ -250,6 +257,23 @@ void PDOConfig(void) {
   delay(10);
   State = Operational;
 }
+
+
+//******
+// SYNC
+//******
+
+void doHoming(void) {
+  // Set Operation Mode
+  // CAN.sendMsgBuf(0x601, 0, 8, {modes_of_operation, 0x06, 0x00});
+  delay(10);
+  // Set Homing Method
+
+  // Enable Device
+
+  // Start Homing
+}
+
 
 //******
 // SYNC
@@ -385,16 +409,18 @@ float EncoderControl()
         if(buf[1] >= 128)
           loadcell_data |= 0xFF000000;
 
+        loadcell_data_double = loadcell_data +B;
+
         encoder_data *= 200000 / 4096; //conversion to quadrature counts
 
-        // positionSetpoint(encoder_data);
+        positionSetpoint(encoder_data);
 
         contactForce = (loadcell_data + B)*A;
         contactTorque = contactForce*d; // mNm
         Serial.println(contactTorque); // mNm
 
         // Serial.print("Encoder Position: ");
-        // Serial.println(encoder_data);
+        Serial.println(loadcell_data_double);
 
         break;
       }
@@ -458,7 +484,7 @@ double DifferentialEquation()
 
         encoder_data *= 200000 / 4096; //conversion to quadrature counts
 
-        // loadcell_data_double = loadcell_data; 
+        loadcell_data_double = loadcell_data; 
         // loadcell_data_double = loadcell_data_double + 130000;
 
         // if(loadcell_data_double>-4000&&loadcell_data_double<4000)
@@ -476,7 +502,7 @@ double DifferentialEquation()
         x_1 = x_1 + 0.005*x_2;
         x_2 = x_2 + 0.005*x_3;
         // x_3 = j_eq*(-b_eq*x_2 - k_eq*x_1 + contactTorque);
-        x_3 = 20*(-5*x_2 - 50*x_1 + contactTorque); // works
+        x_3 = 20*(-5*x_2 - 200*x_1 + contactTorque); // works
         // x_3 = 20*(-5*x_2 - 50*x_1 + contactTorque + 10*sin(x_1*(pi/(4*50000))); // anti gravity
         
         targetposition = 10000*x_1;
@@ -497,7 +523,8 @@ double DifferentialEquation()
         Serial.print(",");
 
         // Serial.print("X_3: ");
-        Serial.println(x_3);
+        // Serial.println(x_3);
+        Serial.println(loadcell_data_double + B);
 
         // Serial.print("dt: ");
         // Serial.println(dt);
@@ -568,6 +595,7 @@ void loopModExo()
     case Operational:
       Serial.println("State: Operational");
       State = OperationalDifferentialControl;
+      // State = OperationalEncoderControl;
     // EncoderControl();
       break;
     case OperationalEncoderControl:
