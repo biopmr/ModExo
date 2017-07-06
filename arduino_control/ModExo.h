@@ -32,6 +32,7 @@
 #define EnterPreOperational 5
 #define OperationalDifferentialControl   6 
 #define EnterOperational 7
+#define GoHome 8
 
 // Statemachine State variable and initial value
 byte State = Startup;
@@ -469,6 +470,14 @@ void DataPrint()
 }
 
 //***********************
+// GO TO POSITION 0
+//***********************
+void gotoPositionZero()
+{  
+  positionSetpoint(0);
+}
+
+//***********************
 // DIFFERENTIAL EQUATION
 //***********************
 double DifferentialEquation()
@@ -535,8 +544,9 @@ double DifferentialEquation()
 
         x_1 = x_1 + 0.005*x_2;
         x_2 = x_2 + 0.005*x_3;
-        // x_3 = j_eq*(-b_eq*x_2 - k_eq*x_1 + contactTorque);
-        x_3 = 20*(-5*x_2 - 200*x_1 + contactTorque); // works
+        // x_3 = 1/j_eq*(-b_eq*x_2 - k_eq*x_1 + contactTorque);
+        x_3 = 20*(-20*x_2 - 100*x_1 + contactTorque); // works
+        // x_3 = 20*(contactTorque); // doesnt work
         // x_3 = 20*(-5*x_2 - 50*x_1 + contactTorque + 10*sin(x_1*(pi/(4*50000))); // anti gravity
         
         targetposition = 10000*x_1;
@@ -595,6 +605,10 @@ void serialController(char command)
       Serial.print("CT_K value: ");
       Serial.println(CT_K);
     break;
+    case 'z': // Go to position 0
+      State = GoHome;
+      Serial.print("Position Zero");
+    break;
   } 
 }
 
@@ -612,6 +626,9 @@ void loopModExo()
       State = OperationalDifferentialControl;
       // State = OperationalEncoderControl;
     // EncoderControl();
+      break;
+    case GoHome:
+      gotoPositionZero();
       break;
     case OperationalEncoderControl:
       EncoderControl();
