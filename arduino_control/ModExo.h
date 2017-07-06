@@ -44,7 +44,6 @@ MCP_CAN CAN(SPI_CS_PIN);
 
 // Sensor variables
 uint32_t encoder_data = 0;
-uint32_t encoder_to_qc = 0;
 uint32_t current_data = 0;
 uint32_t actualposition_data = 0;
 int32_t loadcell_data = 0;
@@ -310,9 +309,52 @@ void positionSetpoint(uint32_t angle)
 }
 
 //******************************
-// DATA READ
+// AMPLIFICATION BOARD DATA READ
 //******************************
-float DataRead()
+float amplificationBoardDataRead()
+{
+  unsigned char len = 0;
+  unsigned char buf[8];
+
+  if (CAN_MSGAVAIL == CAN.checkReceive())           // check if data coming
+  {
+    CAN.readMsgBuf(&len, buf);    // read data,  len: data length, buf: data buf
+
+    unsigned int canId = CAN.getCanId();
+
+    // encoder information is read from buf[4] and buf[5] and converted to decimal
+    encoder_data = buf[4];
+    encoder_data <<= 8;
+    encoder_data = encoder_data | buf[5];
+
+    // // load cell information is read from buf[1], buf[2] and buf[3] and converted to decimal
+    loadcell_data = buf[1];
+    loadcell_data <<= 8;
+    loadcell_data = loadcell_data | buf[2];
+    loadcell_data <<= 8;
+    loadcell_data = loadcell_data | buf[3];
+    //
+    //    if (buf[1] >= 128) {
+    //           loadcell_data = loadcell_data - 16777216;
+    //    }
+
+    loadcell_data_double = loadcell_data;
+    //  loadcell_data_double = loadcell_data_double-4294000000;
+
+    //    Serial.print("Encoder: ");
+    //    Serial.println(encoder_data, DEC);
+
+     // Serial.print("Loadcell: ");
+     // Serial.println(loadcell_data_double);
+
+    return(encoder_data);
+  }
+}
+
+//****************
+// ENCODER CONTROL
+//****************
+float EncoderControl()
 {
   unsigned char len = 0;
   unsigned char buf[8]; 
@@ -325,11 +367,12 @@ float DataRead()
     switch (canId) 
     {        
       case 0x181:
-
         current_data = buf[1];
         current_data <<= 8;
         current_data = current_data | buf[0];
 
+        // Serial.print("Current Data: ");
+        // Serial.println(current_data);
         break;
       case 0x381: // reads Position Actual Value
 
@@ -341,13 +384,22 @@ float DataRead()
         actualposition_data <<= 8;
         actualposition_data = actualposition_data | buf[2];
 
+        // Serial.print("Actual Position: ");
+        // Serial.println(actualposition_data);
+
+        return(actualposition_data);
+
         break;
 
       // ID 321 message has information sent by the amplification board
       // Messages coming from the amp_board has most significative bits coming first
       case 0x321:
-      
-        // load_cell information is read from buf[1], buf[2] and buf[3] and converted to decimal
+        // encoderDataRead();
+        encoder_data = buf[4];
+        encoder_data <<= 8; // bitshift equals times 2^8
+        encoder_data = encoder_data | buf[5]; // sum operation
+
+        // // load_cell information is read from buf[1], buf[2] and buf[3] and converted to decimal
         loadcell_data = buf[1];
         loadcell_data <<= 8;
         loadcell_data = loadcell_data | buf[2];
@@ -357,48 +409,24 @@ float DataRead()
         if(buf[1] >= 128)
           loadcell_data |= 0xFF000000;
 
-        break;
-      }
-    }
-}
+        loadcell_data_double = loadcell_data +B;
 
-//****************
-// ENCODER CONTROL
-//****************
-float EncoderControl()
-{
+        encoder_data *= 200000 / 4096; //conversion to quadrature counts
 
-  unsigned char len = 0;
-  unsigned char buf[8]; 
-
-  if(CAN_MSGAVAIL == CAN.checkReceive())            // check if data coming
-  {
-    CAN.readMsgBuf(&len, buf);    // read data,  len: data length, buf: data buf
-    unsigned int canId = CAN.getCanId();
-
-    switch (canId) 
-    {        
-      // ID 321 message has information sent by the amplification board
-      // Messages coming from the amp_board has most significative bits coming first
-      case 0x321:
-        // encoderDataRead();
-        encoder_data = buf[4];
-        encoder_data <<= 8; // bitshift equals times 2^8
-        encoder_data = encoder_data | buf[5]; // sum operation
-
-        encoder_to_qc = encoder_data*(200000 / 4096); //conversion to quadrature counts
-
-        positionSetpoint(encoder_to_qc);
+        positionSetpoint(encoder_data);
 
         contactForce = (loadcell_data + B)*A;
         contactTorque = contactForce*d; // mNm
-        // Serial.println(contactTorque); // mNm
+        Serial.println(contactTorque); // mNm
 
         // // Serial.print("Encoder Position: ");
-        Serial.println(encoder_to_qc);
+        // Serial.println(loadcell_data_double);
+
         break;
       }
-    }
+      return(encoder_data);
+      return(loadcell_data_double);
+  }
 }
 
 //***********************
@@ -440,54 +468,84 @@ void printData()
   Serial.print("\r\n");
 }
 
-//************
-// LOOP DELAY
-//*************
-double LoopDelay()
-{
-  // dynamic model 
-  dt1 = millis();
-  dt = (dt1 - dt0);
-
-  dt0 = millis();
-  
-  Serial.print("Loop Delay: ");
-  Serial.print(dt);
-  Serial.println(" miliseconds");
-}
-
 //***********************
 // DIFFERENTIAL EQUATION
 //***********************
 double DifferentialEquation()
 {
-  encoder_data *= 200000 / 4096; //conversion to quadrature counts
+  unsigned char len = 0;
+  unsigned char buf[8]; 
 
-  loadcell_data_double = loadcell_data; 
-  // loadcell_data_double = loadcell_data_double + 130000;
+  if(CAN_MSGAVAIL == CAN.checkReceive())            // check if data coming
+  {
+    CAN.readMsgBuf(&len, buf);    // read data,  len: data length, buf: data buf
+    unsigned int canId = CAN.getCanId();
 
-  // if(loadcell_data_double>-4000&&loadcell_data_double<4000)
-  //   loadcell_data_double = 0;
+    switch (canId) 
+    {        
+      case 0x181:
 
-  contactForce = (loadcell_data + B)*A;
-  contactTorque = contactForce*d; // mNm
-  // Serial.println(contactTorque); // mNm
+        current_data = buf[1];
+        current_data <<= 8;
+        current_data = current_data | buf[0];
 
-  // dynamic model 
-  dt1 = millis();
-  dt = (dt1 - dt0);
-  dt = dt*1;
+        break;
+      case 0x381: // reads Position Actual Value
 
-  x_1 = x_1 + 0.005*x_2;
-  x_2 = x_2 + 0.005*x_3;
-  // x_3 = j_eq*(-b_eq*x_2 - k_eq*x_1 + contactTorque);
-  x_3 = 0.1*(-50*x_2 - 100*x_1 + contactTorque); // works
-  // x_3 = 20*(-5*x_2 - 50*x_1 + contactTorque + 10*sin(x_1*(pi/(4*50000))); // anti gravity
-  
-  targetposition = 10000*x_1;
-  positionSetpoint(targetposition);
+        actualposition_data = buf[5];
+        actualposition_data <<= 8;
+        actualposition_data = actualposition_data | buf[4];
+        actualposition_data <<= 8;
+        actualposition_data = actualposition_data | buf[3];
+        actualposition_data <<= 8;
+        actualposition_data = actualposition_data | buf[2];
 
-  dt0 = millis();
+        break;
+
+      // ID 321 message has information sent by the amplification board
+      // Messages coming from the amp_board has most significative bits coming first
+      case 0x321:
+        // // load_cell information is read from buf[1], buf[2] and buf[3] and converted to decimal
+        loadcell_data = buf[1];
+        loadcell_data <<= 8;
+        loadcell_data = loadcell_data | buf[2];
+        loadcell_data <<= 8;
+        loadcell_data = loadcell_data | buf[3];
+
+        if(buf[1] >= 128)
+          loadcell_data |= 0xFF000000;
+
+        encoder_data *= 200000 / 4096; //conversion to quadrature counts
+
+        loadcell_data_double = loadcell_data; 
+        // loadcell_data_double = loadcell_data_double + 130000;
+
+        // if(loadcell_data_double>-4000&&loadcell_data_double<4000)
+        //   loadcell_data_double = 0;
+
+        contactForce = (loadcell_data + B)*A;
+        contactTorque = contactForce*d; // mNm
+        Serial.println(contactTorque); // mNm
+
+        // dynamic model 
+        dt1 = millis();
+        dt = (dt1 - dt0);
+        dt = dt*1;
+
+        x_1 = x_1 + 0.05*x_2;
+        x_2 = x_2 + 0.05*x_3;
+        // x_3 = j_eq*(-b_eq*x_2 - k_eq*x_1 + contactTorque);
+        x_3 = 0.1*(-150*x_2 - 20*x_1 + contactTorque); // works
+        // x_3 = 20*(-5*x_2 - 50*x_1 + contactTorque + 10*sin(x_1*(pi/(4*50000))); // anti gravity
+        
+        targetposition = 10000*x_1;
+        positionSetpoint(targetposition);
+
+        dt0 = millis();
+
+        break;
+      }
+  }
 }
 
 int readSerialInteger() // (not sure if this works, must test)
@@ -566,7 +624,6 @@ void loopModExo()
       delay(10);
       break;  
     case OperationalDifferentialControl:
-      DataRead();
       DifferentialEquation();
       printData();
       break;
@@ -577,7 +634,7 @@ void loopModExo()
     sync_flag=0;
     sync();
   }
-
+  
   if(Serial.available())
   { 
     serialController(Serial.read());
