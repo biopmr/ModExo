@@ -151,7 +151,7 @@ long k_eq = k_h + k_exo; // Nm/rad
 // [[loadcell_data_double = A*(force) + B]]
 float A = 0.0764; //slop steepness
 // float B = 118712.7; //offset
-float B = 117712.7; //offset
+float B = 118712.7+5000; //offset
 float d = 0.105; ////distancia entre os centros dos aros da celula de carga=10,5cm
 double contactForce;
 double contactTorque;
@@ -419,8 +419,8 @@ float EncoderControl()
         contactTorque = contactForce*d; // mNm
         Serial.println(contactTorque); // mNm
 
-        // // Serial.print("Encoder Position: ");
-        // Serial.println(loadcell_data_double);
+        // Serial.print("Encoder Position: ");
+        Serial.println(loadcell_data_double);
 
         break;
       }
@@ -432,7 +432,7 @@ float EncoderControl()
 //***********************
 // PRINT DATA
 //***********************
-void printData()
+void DataPrint()
 {  
 
   // Serial.print("dt: ");
@@ -484,11 +484,12 @@ double DifferentialEquation()
     switch (canId) 
     {        
       case 0x181:
-
         current_data = buf[1];
         current_data <<= 8;
         current_data = current_data | buf[0];
 
+        // Serial.print("Current Data: ");
+        // Serial.println(current_data);
         break;
       case 0x381: // reads Position Actual Value
 
@@ -499,6 +500,11 @@ double DifferentialEquation()
         actualposition_data = actualposition_data | buf[3];
         actualposition_data <<= 8;
         actualposition_data = actualposition_data | buf[2];
+
+        // Serial.print("Actual Position: ");
+        // Serial.println(actualposition_data);
+
+        return(actualposition_data);
 
         break;
 
@@ -527,21 +533,16 @@ double DifferentialEquation()
         contactTorque = contactForce*d; // mNm
         Serial.println(contactTorque); // mNm
 
-        // dynamic model 
-        dt1 = millis();
-        dt = (dt1 - dt0);
-        dt = dt*1;
-
-        x_1 = x_1 + 0.05*x_2;
-        x_2 = x_2 + 0.05*x_3;
+        x_1 = x_1 + 0.005*x_2;
+        x_2 = x_2 + 0.005*x_3;
         // x_3 = j_eq*(-b_eq*x_2 - k_eq*x_1 + contactTorque);
-        x_3 = 0.1*(-150*x_2 - 20*x_1 + contactTorque); // works
+        x_3 = 20*(-5*x_2 - 200*x_1 + contactTorque); // works
         // x_3 = 20*(-5*x_2 - 50*x_1 + contactTorque + 10*sin(x_1*(pi/(4*50000))); // anti gravity
         
         targetposition = 10000*x_1;
         positionSetpoint(targetposition);
 
-        dt0 = millis();
+        DataPrint();
 
         break;
       }
@@ -625,7 +626,16 @@ void loopModExo()
       break;  
     case OperationalDifferentialControl:
       DifferentialEquation();
-      printData();
+        // // Serial.print("X_1: ");
+        // Serial.print(x_1);
+        // Serial.print(",");
+
+        // // Serial.print("X_2: ");
+        // Serial.print(x_2);
+        // Serial.print(",");
+
+        // // Serial.print("X_3: ");
+        // Serial.println(x_3);
       break;
   }
 
