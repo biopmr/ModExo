@@ -352,6 +352,53 @@ float amplificationBoardDataRead()
   }
 }
 
+//***********************
+// PRINT DATA
+//***********************
+void DataPrint()
+{  
+
+  // Serial.print("dt: ");
+  // Serial.println(dt);
+
+  // Serial.print("Load: ");
+  Serial.print(contactTorque);
+  Serial.print(",");
+
+  // Serial.print("X_1: ");
+  Serial.print(x_1);
+  Serial.print(",");
+
+  // Serial.print("X_2: ");
+  Serial.print(x_2);
+  Serial.print(",");
+
+  // Serial.print("X_3: ");
+  Serial.print(x_3);
+  Serial.print(",");
+
+  // Serial.print("EPOS Actual Position: ");
+  Serial.print(actualposition_data);
+  Serial.print(",");
+
+  // Serial.print("EPOS Current");
+  Serial.print(current_data);
+  Serial.print(",");
+
+  // Serial.print("Encoder");
+  Serial.print(encoder_data);
+  Serial.print(",");
+
+  // Serial.print("Timestamp");
+  Serial.print(millis());
+  // Serial.print(",");
+
+  // // Serial.print("Raw Load Data");
+  // Serial.print(loadcell_data_double + B);
+
+  Serial.print("\r\n");
+}
+
 //****************
 // ENCODER CONTROL
 //****************
@@ -423,50 +470,11 @@ float EncoderControl()
         // Serial.print("Encoder Position: ");
         Serial.println(loadcell_data_double);
 
+        DataPrint();
+
         break;
       }
-      return(encoder_data);
-      return(loadcell_data_double);
   }
-}
-
-//***********************
-// PRINT DATA
-//***********************
-void DataPrint()
-{  
-
-  // Serial.print("dt: ");
-  // Serial.println(dt);
-
-  // Serial.print("Load: ");
-  Serial.print(contactTorque);
-  Serial.print(",");
-
-  // Serial.print("X_1: ");
-  Serial.print(x_1);
-  Serial.print(",");
-
-  // Serial.print("X_2: ");
-  Serial.print(x_2);
-  Serial.print(",");
-
-  // Serial.print("X_3: ");
-  Serial.print(x_3);
-  Serial.print(",");
-
-  // Serial.print("EPOS Actual Position: ");
-  Serial.print(actualposition_data);
-  Serial.print(",");
-
-  // Serial.print("EPOS Current");
-  Serial.print(current_data);
-  // Serial.print(",");
-
-  // // Serial.print("Raw Load Data");
-  // Serial.print(loadcell_data_double + B);
-
-  Serial.print("\r\n");
 }
 
 //***********************
@@ -544,8 +552,8 @@ double DifferentialEquation()
 
         x_1 = x_1 + 0.005*x_2;
         x_2 = x_2 + 0.005*x_3;
-        // x_3 = 1/j_eq*(-b_eq*x_2 - k_eq*x_1 + contactTorque);
-        x_3 = 20*(-20*x_2 - 100*x_1 + contactTorque); // works
+        // x_3 = 1/aj_eq*(-b_eq*x_2 - k_eq*x_1 + contactTorque);
+        x_3 = 25*(-15*x_2 - 250*x_1 + contactTorque); // works
         // x_3 = 20*(contactTorque); // doesnt work
         // x_3 = 20*(-5*x_2 - 50*x_1 + contactTorque + 10*sin(x_1*(pi/(4*50000))); // anti gravity
         
