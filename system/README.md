@@ -6,7 +6,7 @@ The system is divided in two control layers: the high level layer which consists
 Arduino UNO is a microcontroller board based on the ATmega328P. Was chosen for being a fast prototyping tool and well succeeded implementation in many robotic applications. There is plenty documentation shared on the internet which provides many different solutions for problems that eventually come up during the implementation of the system. It is smaller and cheaper and also has libraries that communicate directly with Matlab, which is the simulation tool actually used in the Biomechatronics Laboratory. In this project, acts as the high level controller, implementing the Impedance Control.
 
 ### EPOS2 70/10
-[![EPOS2 70/10](https://github.com/biopmr/biopmr.github.io/blob/master/images/PRODUKTBILD-EPOS-2-70-10-375711-Detail.jpg)](http://www.maxonmotor.com/maxon/view/product/control/Positionierung/375711)
+[![EPOS2 70/10](https://github.com/biopmr/biopmr.github.io/blob/master/images/system_epos2.jpg)](http://www.maxonmotor.com/maxon/view/product/control/Positionierung/375711)
 
 EPOS2 is a digital positioning controller manufactered by Maxon which offers an integrated solution of Driver, Motor and Sensors. Chosen for it's flexibility: has a wide variety of operating modes, receives external commands via analog and digital inputs and comunicates via USB, RS232 and CANOpen. In this project, works as a Low Level Controller, receiving commands from the Arduino.
 
