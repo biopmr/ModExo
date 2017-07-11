@@ -9,7 +9,7 @@ The high level layer consists of a central controller, which operates in real ti
 Arduino UNO is a microcontroller board based on the ATmega328P. Was chosen for being a fast prototyping tool and well succeeded implementation in many robotic applications. There is plenty documentation shared on the internet which provides many different solutions for problems that eventually come up during the implementation of the system. It is smaller and cheaper and also has libraries that communicate directly with Matlab, which is the simulation tool actually used in the Biomechatronics Laboratory. In this project, acts as the high level controller, implementing the Impedance Control.
 
 ### Seeedstudio CAN-BUS Shield
-[![EPOS2 70/10](https://github.com/biopmr/biopmr.github.io/blob/master/images/system_seeedcan.jpg](https://www.seeedstudio.com/CAN-BUS-Shield-V1.2-p-2256.html)
+[![EPOS2 70/10](https://github.com/biopmr/biopmr.github.io/blob/master/images/system_seeedcan.jpg)](https://www.seeedstudio.com/CAN-BUS-Shield-V1.2-p-2256.html)
 A CAN-BUS interface is also needed to communicate the central controller to the rest of the system. Most options available adopts the MCP2515 CAN BUS controller and the MCP2551 CAN transceiver. For this project, we chose the Seeedstudio CAN-BUS Shield V1.2 which has SPI interface up to 10 MHz and CAN communication up to 1 Mb/s. The reason for this choice was the reliability of the seller, the documentation available, and because the board is a shield that plugs directly on the top of the Arduino, offering a robust connection between them. 
 
 ## Low Level Layer
