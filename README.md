@@ -15,7 +15,7 @@ https://www.youtube.com/watch?v=PE7NVD3MYoc
 
 ## Contents
 - [Main code](https://github.com/biopmr/ModExo/blob/master/arduino_control/arduino_control.ino)
-- [System Description](https://github.com/biopmr/ModExo/blob/master/system_description)
+- [System Description](https://github.com/biopmr/ModExo/blob/master/system)
 - Testing
 - Discussion
 
