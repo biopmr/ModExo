@@ -1,5 +1,5 @@
 ## Driver: EPOS2 70/10
-[![EPOS2 70/10](https://github.com/biopmr/biopmr.github.io/blob/master/images/PRODUKTBILD-EPOS-70-10-10-A-11-70VDC-300583-Detail.jpg)](http://www.maxonmotor.com/medias/sys_master/root/8796920840222/EPOS-70-10-300583-09-EN-303.pdf)
+[![EPOS2 70/10](https://github.com/biopmr/biopmr.github.io/blob/master/images/PRODUKTBILD-EPOS-2-70-10-375711-Detail.jpg)](http://www.maxonmotor.com/maxon/view/product/control/Positionierung/375711)
 
 Motor: Maxon Motor EC90 flat
       Brushless
