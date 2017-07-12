@@ -1,5 +1,13 @@
 [![ModExo](https://biopmr.github.io/images/modexo-logo.svg)](https://biopmr.github.io/images/logo/modexo.svg)
 
+## Contents
+- [Landing Page](https://github.com/biopmr/ModExo)
+- [Main code](https://github.com/biopmr/ModExo/blob/master/arduino_control/arduino_control.ino)
+- [System Description](https://github.com/biopmr/ModExo/blob/master/system)
+- Testing
+- Discussion
+
+## Intro
 Exoskeletons are often called wearable robots because of it's close interaction with the human. Being so, the exoskeletons must be responsive to user movement.
 
 In this project, we desire to investigate the human joint and robotic joint interaction in a modular approach in a way that this is usefull for several applications.
@@ -12,12 +20,6 @@ The hardware is not easy to set up by yourself. A workflow to test remote contri
 
 https://www.youtube.com/watch?v=oU2QiyaPxdo  
 https://www.youtube.com/watch?v=PE7NVD3MYoc
-
-## Contents
-- [Main code](https://github.com/biopmr/ModExo/blob/master/arduino_control/arduino_control.ino)
-- [System Description](https://github.com/biopmr/ModExo/blob/master/system)
-- Testing
-- Discussion
 
 ## Contact
 rafaelsanchezsouza@gmail.com
