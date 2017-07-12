@@ -26,12 +26,12 @@
 
 // Define States
 #define Startup               1
-#define Pre_Operational       2
+#define PDOConfiguration       2
 #define Operational           3
 #define OperationalEncoderControl 4
-#define EnterPreOperational 5
+#define SetPreOperational 5
 #define OperationalDifferentialControl   6 
-#define EnterOperational 7
+#define SetOperational 7
 #define GoHome 8
 
 // Statemachine State variable and initial value
@@ -62,7 +62,7 @@ double targetposition = 0;
 // Data comes with Lowest Bit First
 
 // Statemachine
-unsigned char set_pre_operational[2] = {0x80, 0};
+unsigned char set_preoperational[2] = {0x80, 0};
 unsigned char set_operational[2] = {0x1, 0};
 unsigned char enable_epos[8] = {0x2B, 0x40, 0x60, 0, 0x0F, 0, 0, 0};
 unsigned char disable_epos[8] = {0x2B, 0x40, 0x60, 0, 0x06, 0, 0, 0};
@@ -184,12 +184,12 @@ void doStartup(void)
   CAN.sendMsgBuf(0x601, 0, 8, set_max_position_limit);
   Serial.println("Min Position Limit defined as 300000qc");  
   delay(10);  
-  State = Pre_Operational;
+  State = PDOConfiguration;
 }
 //-----------------------------------------------------------------
 void PDOConfig(void) {
 
-  CAN.sendMsgBuf(0x00, 0, 2, set_pre_operational);
+  CAN.sendMsgBuf(0x00, 0, 2, set_preoperational);
   delay(10);
   CAN.sendMsgBuf(0x601, 0, 8, pdo_actual_position_1);
   delay(10);
@@ -367,9 +367,9 @@ void serialController(char command)
       State = Startup;
       Serial.println("State: Startup");
     break;
-    case 'p': // Pre_Operational
-      State = Pre_Operational;
-      Serial.println("State: Pre_Operational");
+    case 'p': // PDOConfiguration
+      State = PDOConfiguration;
+      Serial.println("State: PDOConfiguration");
     break;
     case 'o': // Operational
       State = OperationalDifferentialControl;
@@ -380,11 +380,11 @@ void serialController(char command)
       Serial.println("State: EncoderControl");
     break;
     case 'k': // Pre Operational (not working)
-      State = EnterPreOperational;
+      State = SetPreOperational;
       Serial.println("State: Disabled");
     break;
     case 'l': // Operational 
-      State = EnterOperational;
+      State = SetOperational;
       Serial.println("State: Enabled");
     break;
     case 'd': // Differential Control
@@ -547,7 +547,7 @@ double DifferentialEquation()
         x_1 = x_1 + 0.005*x_2;
         x_2 = x_2 + 0.005*x_3;
         // x_3 = 1/j_eq*(-b_eq*x_2 - k_eq*x_1 + contactTorque);
-        x_3 = 25*(-15*x_2 - 150*x_1 + contactTorque); // works
+        x_3 = 25*(-15*x_2 - 550*x_1 + contactTorque); // works
         // x_3 = 20*(contactTorque); // doesnt work
         // x_3 = 20*(-5*x_2 - 50*x_1 + contactTorque + 10*sin(x_1*(pi/(4*50000))); // anti gravity
         
@@ -612,7 +612,7 @@ void loopModExo()
     case Startup:
       doStartup();
       break;
-    case Pre_Operational:
+    case PDOConfiguration:
       PDOConfig();
     case Operational:
       Serial.println("State: Operational");
@@ -626,11 +626,11 @@ void loopModExo()
     case OperationalEncoderControl:
       EncoderControl();
       break;
-    case EnterPreOperational:
-      CAN.sendMsgBuf(0x00, 0, 2, set_pre_operational);
+    case SetPreOperational:
+      CAN.sendMsgBuf(0x00, 0, 2, set_preoperational);
       delay(10);
       break; 
-    case EnterOperational:
+    case SetOperational:
       CAN.sendMsgBuf(0x00, 0, 2, set_operational);
       delay(10);
       break;  
