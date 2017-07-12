@@ -49,6 +49,7 @@ uint32_t current_data = 0;
 uint32_t actualposition_data = 0;
 int32_t loadcell_data = 0;
 double loadcell_data_double = 0;
+bool sync_flag = 0; 
 
 // Sensor variables
 double user_setpoint = 0;
@@ -157,49 +158,10 @@ float d = 0.105; ////distancia entre os centros dos aros da celula de carga=10,5
 double contactForce;
 double contactTorque;
 
-void setupModExo() 
-{
-  Serial.begin(115200);
-
-  while (CAN_OK != CAN.begin(CAN_1000KBPS))              // init can bus : baudrate = 500k
-  {
-    Serial.println("CAN BUS Shield init fail");
-    Serial.println(" Init CAN BUS Shield again");
-    delay(100);
-  }
-
-  Serial.println("CAN BUS Shield init ok!");
-
- // TIMER SETUP- the timer interrupt allows precise timed measurements of the reed switch
- //for mor info about configuration of arduino timers see http://arduino.cc/playground/Code/Timer1
-
- cli();//stop interrupts
-
- //set timer1 interrupt at 1kHz
- TCCR1A = 0;// set entire TCCR1A register to 0
- TCCR1B = 0;// same for TCCR1B\
- TCNT1  = 0;//initialize counter value to 0
- // set timer count for 1khz increments
-
- // OCR1A 1999 to 1kHZ, 19999 to 0.1kHz
- OCR1A = 19999;// = (16*10^6) / (1000*8) - 1
- //had to use 16 bit timer1 for this bc 1999>255, but could switch to timers 0 or 2 with larger prescaler
- // turn on CTC mode
- TCCR1B |= (1 << WGM12);
- // Set CS11 bit for 8 prescaler
- TCCR1B |= (1 << CS11);
- // enable timer compare interrupt
- TIMSK1 |= (1 << OCIE1A);
-
- sei();//allow interrupts
- //END TIMER SETUP
-  
-  Serial.println("Interrupt init ok!");
-}
-
-//***************
-// CAN STARTUP
-//***************
+//********************
+// EPOS COMMUNICATION
+//********************
+//-----------------------------------------------------------------
 void doStartup(void) 
 {
   CAN.sendMsgBuf(0x601, 0, 8, disable_epos);
@@ -224,10 +186,7 @@ void doStartup(void)
   delay(10);  
   State = Pre_Operational;
 }
-
-//***************
-// PDO Config
-//***************
+//-----------------------------------------------------------------
 void PDOConfig(void) {
 
   CAN.sendMsgBuf(0x00, 0, 2, set_pre_operational);
@@ -258,12 +217,7 @@ void PDOConfig(void) {
   delay(10);
   State = Operational;
 }
-
-
-//******
-// SYNC
-//******
-
+//-----------------------------------------------------------------
 void doHoming(void) {
   // Set Operation Mode
   // CAN.sendMsgBuf(0x601, 0, 8, {modes_of_operation, 0x06, 0x00});
@@ -274,30 +228,7 @@ void doHoming(void) {
 
   // Start Homing
 }
-
-
-//******
-// SYNC
-//******
-void sync(void) {
-  CAN.sendMsgBuf(0x80, 0, 1, pdo_sync);
-}
-
-  int tests = 0;
-  bool sync_flag = 0; 
-
-  //******
-  // INTERRUPTION
-  //******
-  ISR(TIMER1_COMPA_vect) { 
-   
-    sync_flag = 1;
-
-}
-
-//*******************
-// POSITION SETPOINT
-//*******************
+//-----------------------------------------------------------------
 void positionSetpoint(uint32_t angle) 
 {
   setpoint_position[4] = angle & 0xFF; 
@@ -308,10 +239,20 @@ void positionSetpoint(uint32_t angle)
   // clear the string:
   CAN.sendMsgBuf(0x601, 0, 8, setpoint_position);
 }
+//-----------------------------------------------------------------
+void gotoPositionZero()
+{  
+  positionSetpoint(0);
+}
+//-----------------------------------------------------------------
+void sync(void) {
+  CAN.sendMsgBuf(0x80, 0, 1, pdo_sync);
+}
 
-//******************************
-// AMPLIFICATION BOARD DATA READ
-//******************************
+//********************
+// DATA AQUISITION
+//********************
+//-----------------------------------------------------------------
 float amplificationBoardDataRead()
 {
   unsigned char len = 0;
@@ -353,8 +294,16 @@ float amplificationBoardDataRead()
 }
 
 //***********************
-// PRINT DATA
+// INTERRUPTION
 //***********************
+ISR(TIMER1_COMPA_vect) { 
+  sync_flag = 1;
+}
+
+//***********************
+// INTERFACE
+//***********************
+//-----------------------------------------------------------------
 void DataPrint()
 {  
 
@@ -398,10 +347,66 @@ void DataPrint()
 
   Serial.print("\r\n");
 }
+//-----------------------------------------------------------------
+int readSerialInteger() // (not sure if this works, must test)
+{
+  while(1)
+  {
+    if(Serial.available())
+    { 
+      return (Serial.parseInt());
+    }
+  }
+}
+//-----------------------------------------------------------------
+void serialController(char command)
+{
+  switch(command)
+  {
+    case 's': // Startup
+      State = Startup;
+      Serial.println("State: Startup");
+    break;
+    case 'p': // Pre_Operational
+      State = Pre_Operational;
+      Serial.println("State: Pre_Operational");
+    break;
+    case 'o': // Operational
+      State = OperationalDifferentialControl;
+      Serial.println("State: KControl");
+    break;
+    case 'q': // Encoder Control
+      State = OperationalEncoderControl;
+      Serial.println("State: EncoderControl");
+    break;
+    case 'k': // Pre Operational (not working)
+      State = EnterPreOperational;
+      Serial.println("State: Disabled");
+    break;
+    case 'l': // Operational 
+      State = EnterOperational;
+      Serial.println("State: Enabled");
+    break;
+    case 'd': // Differential Control
+      State = OperationalDifferentialControl;
+      Serial.println("State: DifferentialControl");
+    break;
+    case 'c': // Constant CT_K (generic constant)
+      CT_K = readSerialInteger();
+      Serial.print("CT_K value: ");
+      Serial.println(CT_K);
+    break;
+    case 'z': // Go to position 0
+      State = GoHome;
+      Serial.print("Position Zero");
+    break;
+  } 
+}
 
 //****************
-// ENCODER CONTROL
+// CONTROL MODES
 //****************
+//-----------------------------------------------------------------
 float EncoderControl()
 {
   unsigned char len = 0;
@@ -476,18 +481,7 @@ float EncoderControl()
       }
   }
 }
-
-//***********************
-// GO TO POSITION 0
-//***********************
-void gotoPositionZero()
-{  
-  positionSetpoint(0);
-}
-
-//***********************
-// DIFFERENTIAL EQUATION
-//***********************
+//-----------------------------------------------------------------
 double DifferentialEquation()
 {
   unsigned char len = 0;
@@ -552,8 +546,8 @@ double DifferentialEquation()
 
         x_1 = x_1 + 0.005*x_2;
         x_2 = x_2 + 0.005*x_3;
-        // x_3 = 1/aj_eq*(-b_eq*x_2 - k_eq*x_1 + contactTorque);
-        x_3 = 25*(-15*x_2 - 250*x_1 + contactTorque); // works
+        // x_3 = 1/j_eq*(-b_eq*x_2 - k_eq*x_1 + contactTorque);
+        x_3 = 25*(-15*x_2 - 150*x_1 + contactTorque); // works
         // x_3 = 20*(contactTorque); // doesnt work
         // x_3 = 20*(-5*x_2 - 50*x_1 + contactTorque + 10*sin(x_1*(pi/(4*50000))); // anti gravity
         
@@ -567,59 +561,50 @@ double DifferentialEquation()
   }
 }
 
-int readSerialInteger() // (not sure if this works, must test)
+//****************
+// ARDUINO
+//****************
+//-----------------------------------------------------------------
+void setupModExo() 
 {
-  while(1)
+  Serial.begin(115200);
+
+  while (CAN_OK != CAN.begin(CAN_1000KBPS))              // init can bus : baudrate = 500k
   {
-    if(Serial.available())
-    { 
-      return (Serial.parseInt());
-    }
+    Serial.println("CAN BUS Shield init fail");
+    Serial.println(" Init CAN BUS Shield again");
+    delay(100);
   }
-}
 
-void serialController(char command)
-{
-  switch(command)
-  {
-    case 's': // Startup
-      State = Startup;
-      Serial.println("State: Startup");
-    break;
-    case 'p': // Pre_Operational
-      State = Pre_Operational;
-      Serial.println("State: Pre_Operational");
-    break;
-    case 'o': // Operational
-      State = OperationalDifferentialControl;
-      Serial.println("State: KControl");
-    break;
-    case 'q': // Encoder Control
-      State = OperationalEncoderControl;
-      Serial.println("State: EncoderControl");
-    break;
-    case 'k':
-      State = EnterPreOperational;
-      Serial.println("State: Disabled");
-    case 'l':
-      State = EnterOperational;
-      Serial.println("State: Enabled");
-    case 'd': 
-      State = OperationalDifferentialControl;
-      Serial.println("State: DifferentialControl");
-    break;
-    case 'c': // Constant CT_K (generic constant)
-      CT_K = readSerialInteger();
-      Serial.print("CT_K value: ");
-      Serial.println(CT_K);
-    break;
-    case 'z': // Go to position 0
-      State = GoHome;
-      Serial.print("Position Zero");
-    break;
-  } 
-}
+  Serial.println("CAN BUS Shield init ok!");
 
+ // TIMER SETUP- the timer interrupt allows precise timed measurements of the reed switch
+ //for mor info about configuration of arduino timers see http://arduino.cc/playground/Code/Timer1
+
+ cli();//stop interrupts
+
+ //set timer1 interrupt at 1kHz
+ TCCR1A = 0;// set entire TCCR1A register to 0
+ TCCR1B = 0;// same for TCCR1B\
+ TCNT1  = 0;//initialize counter value to 0
+ // set timer count for 1khz increments
+
+ // OCR1A 1999 to 1kHZ, 19999 to 0.1kHz
+ OCR1A = 19999;// = (16*10^6) / (1000*8) - 1
+ //had to use 16 bit timer1 for this bc 1999>255, but could switch to timers 0 or 2 with larger prescaler
+ // turn on CTC mode
+ TCCR1B |= (1 << WGM12);
+ // Set CS11 bit for 8 prescaler
+ TCCR1B |= (1 << CS11);
+ // enable timer compare interrupt
+ TIMSK1 |= (1 << OCIE1A);
+
+ sei();//allow interrupts
+ //END TIMER SETUP
+  
+  Serial.println("Interrupt init ok!");
+}
+//-----------------------------------------------------------------
 void loopModExo()
 {
   switch (State) 
