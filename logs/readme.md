@@ -18,7 +18,7 @@ Three different derivative gains were tested, in order to achieve a faster syste
 
 ### Loadcell Tests
 Static loadcell tests were made to evaluate the loadcell calibration defined below. The joint was positioned in the horizontal position, at \theta = \pi/2.  
-	
+
 	// LoadCell Calibration 
 	// [[loadcell_data_double = A*(force) + B]]
 
