@@ -22,8 +22,12 @@ The low level layer consists of the actuation nodules of the system. This nodule
 
 EPOS2 is a digital positioning controller manufactured by Maxon which offers an integrated solution of driver and motor. Chosen for it's flexibility: has a wide variety of operating modes, receives external commands via analog and digital inputs and communicates via USB, RS232 and CANOpen. In this project, works as a low the level controller, receiving position commands from the Arduino and transmitting them to the motor.
 
-### [![Maxon Motor EC90 Flat](https://github.com/biopmr/biopmr.github.io/blob/master/images/system_motor.jpg)](http://www.maxonmotor.com/maxon/view/product/motor/ecmotor/ecflat/ecflat90/244879?etcc_cu=onsite&etcc_med=Header%20Suche&etcc_cmp=mit%20Ergebnis&etcc_ctv=Layer&query=ec90%20flat)
+### Maxon Motor EC90 Flat
+[![Maxon Motor EC90 Flat](https://github.com/biopmr/biopmr.github.io/blob/master/images/system_motor.jpg)](http://www.maxonmotor.com/maxon/view/product/motor/ecmotor/ecflat/ecflat90/244879?etcc_cu=onsite&etcc_med=Header%20Suche&etcc_cmp=mit%20Ergebnis&etcc_ctv=Layer&query=ec90%20flat)
 
+
+
+Maxon Motor EC90 Flat
 
       Brushless
       90 Watt

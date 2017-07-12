@@ -1,8 +1,8 @@
-[![ModExo](https://biopmr.github.io/images/modexo-logo.svg)](https://biopmr.github.io/images/logo/modexo.svg)
+[![ModExo](https://biopmr.github.io/images/modexo-logo.svg)](https://github.com/biopmr/ModExo)
 
 ## Contents
 - [Landing Page](https://github.com/biopmr/ModExo)
-- [Main code](https://github.com/biopmr/ModExo/blob/master/arduino_control/arduino_control.ino)
+- [Main Code](https://github.com/biopmr/ModExo/blob/master/arduino_control/arduino_control.ino)
 - [System Description](https://github.com/biopmr/ModExo/blob/master/system)
 - Testing
 - Discussion
