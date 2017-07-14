@@ -3,8 +3,9 @@
 ## Contents
 - [Landing Page](https://github.com/biopmr/ModExo)
 - [Main Code](https://github.com/biopmr/ModExo/blob/master/arduino_control/arduino_control.ino)
-- [System Description](https://github.com/biopmr/ModExo/blob/master/system)
-- Testing
+- [Hardware](https://github.com/biopmr/ModExo/blob/master/hardware)
+- [Experimental](https://github.com/biopmr/ModExo/blob/master/experimental)
+- [Documents](https://github.com/biopmr/ModExo/blob/master/documents)
 - Discussion
 
 ## Intro

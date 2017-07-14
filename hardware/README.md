@@ -1,7 +1,9 @@
-The system is divided in two application layers: the high level layer which consists of the central control processing and the low level layer, which consists of actuation nodes or joints, composed by sensors, motor and driver. The number of nodes may vary depending on the application (e.g., for elbow rehabilitation, only one actuation node is necessary; for elbow and wrist, two actuation nodes will be needed). This architecture aims at obtaining a flexible exoskeleton, which can increase or decrease the number of working joints, a property desired for modular systems.
+The actual ModExo system is divided in two application layers: the high level layer which consists of the central control processing and the low level layer, which consists of actuation nodes or joints, composed by sensors, motor and driver. The number of nodes may vary depending on the application (e.g., for elbow rehabilitation, only one actuation node is necessary; for elbow and wrist, two actuation nodes will be needed). This architecture aims at obtaining a flexible exoskeleton, which can increase or decrease the number of working joints, a property desired for modular systems.
 
 ## High Level Layer
-The high level layer consists of a central controller, which operates in real time, receives data from the nodes' sensors, processes the data to obtain relevant state parameters and sends the desired joint angular position to the driver. The central controller is composed by the Arduino UNO and the SeeedStudio CAN-BUS Shield.
+The High Level Layer (HLL) consists of a central controller, which operates in real time, receives data from the nodes' sensors, processes the data to obtain relevant state parameters and sends the desired joint angular position to the driver. The central controller is composed by the Arduino UNO and the SeeedStudio CAN-BUS Shield.
+
+A desired property of the HLL is that, regardless of the number of nodes, it should not change. A consequence of that is that the software must be modular, but that is a future development to me made.
 
 ### Arduino UNO
 [![Arduino UNO](https://github.com/biopmr/biopmr.github.io/blob/master/images/system_Arduino.jpg)](https://store.arduino.cc/usa/arduino-uno-rev3)
@@ -15,7 +17,9 @@ A CAN-BUS interface is also needed to communicate the central controller to the 
 
 ## Low Level Layer
 
-The low level layer consists of the actuation nodules of the system. This nodules communicate with the master device - the Arduino - and are composed by the EPOS2 70/10, the Maxon Motor EC90 flat and the sensors.
+The Low Level Layer (LLL) consists of the actuation nodules of the system. This nodules communicate with the master device - the Arduino - and are composed by the EPOS2 70/10, the Maxon Motor EC90 flat and the sensors.
+
+A property of the LLL is that the number of nodes will increase as the number of degrees of freedom of the system increase. A future hardware development to be made is that the attachment of new joints should be easy, plug'n play, something similar to what is seen with [LittleBits](https://www.youtube.com/watch?v=MMYqtCUN5X4).
 
 ### EPOS2 70/10
 [![EPOS2 70/10](https://github.com/biopmr/biopmr.github.io/blob/master/images/system_epos2.jpg)](http://www.maxonmotor.com/maxon/view/product/control/Positionierung/375711)
@@ -25,12 +29,10 @@ EPOS2 is a digital positioning controller manufactured by Maxon which offers an 
 ### Maxon Motor EC90 Flat
 [![Maxon Motor EC90 Flat](https://github.com/biopmr/biopmr.github.io/blob/master/images/system_motor.jpg)](http://www.maxonmotor.com/maxon/view/product/motor/ecmotor/ecflat/ecflat90/244879?etcc_cu=onsite&etcc_med=Header%20Suche&etcc_cmp=mit%20Ergebnis&etcc_ctv=Layer&query=ec90%20flat)
 
+The Maxon Motor EC90 Flat comes with the MILE encoder and was chosen for it's high torque-velocity curve. It also offers power with a slim design, making it easy to fit in an exoskeleton. 
 
-
-Maxon Motor EC90 Flat
-
-      Brushless
-      90 Watt
+    Brushless
+    90 Watt
 
 Sensors: 
    Human-Robotic Joint Torque:   Strain Gauges in Full Wheatstone Bridge
