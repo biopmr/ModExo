@@ -30,9 +30,14 @@ EPOS2 is a digital positioning controller manufactured by Maxon which offers an 
 [![Maxon Motor EC90 Flat](https://github.com/biopmr/biopmr.github.io/blob/master/images/system_motor.jpg)](http://www.maxonmotor.com/maxon/view/product/motor/ecmotor/ecflat/ecflat90/244879?etcc_cu=onsite&etcc_med=Header%20Suche&etcc_cmp=mit%20Ergebnis&etcc_ctv=Layer&query=ec90%20flat)
 
 The Maxon Motor EC90 Flat comes with the MILE encoder and was chosen for it's high torque-velocity curve. It also offers power with a slim design, making it easy to fit in an exoskeleton. 
-
-    Brushless
+	
+	Part Number: 323772
+    Brushless Motor
     90 Watt
+    Nominal Speed: 2590 rpm
+    Nominal Torque: 444 mNm
+    Nominal Current: 6.06 A
+    Weight: 600 g
 
 Sensors: 
    Human-Robotic Joint Torque:   Strain Gauges in Full Wheatstone Bridge
