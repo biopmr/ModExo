@@ -20,6 +20,7 @@
 // Steps
 //**************************************************************************
 
+#include "Arduino.h"
 #include "ModExo.h"
 
 // Statemachine State variable and initial value

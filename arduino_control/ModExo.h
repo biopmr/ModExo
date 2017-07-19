@@ -20,9 +20,10 @@
 // Steps
 //**************************************************************************
 
-#include <SPI.h>
+#include "SPI.h"
 #include "mcp_can.h"
-#include <mcp_can_dfs.h>
+#include "mcp_can_dfs.h"
+#include "Arduino.h"
 
 // Define States
 #define Startup                           1
