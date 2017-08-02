@@ -37,3 +37,16 @@ Static loadcell tests were made to evaluate the loadcell calibration defined bel
 	Weight 1: 5000g
 	Weight 2: 2*1068.7g
 	Weight 3: 528.8g
+
+### Fall Tests
+Two types of tests were made, in which the joint was released from the horizontal position at \theta = \pi/2 with a weight of 528.8g at the endpoint. In the first, the weight is left to fall freely, in the second, the weight fall is interrupted by a plateau. The tests were carried for two different impedances:
+
+	i = 20
+	b = 5
+	k = 200
+
+and
+
+	i = 20
+	b = 20
+	k = 100
