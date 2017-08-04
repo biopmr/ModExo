@@ -8,7 +8,7 @@ Below are listed the datasets and the respective Lower Level Controller (the EPO
 	Position Regulator I-Gain = 4772
 	Position Regulator D-Gain = 6919
 
-	![Delay Test 1](https://github.com/biopmr/biopmr.github.io/blob/master/images/tests-delay_test_1-response.png)
+	![Delay Test 1](https://biopmr.github.io/images/tests-delay_test_1-response.png)
 
 #### 20170707-delay_tests_2.csv
 	Position Regulator P-Gain = 2655
