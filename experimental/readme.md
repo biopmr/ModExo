@@ -1,14 +1,14 @@
 ### Low Level Controller Delay Tests
 The joint response to a step input was tested for three different derivative gains. The first PID gains, in delay_test_1, were defined by the Regulation Tuning Wizard from EPOS Studio 2.00. We hypothesised that the delay would decrease as the Derivative Gain increased. So, for the delay_tests_2 and delay_tests_3, the derivative gains were simply increased to verify the change in the system response.
 
-Below are listed the datasets and the respective Lower Level Controller (the EPOS) PID gains. This datasets are the CSV data generated as the output of [ModExo code version](https://github.com/biopmr/ModExo/commit/fbe45a4ca06b29ec54b75cb432308c84095bc77f). 
+Below are listed the datasets and the respective Lower Level Controller (the EPOS) PID gains. This datasets are the CSV data generated as the output of the [ModExo code version](https://github.com/biopmr/ModExo/commit/fbe45a4ca06b29ec54b75cb432308c84095bc77f). 
 
 #### 20170707-delay_tests_1.csv
 	Position Regulator P-Gain = 2533
 	Position Regulator I-Gain = 4772
 	Position Regulator D-Gain = 6919
 
-	[![Delay Test 1](https://github.com/biopmr/biopmr.github.io/blob/master/images/tests-delay_test_1-response.png)]
+	![Delay Test 1](https://github.com/biopmr/biopmr.github.io/blob/master/images/tests-delay_test_1-response.png)
 
 #### 20170707-delay_tests_2.csv
 	Position Regulator P-Gain = 2655
