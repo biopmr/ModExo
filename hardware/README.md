@@ -45,5 +45,8 @@ Sensors:
    Position Control: Encoder USDigital MA3
 
 
+## Other
+
+### CAN Bus Analyzer
 
 The communication between the Arduino and the EPOS is made by CAN BUS protocol. It has shown good performance so far, I have learned a lot with this post here: http://forum.arduino.cc/index.php?topic=225789.0
