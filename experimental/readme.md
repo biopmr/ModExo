@@ -10,7 +10,7 @@ Below are listed the datasets and the respective Lower Level Controller (the EPO
 
 ![Delay Test 1](https://biopmr.github.io/images/tests-delay_test_1-response.png)
 
-From Figure 1, it is possible to see that the response has no Overshoot, aproximately a Settling Time of 1.65 seconds and a Delay of 0.65 seconds.
+In Figure 1, it is possible to see that the response has no Overshoot, approximately Settling Time of 1.65 seconds and Delay of 0.65 seconds to begin the movement.
 
 #### 20170707-delay_tests_2.csv
 	Position Regulator P-Gain = 2655
