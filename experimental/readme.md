@@ -8,8 +8,8 @@ Below are listed the datasets and the respective Lower Level Controller (the EPO
 	Position Regulator I-Gain = 4772
 	Position Regulator D-Gain = 6919
 	Overshoot = 0
-	Settling Time = 58.86-57.19 = 1.67 s
-	Delay = 57.8-57.04 = 0.76 s
+	Settling Time = 1.67 s
+	Delay = 0.76 s
 
 ![Delay Test 1](https://biopmr.github.io/images/tests-delay_test_1-response.png)
 
@@ -18,8 +18,8 @@ Below are listed the datasets and the respective Lower Level Controller (the EPO
 	Position Regulator I-Gain = 4948
 	Position Regulator D-Gain = 15000
 	Overshoot = 0
-	Settling Time = 29.69-28.78 = 0.91 s
-	Delay = 28.73-28.63 = 0.1 s
+	Settling Time = 0.91 s
+	Delay = 0.1 s
 
 ![Delay Test 2](https://biopmr.github.io/images/tests-delay_test_2-response.png)
 
@@ -28,8 +28,8 @@ Below are listed the datasets and the respective Lower Level Controller (the EPO
 	Position Regulator I-Gain = 4948
 	Position Regulator D-Gain = 30000
 	Overshoot = 0
-	Settling Time = 44.38-43.37 = 1.01 s
-	Delay = 43.32-43.22 = 0.1 s
+	Settling Time = 1.01 s
+	Delay = 0.1 s
 
 ![Delay Test 3](https://biopmr.github.io/images/tests-delay_test_3-response.png)
 
@@ -48,7 +48,7 @@ The results indicate that an increase in the Derivative Gain will reduce the sys
 Further tests can be performed to observe the influence of the Integrative Gain, which should also result in a decrease of the Settling Time. Also, the step input can be made by software, to provide reptibility and other analysys possibilities. Issue #16 refers to this tests.
 
 ### Loadcell Tests
-Static loadcell tests were made to evaluate the loadcell calibration defined below. The joint was positioned in the horizontal position, at \theta = \pi/2.  
+Static loadcell tests were made to evaluate the loadcell calibration defined below. The joint was positioned in the horizontal position, at \theta = \pi/2 while different weights were attached to the extremity of the loadcell.  
 
 	// LoadCell Calibration 
 	// [[loadcell_data_double = A*(force) + B]]
