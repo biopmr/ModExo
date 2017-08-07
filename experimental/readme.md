@@ -1,5 +1,5 @@
 ### Low Level Controller Delay Tests
-The joint response to a step input was tested for three different derivative gains. The first PID gains, in delay_test_1, were defined by the Regulation Tuning Wizard from EPOS Studio 2.00. We hypothesised that the delay would decrease as the Derivative Gain increased. So, for the delay_tests_2 and delay_tests_3, the derivative gains were simply increased to verify the change in the system response.
+The joint response to a step input was tested for three different derivative gains. In these tests, the controller mode used was "EncoderControl", in which the reference position is given by manually turning the MA3 encoder. The first PID gains, in delay_test_1, were defined by the Regulation Tuning Wizard from EPOS Studio 2.00. We hypothesised that the delay would decrease as the Derivative Gain increased. So, for the delay_tests_2 and delay_tests_3, the derivative gains were simply increased to verify the change in the system response.
 
 Below are listed the datasets and the respective Lower Level Controller (the EPOS) PID gains. This datasets are the CSV data generated as the output of the [ModExo code version](https://github.com/biopmr/ModExo/commit/fbe45a4ca06b29ec54b75cb432308c84095bc77f). 
 
@@ -32,6 +32,16 @@ Below are listed the datasets and the respective Lower Level Controller (the EPO
 	Delay = 43.32-43.22 = 0.1 s
 
 ![Delay Test 3](https://biopmr.github.io/images/tests-delay_test_3-response.png)
+
+#### Results
+The graphs show two variables: the Theta Reference - in blue - corresponding to the signal of the MA3 Encoder, which gives the reference position for the low level controller and the Theta Tracking - in red - which corresponds to joint position given by the Joint Position Sensor.
+
+The variable Delay is defined as the time gap between the instant of change in the theta reference and the instant of change in the theta tracking. As seen in the graphs, when the Derivative Gain is increased from 6919 to 15000 the Delay goes from 0.76 to 0.1 seconds, however, when increased from 15000 to 30000, no change is observed in the Delay.
+
+The variable Settling Time is defined as the time gap between the instant when the theta reference reaches its final position and the instant when the theta tracking reaches its final position. Similarly to the Delay, when the Derivative Gain is increased from 6919 to 15000 the Settling Time goes from 1.67 to 0.91 seconds, however, when increased from 15000 to 30000, no significative change is observed in the Settling Time.
+
+#### Discussion
+The results indicate that an increase in the Derivative Gain will reduce the system response time up to a limit. Since the system dynamics will vary depending on the application, we are not concerned on finding an optimal relation between Derivative Gain and Delay. We are more interested in understanding the overall behaviour of the system. The limit on Delay decrease could be explained by a saturation
 
 ### Loadcell Tests
 Static loadcell tests were made to evaluate the loadcell calibration defined below. The joint was positioned in the horizontal position, at \theta = \pi/2.  
