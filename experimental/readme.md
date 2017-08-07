@@ -7,22 +7,31 @@ Below are listed the datasets and the respective Lower Level Controller (the EPO
 	Position Regulator P-Gain = 2533
 	Position Regulator I-Gain = 4772
 	Position Regulator D-Gain = 6919
+	Overshoot = 0
+	Settling Time = 58.86(57.19)-57.04
+	Delay = 57.8-57.04
 
 ![Delay Test 1](https://biopmr.github.io/images/tests-delay_test_1-response.png)
-
-In Figure 1, it is possible to see that the response has no Overshoot, approximately Settling Time of 1.65 seconds and Delay of 0.65 seconds to begin the movement.
 
 #### 20170707-delay_tests_2.csv
 	Position Regulator P-Gain = 2655
 	Position Regulator I-Gain = 4948
 	Position Regulator D-Gain = 15000
+	Overshoot = 0
+	Settling Time = 28.63(28.78)-29.69
+	Delay = 28.63-28.73
+
+![Delay Test 2](https://biopmr.github.io/images/tests-delay_test_2-response.png)
 
 #### 20170707-delay_tests_3.csv
 	Position Regulator P-Gain = 2655
 	Position Regulator I-Gain = 4948
 	Position Regulator D-Gain = 30000
+	Overshoot = 0
+	Settling Time = 43.22(43.37)-44.38
+	Delay = 43.22-43.32
 
-
+![Delay Test 3](https://biopmr.github.io/images/tests-delay_test_3-response.png)
 
 ### Loadcell Tests
 Static loadcell tests were made to evaluate the loadcell calibration defined below. The joint was positioned in the horizontal position, at \theta = \pi/2.  
