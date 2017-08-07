@@ -41,7 +41,11 @@ The variable Delay is defined as the time gap between the instant of change in t
 The variable Settling Time is defined as the time gap between the instant when the theta reference reaches its final position and the instant when the theta tracking reaches its final position. Similarly to the Delay, when the Derivative Gain is increased from 6919 to 15000 the Settling Time goes from 1.67 to 0.91 seconds, however, when increased from 15000 to 30000, no significative change is observed in the Settling Time.
 
 #### Discussion
-The results indicate that an increase in the Derivative Gain will reduce the system response time up to a limit. Since the system dynamics will vary depending on the application, we are not concerned on finding an optimal relation between Derivative Gain and Delay. We are more interested in understanding the overall behaviour of the system. The limit on Delay decrease could be explained by a saturation
+Since the system dynamics will vary depending on the application, we are not concerned on finding an optimal relation between Derivative Gain and Delay: we are more interested in understanding the overall behaviour of the system.
+
+The results indicate that an increase in the Derivative Gain will reduce the system response time up to a limit, which could be explained by a saturation of the actuators.
+
+Further tests can be performed to observe the influence of the Integrative Gain, which should also result in a decrease of the Settling Time. Also, the step input can be made by software, to provide reptibility and other analysys possibilities. Issue #16 refers to this tests.
 
 ### Loadcell Tests
 Static loadcell tests were made to evaluate the loadcell calibration defined below. The joint was positioned in the horizontal position, at \theta = \pi/2.  
