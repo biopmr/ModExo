@@ -57,26 +57,37 @@ The results indicate that an increase in the Derivative Gain will reduce the sys
 Further tests can be performed to observe the influence of the Integrative Gain, which should also result in a decrease of the Settling Time. Also, the step input can be made by software, to provide reptibility and other analysys possibilities. Issue #16 refers to this tests.
 
 ### Loadcell Tests
-Static loadcell tests were made to evaluate the loadcell calibration defined below. The joint was positioned in the horizontal position, at \theta = \pi/2 while different weights were attached to the extremity of the loadcell. 
+Static loadcell tests were made to evaluate the loadcell calibration presented below, which correspond to the code that converts the raw data from the straingauges to mNm. The joint was positioned in the horizontal position, at \theta = \pi/2 while different weights were attached to the extremity of the loadcell according to the Figure.
 
 	// LoadCell Calibration 
 	// [[loadcell_data_double = A*(force) + B]]
 
-	float A = 0.0764; // slop steepness
+	float A = 0.00764; // slop steepness
 	float B = 118712.7+5000; // offset
 	float d = 0.105; // distance between the loadcell centers = 10,5cm  
 
 	contactForce = (loadcell_data + B)*A;
 
-#### 20170712_loadcell_tests_1
+![LoadCell Test Setup](https://biopmr.github.io/images/tests-loadcell-setup.png)
+
+Three loads were applied to the loadcell and the procedure was made twice, generating two .csv data:
 	Weight 1: 5000g
 	Weight 2: 2*1068.7g
 	Weight 3: 528.8g
 
-#### 20170712_loadcell_tests_2
-	Weight 1: 5000g
-	Weight 2: 2*1068.7g
-	Weight 3: 528.8g
+![LoadCell Test 1](https://biopmr.github.io/images/tests-loadcell.png)
+![LoadCell Test 2](https://biopmr.github.io/images/tests-loadcell_2.png)
+
+#### Results
+The graphs show two variables: LoadCell Data and Calculated Torque. The first corresponds to the acquired data with the LoadCell, which has straingauges assembled in a wheatstone bridge. The second is the calulated Torque, respective to the different loads applied to the joint arm. It's also possible to notice a noise, which is due to the changing of the loads.
+
+Three mean errors were calculated for each applied load. These are:
+Mean Percentage Error 5kg = 0.0551
+Mean Percentage Error 2kg = 0.0374
+Mean Percentage Error 0.5kg = 0.339
+
+#### Discussion
+As expected, the mean percentage error did not show a linear correspondence with the applied load. A further evaluation of the impact of this error for the application is needed.
 
 ### Fall Tests
 Two types of tests were made, in which the joint was released from the horizontal position at \theta = \pi/2 with a weight of 528.8g at the endpoint. In the first, the weight is left to fall freely, in the second, the weight fall is interrupted by a plateau. The tests were carried for two different impedances:
