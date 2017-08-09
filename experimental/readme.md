@@ -70,7 +70,7 @@ Static loadcell tests were made to evaluate the loadcell calibration presented b
 
 ![LoadCell Test Setup](https://biopmr.github.io/images/tests-loadcell-setup.png)
 
-Three loads were applied to the loadcell and the procedure was made twice, generating two .csv data:
+Three loads were applied to the loadcell and the procedure was made twice, generating two .csv data:  
 	Weight 1: 5000g
 	Weight 2: 2*1068.7g
 	Weight 3: 528.8g
@@ -81,10 +81,10 @@ Three loads were applied to the loadcell and the procedure was made twice, gener
 #### Results
 The graphs show two variables: LoadCell Data and Calculated Torque. The first corresponds to the acquired data with the LoadCell, which has straingauges assembled in a wheatstone bridge. The second is the calulated Torque, respective to the different loads applied to the joint arm. It's also possible to notice a noise, which is due to the changing of the loads.
 
-Three mean errors were calculated for each applied load. These are:
-Mean Percentage Error 5kg = 0.0551
-Mean Percentage Error 2kg = 0.0374
-Mean Percentage Error 0.5kg = 0.339
+Three mean errors were calculated for each applied load. These are:  
+	Mean Percentage Error 5kg = 0.0551
+	Mean Percentage Error 2kg = 0.0374
+	Mean Percentage Error 0.5kg = 0.339
 
 #### Discussion
 As expected, the mean percentage error did not show a linear correspondence with the applied load. A further evaluation of the impact of this error for the application is needed.
