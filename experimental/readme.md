@@ -1,3 +1,12 @@
+## Experimental
+Below, a description of the tests made with the prototype. 
+
+1. *Delay Tests* Were performed to understand the joint response to steps.
+2. Loadcell Tests Were performed to evaluate the Loadcell aquisition quality.
+3. Fall Tests Were perfomed to evaluate the joint dynamic behaviour.
+
+The files are devided in .csv, with the data generated as the Arduino output and images files, with graphs ploted in MATLAB or other information, like a printscreen or photo of the setups.
+
 ### Low Level Controller Delay Tests
 The joint response to a step input was tested for three different derivative gains. In these tests, the controller mode used was "EncoderControl", in which the reference position is given by manually turning the MA3 encoder. The first PID gains, in delay_test_1, were defined by the Regulation Tuning Wizard from EPOS Studio 2.00. We hypothesised that the delay would decrease as the Derivative Gain increased. So, for the delay_tests_2 and delay_tests_3, the derivative gains were simply increased to verify the change in the system response.
 
@@ -48,7 +57,7 @@ The results indicate that an increase in the Derivative Gain will reduce the sys
 Further tests can be performed to observe the influence of the Integrative Gain, which should also result in a decrease of the Settling Time. Also, the step input can be made by software, to provide reptibility and other analysys possibilities. Issue #16 refers to this tests.
 
 ### Loadcell Tests
-Static loadcell tests were made to evaluate the loadcell calibration defined below. The joint was positioned in the horizontal position, at \theta = \pi/2 while different weights were attached to the extremity of the loadcell.  
+Static loadcell tests were made to evaluate the loadcell calibration defined below. The joint was positioned in the horizontal position, at \theta = \pi/2 while different weights were attached to the extremity of the loadcell. 
 
 	// LoadCell Calibration 
 	// [[loadcell_data_double = A*(force) + B]]
