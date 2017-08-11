@@ -684,8 +684,6 @@ double DifferentialEquation()
         contactTorque = contactForce*d; // mNm
         Serial.println(contactTorque); // mNm
 
-        contactTorque = 1000;
-
         x_1 = x_1 + 0.005*x_2;
         x_2 = x_2 + 0.005*x_3;
         // x_3 = 1/j_eq*(-b_eq*x_2 - k_eq*x_1 + contactTorque);
