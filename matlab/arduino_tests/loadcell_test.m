@@ -36,7 +36,34 @@ Torque2 = l*g*m_2*1000; % Torque given in mNm
 %    X3(initial,:) = [];
 %  end
 
-%% TRACKING PERFORMANCE PLOT FOR TEST 1
+%% ERROR CALCULATIONS
+mean_error_5kg = ((Torque(1:306) - LoadCell(1:306)).^2).^0.5;
+mean_error_500g = ((Torque(600:1100) - LoadCell(600:1100)).^2).^0.5;
+mean_error_2kg = ((Torque(1515:1699) - LoadCell(1515:1699)).^2).^0.5;
+
+percentage_error_5kg = mean_error_5kg./Torque(1:306);
+mean_percentage_error_5kg = sum(percentage_error_5kg)/length(mean_error_5kg)
+
+percentage_error_500g = mean_error_500g./Torque(600:1100);
+mean_percentage_error_500g = sum(percentage_error_500g)/length(mean_error_500g)
+
+percentage_error_2kg = mean_error_2kg./Torque(1515:1699);
+mean_percentage_error_2kg = sum(percentage_error_2kg)/length(mean_error_2kg)
+
+mean_error_5kg_2 = ((Torque2(1:306) - LoadCell2(1:306)).^2).^0.5;
+mean_error_500g_2 = ((Torque2(600:1050) - LoadCell2(600:1050)).^2).^0.5;
+mean_error_2kg_2 = ((Torque2(1515:2000) - LoadCell2(1515:2000)).^2).^0.5;
+
+percentage_error_5kg_2 = mean_error_5kg_2./Torque2(1:306);
+mean_percentage_error_5kg_2 = sum(percentage_error_5kg_2)/length(mean_error_5kg_2)
+
+percentage_error_500g_2 = mean_error_500g_2./Torque2(600:1050);
+mean_percentage_error_500g_2 = sum(percentage_error_500g_2)/length(mean_error_500g_2)
+
+percentage_error_2kg_2 = mean_error_2kg_2./Torque2(1515:2000);
+mean_percentage_error_2kg_2 = sum(percentage_error_2kg_2)/length(mean_error_2kg_2)
+
+%% PLOT FOR TEST 1
 figure('Units', 'pixels', ...
     'Position', [100 100 600 300]);
 grid on
@@ -83,12 +110,9 @@ set(gca, ...
 set([h1XLabel, h1YLabel], ...
     'FontName'   , 'AvantGarde');
 
-% axis([57 59 0 2])
+saveas(gcf,'20170712-loadcell_tests_response.png')
 
-% saveas(gcf,'20170707-delay_test_1_response.png')
-% savefig('03_sin_sin_response')
-
-%% TRACKING PERFORMANCE PLOT FOR TEST 2
+%% PLOT FOR TEST 2
 figure('Units', 'pixels', ...
     'Position', [100 100 600 300]);
 grid on
@@ -135,63 +159,4 @@ set(gca, ...
 set([h2XLabel, h2YLabel], ...
     'FontName'   , 'AvantGarde');
 
-% axis([28 30 0 2])
-
-% saveas(gcf,'20170707-delay_test_2_response.png')
-% savefig('03_sin_sin_response')
-
-%% TRACKING PERFORMANCE PLOT FOR TEST 3
-% figure('Units', 'pixels', ...
-%     'Position', [100 100 600 300]);
-% figure;
-% hold on;
-% hold on
-% grid on
-% 
-% hold on
-% h3encoder = plot(Timems2*ms_to_s, Encoder2*qc_to_rad);
-% h3eposposition = plot(Timems2*ms_to_s, EPOSPosition2*qc_to_rad);
-% h1model = plot(t,x_m(1,:));
-% 
-% set(h3encoder                       , ...
-%   'LineWidth'       ,    2        , ...
-%   'LineStyle'       , '-'      , ...
-%   'color'          , Colors(2,:)     );
-% 
-% set(h3eposposition                       , ...
-%   'LineWidth'       ,    2        , ...
-%   'LineStyle'       , '-'        , ...
-%   'color'          , Colors(1,:)     );
-% 
-% h3Legend = legend( ...
-%   [h3encoder, h3eposposition], ...
-%   '\theta_{Reference}', ...
-%   '\theta_{Tracking}'           , ...
-%   'location', 'NorthEast' );
-% 
-% TrackingTitle  = title ('My Publication-Quality Graphics');
-% h3YLabel = ylabel('\theta (rad)');
-% h3XLabel = xlabel('time (s)');
-% 
-% 
-% set([h3Legend, gca]             , ...
-%     'FontSize'   , 13           );
-% 
-% set( gca                       , ...
-%     'FontSize',         15     , ...
-%     'FontName'   , 'Helvetica' );
-% 
-% set(gca, ...
-%   'XMinorTick'  , 'on'      , ...
-%   'YMinorTick'  , 'on'      , ...
-%   'YGrid'       , 'off'      , ...
-%   'LineWidth'   , 1         );
-% 
-% set([h3XLabel, h3YLabel], ...
-%     'FontName'   , 'AvantGarde');
-% 
-% axis([43 45 0 2])
-% 
-% print -r3500 % set resolution
-% saveas(gcf,'20170707-delay_test_3_response.png')
-% savefig('03_sin_sin_response')
+saveas(gcf,'20170712-loadcell_tests_2_response.png')
