@@ -687,7 +687,7 @@ double DifferentialEquation()
         x_1 = x_1 + 0.005*x_2;
         x_2 = x_2 + 0.005*x_3;
         // x_3 = 1/j_eq*(-b_eq*x_2 - k_eq*x_1 + contactTorque);
-        x_3 = 20*(-5*x_2 - 200*x_1 + contactTorque); // works
+        x_3 = 20*(-1*x_2 - 10*x_1 + contactTorque); // works
         // x_3 = 20*(contactTorque); // doesnt work
         // x_3 = 20*(-5*x_2 - 50*x_1 + contactTorque + 10*sin(x_1*(pi/(4*50000))); // anti gravity
         
