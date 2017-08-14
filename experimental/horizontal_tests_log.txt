@@ -1,0 +1,63 @@
+14/08/17
+
+horizontal tests
+	#1 Manual Position Step
+		quarto de volta
+		meia volta uma vez
+
+	#2 Software Position Step
+		quarto de volta
+
+	#3 Software Torque Step With Impedance Control
+		50 mNm
+        x_3 = 20*(-1*x_2 - 10*x_1 + contactTorque); // works
+
+   #4 Software Torque Step With Impedance Control
+		100 mNm
+        x_3 = 20*(-1*x_2 - 10*x_1 + contactTorque); // works
+        deu problema, pois ele nao calcula x_1
+
+   #5 Software Torque Step With Impedance Control
+		100 mNm
+        x_3 = 20*(-1*x_2 - 10*x_1 + contactTorque); // works
+        fixed eposposition variable
+
+	#6 Software Torque Step With Impedance Control
+		50 mNm
+        x_3 = 20*(-1*x_2 - 10*x_1 + contactTorque); // works
+        fixed eposposition variable       
+
+	#7 Software Torque Step With Impedance Control
+		50 mNm
+        x_3 = 50*(-1*x_2 - 10*x_1 + contactTorque); // works
+        fixed eposposition variable 
+
+	#8 Software Torque Step With Impedance Control
+		50 mNm
+        x_3 = 5*(-1*x_2 - 10*x_1 + contactTorque); // works
+        fixed eposposition variable 
+
+	#9 Software Torque Step With Impedance Control
+		50 mNm
+        x_3 = 20*(-1*x_2 - 2*x_1 + contactTorque); // works
+        fixed eposposition variable 
+
+	#10 Software Torque Step With Impedance Control
+		50 mNm
+        x_3 = 20*(-1*x_2 - 20*x_1 + contactTorque); // works
+        fixed eposposition variable 
+
+	#11 Software Torque Step With Impedance Control
+		50 mNm
+        x_3 = 2*(-1*x_2 - 20*x_1 + contactTorque); // works
+        fixed eposposition variable 
+
+	#12 Software Torque Step With Impedance Control
+		50 mNm
+        x_3 = 20*(-5*x_2 - 2*x_1 + contactTorque); // works
+        fixed eposposition variable 
+
+	#13 Software Torque Step With Impedance Control
+		50 mNm
+        x_3 = 20*(-5*x_2 - 20*x_1 + contactTorque); // works
+        fixed eposposition variable 
