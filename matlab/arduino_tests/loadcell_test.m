@@ -20,7 +20,7 @@ m_2(1100:length(Timems2)) = 2*1.0687; % 2 masses of 1.0687kg
 Torque = l*g*m*1000; % Torque given in mNm
 Torque2 = l*g*m_2*1000; % Torque given in mNm
 
-% use the code below delete lines not necessary
+% use the code below delete unnecessary lines
 % initial=1;
 % final=2000;
 %
