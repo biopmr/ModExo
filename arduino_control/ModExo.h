@@ -47,7 +47,7 @@ MCP_CAN CAN(SPI_CS_PIN);
 // Sensor variables
 uint32_t encoder_data = 0;
 uint32_t current_data = 0;
-uint32_t actualposition_data = 0;
+int32_t actualposition_data = 0;
 int32_t loadcell_data = 0;
 double loadcell_data_double = 0;
 bool sync_flag = 0; 
@@ -407,11 +407,10 @@ void serialController(char command)
 // CONTROL MODES
 //****************
 //-----------------------------------------------------------------
-void gotoPositionZero()
-{  
+double gotoPositionZero()
+{
   unsigned char len = 0;
   unsigned char buf[8]; 
-  positionSetpoint(0);
 
   if(CAN_MSGAVAIL == CAN.checkReceive())            // check if data coming
   {
@@ -448,11 +447,6 @@ void gotoPositionZero()
       // ID 321 message has information sent by the amplification board
       // Messages coming from the amp_board has most significative bits coming first
       case 0x321:
-        // encoderDataRead();
-        encoder_data = buf[4];
-        encoder_data <<= 8; // bitshift equals times 2^8
-        encoder_data = encoder_data | buf[5]; // sum operation
-
         // // load_cell information is read from buf[1], buf[2] and buf[3] and converted to decimal
         loadcell_data = buf[1];
         loadcell_data <<= 8;
@@ -463,12 +457,27 @@ void gotoPositionZero()
         if(buf[1] >= 128)
           loadcell_data |= 0xFF000000;
 
-        loadcell_data_double = loadcell_data +B;
-
         encoder_data *= 200000 / 4096; //conversion to quadrature counts
+
+        loadcell_data_double = loadcell_data; 
+        // loadcell_data_double = loadcell_data_double + 130000;
+
+        // if(loadcell_data_double>-4000&&loadcell_data_double<4000)
+        //   loadcell_data_double = 0;
 
         contactForce = (loadcell_data + B)*A;
         contactTorque = contactForce*d; // mNm
+        contactTorque = 0; // mNm (Used for Torque Step)
+
+        x_1 = x_1 + 0.005*x_2;
+        x_2 = x_2 + 0.005*x_3;
+        // x_3 = 1/j_eq*(-b_eq*x_2 - k_eq*x_1 + contactTorque);
+        x_3 = 20*(-1*x_2 - 10*x_1 + contactTorque); // works
+        // x_3 = 20*(contactTorque); // doesnt work
+        // x_3 = 20*(-5*x_2 - 50*x_1 + contactTorque + 10*sin(x_1*(pi/(4*50000))); // anti gravity
+        
+        targetposition = 10000*x_1;
+        positionSetpoint(targetposition);
 
         DataPrint();
 
@@ -481,7 +490,6 @@ float doStep()
 {
   unsigned char len = 0;
   unsigned char buf[8]; 
-  positionSetpoint(50000);
 
   if(CAN_MSGAVAIL == CAN.checkReceive())            // check if data coming
   {
@@ -536,6 +544,8 @@ float doStep()
         loadcell_data_double = loadcell_data +B;
 
         encoder_data *= 200000 / 4096; //conversion to quadrature counts
+
+        positionSetpoint(50100);
 
         contactForce = (loadcell_data + B)*A;
         contactTorque = contactForce*d; // mNm
@@ -610,10 +620,6 @@ float EncoderControl()
 
         contactForce = (loadcell_data + B)*A;
         contactTorque = contactForce*d; // mNm
-        Serial.println(contactTorque); // mNm
-
-        // Serial.print("Encoder Position: ");
-        Serial.println(loadcell_data_double);
 
         DataPrint();
 
@@ -652,6 +658,9 @@ double DifferentialEquation()
         actualposition_data <<= 8;
         actualposition_data = actualposition_data | buf[2];
 
+        if(buf[5] >= 128)
+          actualposition_data |= 0xFF000000;
+
         // Serial.print("Actual Position: ");
         // Serial.println(actualposition_data);
 
@@ -675,19 +684,18 @@ double DifferentialEquation()
         encoder_data *= 200000 / 4096; //conversion to quadrature counts
 
         loadcell_data_double = loadcell_data; 
-        // loadcell_data_double = loadcell_data_double + 130000;
 
         // if(loadcell_data_double>-4000&&loadcell_data_double<4000)
         //   loadcell_data_double = 0;
 
         contactForce = (loadcell_data + B)*A;
         contactTorque = contactForce*d; // mNm
-        Serial.println(contactTorque); // mNm
+        // contactTorque = 50; // mNm (Used for Torque Step)
 
         x_1 = x_1 + 0.005*x_2;
         x_2 = x_2 + 0.005*x_3;
         // x_3 = 1/j_eq*(-b_eq*x_2 - k_eq*x_1 + contactTorque);
-        x_3 = 20*(-1*x_2 - 10*x_1 + contactTorque); // works
+        x_3 = 20*(-1*x_2 - 20*x_1 + contactTorque); // works
         // x_3 = 20*(contactTorque); // doesnt work
         // x_3 = 20*(-5*x_2 - 50*x_1 + contactTorque + 10*sin(x_1*(pi/(4*50000))); // anti gravity
         
@@ -756,7 +764,8 @@ void loopModExo()
       PDOConfig();
     case Operational:
       Serial.println("State: Operational");
-      State = OperationalDifferentialControl;
+      State = GoHome;
+      // State = OperationalDifferentialControl;
       // State = OperationalEncoderControl;
     // EncoderControl();
       break;
