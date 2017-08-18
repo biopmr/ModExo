@@ -107,10 +107,11 @@ and
 
 ### Response to Software Position Step 
 In the "Delay Test", the position reference was given by hand - possible to identify in Figures 1, 2 and 3 by a slighlty inclined theta reference step. In the tests shown below, the step was given by software, by setting the position setpoint as 50000qc or one quarter of a turn. The PID gains used were the same as used in *Delay Tests 2*: 
+
 	Position Regulator P-Gain = 2655
 	Position Regulator I-Gain = 4948
 	Position Regulator D-Gain = 15000
  
-  In these tests, the controller mode used was "EncoderControl", in which the reference position is given by turning the MA3 encoder by hand. The first PID gains, in delay_test_1, were defined by the Regulation Tuning Wizard from EPOS Studio 2.00. We hypothesised that the delay would decrease as the Derivative Gain increased. So, for the delay_tests_2 and delay_tests_3, the derivative gains were simply increased to verify the change in the system response.
+
 
 Below are listed the datasets and the respective Lower Level Controller (the EPOS) PID gains. This datasets are the CSV data generated as the output of the [ModExo code version](https://github.com/biopmr/ModExo/commit/fbe45a4ca06b29ec54b75cb432308c84095bc77f). 
