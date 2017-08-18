@@ -116,7 +116,8 @@ In the "Delay Test", the position reference was given by hand - possible to iden
 	Position Regulator P-Gain = 2655
 	Position Regulator I-Gain = 4948
 	Position Regulator D-Gain = 15000
- 
 
+The CSV datasets were generated as the output of the [ModExo code version](https://github.com/biopmr/ModExo/commit/6406149b4862f258c7d46ec308e35900ec223919). 
 
-Below are listed the datasets and the respective Lower Level Controller (the EPOS) PID gains. This datasets are the CSV data generated as the output of the [ModExo code version](https://github.com/biopmr/ModExo/commit/fbe45a4ca06b29ec54b75cb432308c84095bc77f). 
+### Impedance Control
+11 tests were made with the impedance control implemented in [ModExo code version](https://github.com/biopmr/ModExo/commit/6406149b4862f258c7d46ec308e35900ec223919). The goal of this tests was to evaluate the dynamics of the joint and the performance of the impedance control.

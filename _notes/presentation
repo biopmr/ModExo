@@ -1,0 +1,26 @@
+presentation
+
+18/08/2017
+	1. Experimental Setup
+		a. Exo Loli -> mechanical solution for harmonic drive dettachment problem
+		b. Driver EPOS2
+			a. Positioning System PID
+			b. Analog-Digital Communication
+			c. CAN BUS
+		c. Modular Approach
+			The knowledge of which human limb is actuated is not crucial.
+			Which parameters matters(global)?
+			Which ones are especific(local)?
+	2. Impedance Control
+		What is impedance control?
+		Why impedance control?
+
+	3. Github
+		a. File Management x Knowledge Management (Dropbox x Github)
+		b. Git / Versioning / Commits
+			experimental\readme.md
+			arduino_tests\teste.m
+		c. Issues
+			Software x Hardware 
+				Cable for exoskeleton
+		wd. ModExo Viewer / Telemetry Viewer
