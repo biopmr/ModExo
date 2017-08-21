@@ -37,7 +37,7 @@ function mrac_main(X0,Ahat0,jv,bv,kv,K,m_ext,T)
 %   
 %**************************************************************************
 
-dt = 0.01;
+dt = 0.05; %samplong time of 50ms
 t = 0:dt:T;
 tt = linspace(-pi,2*pi,T/dt+1);
 Colors = linspecer(6); 
@@ -48,10 +48,8 @@ N = n + 1; % auxiliar variable
 %% REFERENCES
 
 % step
-Ur(1,:) = K*ones(1,length(t));
-% Ur(2,:) = 0;
-% Ur(3,:) = 0;
-% 
+Ur(1,:) = LoadCell(50:395);
+
 % % sin1
 % Ur(1,:) = K*sin(2*pi/5*t);
 % Ur(2,:) = K*(2*pi/5)*cos(2*pi/5*t);
@@ -77,7 +75,7 @@ Ur(1,:) = K*ones(1,length(t));
 
 %% ODE
 
-[x_m,x,x_1,Ue,Ahat,v,e,G,V,j_eq,b_eq,k_eq,C,J] = exo_gravity(N,Ur,X0,dt,T,t,jv,bv,kv,Ahat0,m_ext);
+[x_m,x,x_1,Ue,Ahat,v,e,G,V,j_eq,b_eq,k_eq,C,J] = exo_horizontal(N,Ur,X0,dt,T,t,jv,bv,kv,Ahat0,m_ext);
 % [x_m,x,Ue,Ahat,v,e,G,V,j_eq,b_eq,k_eq,C,J] = rk_exo(N,Ur,X0,dt,T,t,jv,bv,kv,Ahat0,m_ext);
 
 %% TRACKING PERFORMANCE PLOT
