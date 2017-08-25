@@ -1,4 +1,4 @@
-function [x_m,x,x_1,Ue,Ahat,v,e,G,V,j_eq,b_eq,k_eq,C,J] = exo_gravity(N,Ur,X0,dt,T,t,jv,bv,kv,Ahat0,m_ext)
+function [x_m,x,x_1,Ue,Ahat,v,e,G,V,j_eq,b_eq,k_eq,C,J] = exo_gravity(N,Ur,X0,dt,T,t,jv,bv,kv,Ahat0,EPOSPosition,X1,X2,X3,LoadCell)
 
 % control parameters
 zeta = 0.8;
@@ -41,7 +41,6 @@ L = 0.3; % m
 % I_h = 0.282*10^(-4);            % moment of inertia of harmonic drive
 % I_st = m_st*R^2/2;              % calculates moment of inertia of structure
 % % I_st = m_st*L^2/3;      % calculates moment of inertia of structure DOUBLE CHECK!!!!!
-I_ext = m_ext/2*L^2;
 % 
 % I_j = I_m + I_h + I_st;        % moment of inertia of exoskeleton joint
 % I_l = m_l*((L^2+B^2)/12 + (R+L/2)^2); % moment of inertia of exoskeleton link
@@ -55,13 +54,17 @@ k_exo = 5.12; % Nm/rad [5.3-13.1]
 L = 0.3; % m
 
 % coupled system (plant)
-j_eq = j_h + j_exo + I_ext; % Nms^2/rad
+j_eq = j_h + j_exo; % Nms^2/rad
 % % j_eq = j_h; % Nms^2/rad
 b_eq = b_h + b_exo; % Nms/rad 
 k_eq = k_h + k_exo; % Nm/rad
 L = 0.3; % m
 
 % virtual parameters (reference model)
+kv = 10; % parameter used in test
+bv = 1; % parameter used in test
+jv = 20; % parameter used in test
+
 a0 = kv;
 a1 = bv;
 a2 = jv;
@@ -84,7 +87,9 @@ Ue = zeros(3,T/dt+1); % initiates exoskeleton control array
 v = zeros(3,T/dt+1); % initiates signal variable array
 
 % initial conditions
-x(:,1) = X0;
+x(1,1) = X1(1);
+x(2,1) = X2(1);
+x(3,1) = X3(1);
 x_1(:,1) = X0;
 x_m(:,1) = X0;
 e(1,1) = x(1,1) - x_m(1,1);
@@ -101,13 +106,6 @@ C(1) = 0;
 J(1) = 0;
 
 for i = 1:(T/dt);
-    % non linearity
-%     G(i+1) = j_eq*L/2*cos(x(1,i)*pi/180); %real
-%     G(i+1) = k_eq*0.3*cos(t(i));
-    G(i+1) = 0;
-%     C(i+1) = b_eq*(1+0.3*sin(t(i))); 
-%     J(i+1) = j_eq*(1+abs(0.3*sin(t(i)))); 
-    
     % tracking error
     e(1,i+1) = x(1,i) - x_m(1,i);
     e(2,i+1) = x(2,i) - x_m(2,i);
@@ -132,11 +130,9 @@ for i = 1:(T/dt);
     x_1(3,i+1) = 1/j_eq*(-b_eq*x_1(2,i) - k_eq*x_1(1,i) + Ur(1,i));
     
     % plant
-    x(1,i+1) = x(1,i) + dt*x(2,i);
-    x(2,i+1) = x(2,i) + dt*x(3,i);
-    x(3,i+1) = 1/j_eq*(-b_eq*x(2,i) - k_eq*x(1,i) + Ue(1,i)); %    without b_eq variation
-%     x(3,i+1) = 1/j_eq*(-C(i)*x(2,i) - k_eq*x(1,i) - G(i) + Ue(1,i)); % with b_eq variation
-%     x(3,i+1) = 1/J(i)*(-C(i)*x(2,i) - k_eq*x(1,i) - G(i) + Ue(1,i)); % with b_eq and J_eq variation
+    x(1,i) = X1(i,1);
+    x(2,i) = X2(i,1);
+    x(3,i) = X3(i,1);
 
     % error
     Atil(1,:,i+1) = Ahat(1,:,i) - A';
