@@ -1,42 +1,31 @@
-
-%% VARIABLE EDITING
+% Parameters
 ms_to_s = 1/1000; % converts miliseconds to seconds
 qc_to_rad = 2*pi/200000; % converts quadrature counts to radians
 
-data = iddata(EPOSPosition*qc_to_rad,LoadCell,'Ts', 50);
-data.OutputName  = '\Theta_{EPOS}';
-data.OutputUnit  = 'rad';
-data.InputName = 'tau_{Torque}';
-data.InputUnit = 'mNm';
-data.TimeUnit   = 'milliseconds';
-plot(data)
+% Data structure
+dataEPOS = iddata(EPOSPosition*qc_to_rad,LoadCell,'Ts', 50);
+dataEPOS.OutputName  = '\Theta_{EPOS}';
+dataEPOS.OutputUnit  = 'rad';
+dataEPOS.InputName = 'tau_{Torque}';
+dataEPOS.InputUnit = 'mNm';
+dataEPOS.TimeUnit   = 'milliseconds';
 
-sysTF = tfest(data,2,0,nan,'Ts', 50)
-sys = tf(sysTF.num, sysTF.den,0.05)
+dataArduino = iddata(X1*qc_to_rad*10000,LoadCell,'Ts', 50);
+dataArduino.OutputName  = '\Theta_{EPOS}';
+dataArduino.OutputUnit  = 'rad';
+dataArduino.InputName = 'tau_{Torque}';
+dataArduino.InputUnit = 'mNm';
+dataArduino.TimeUnit   = 'milliseconds';
 
-sysSS = tf2ss(sysTF.num,sysTF.den)
+% System Definition
+sysEPOSd = tfest(dataEPOS,2,0,nan,'Ts', 50); % EPOS discrete system
+sysEPOSc = d2c(sysEPOSd); % EPOS discrete system
+sysArduinod = tfest(dataArduino,2,0,nan,'Ts', 50); % Arduino discrete system
+sysArduinoc = d2c(sysArduinod); % EPOS discrete system
 
-[A,B,C,D] = tf2ss(sysTF.num,sysTF.den)
-sysTFC = d2c(sysTF)
+[Aed,Bed,Ced,Ded] = tf2ss(sysEPOSd.num,sysEPOSd.den) % EPOS discrete state spaces
+[Aad,Bad,Cad,Dad] = tf2ss(sysArduinod.num,sysArduinod.den) % Arduino discrete state spaces
 
+[Aec,Bec,Cec,Dec] = tf2ss(sysEPOSc.num,sysEPOSc.den) % EPOS continuous state spaces
+[Aac,Bac,Cac,Dac] = tf2ss(sysArduinoc.num,sysArduinoc.den) % Arduino continuous state spaces
 
-% >> sysTF = tfest(data,2,0,nan)
-% 
-% sysTF =
-% 
-%  From input "tau_{Torque}" to output "\Theta_{EPOS}":
-%                          0.001975
-%  exp(-100*s) * ----------------------------
-%                s^2 + 0.001844 s + 3.959e-06
-% 
-%Continuous-time identified transfer function.
-%
-%Parameterization:
-%   Number of poles: 2   Number of zeros: 0
-%   Number of free coefficients: 3
-%   Use "tfdata", "getpvec", "getcov" for parameters and their uncertainties.
-
-%Status:                                          
-%Estimated using TFEST on time domain data "data".
-%Fit to estimation data: 98.25% (simulation focus)
-%FPE: 4.068e+04, MSE: 3.91e+04 
