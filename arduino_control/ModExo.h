@@ -628,7 +628,7 @@ float EncoderControl()
   }
 }
 //-----------------------------------------------------------------
-double DifferentialEquation()
+double differentialControl()
 {
   unsigned char len = 0;
   unsigned char buf[8]; 
@@ -787,7 +787,7 @@ void loopModExo()
       doStep();
       break;  
     case OperationalDifferentialControl:
-      DifferentialEquation();
+      differentialControl();
       break;
   }
 
