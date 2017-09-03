@@ -10,9 +10,9 @@ Where X1, X2 and X3 are, respectively, angular position, angular velocity and an
 
 As already mentioned in the control structure, the High Level Controller calculates the reference model position for a given input. The Low Level Controller task is to make the joint position as close as possible to that virtual position. In figures 1 and 2, it is possible to observe the tracking performance for the joint with no extra mass.
 
-![Model Reference Tracking](https://biopmr.github.io/images/modelReferenceTracking.eps)
+![Model Reference Tracking](https://biopmr.github.io/images/modelReferenceTracking.png)
 
-![Model Reference Tracking 2](https://biopmr.github.io/images/modelReferenceTracking2.eps)
+![Model Reference Tracking 2](https://biopmr.github.io/images/modelReferenceTracking2.png)
 
 
 In order to achieve that, the system parameters are estimated from the system response with the MATLAB function _tfest_.
