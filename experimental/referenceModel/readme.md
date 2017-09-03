@@ -14,6 +14,8 @@ As already mentioned in the control structure, the High Level Controller calcula
 
 ![Model Reference Tracking 2](https://biopmr.github.io/images/modelReferenceTracking2.png)
 
+The figures show two plots, \theta_m refers to the Model Reference Position calculated by the Arduino while \theta_e refers to the joint position given by the MILE Encoder in the motor. It is possible to observe that the curves are really close. Further experiments are required with higher impedance attached to the joint, however, for the analysis that will follow, we will consider that there is no significative difference in between the virtual dynamics requested by the Reference Model and the apparent dynamics performed by the Plant.
+
 
 In order to achieve that, the system parameters are estimated from the system response with the MATLAB function _tfest_.
 
