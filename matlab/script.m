@@ -31,6 +31,9 @@ qc_to_rad = 2*pi/200000; % converts quadrature counts to radians
 
 %% PLOT FOR MODEL REFERENCE TRACKING PERFORMANCE
 
+[pks,locs] = findpeaks(LoadCell)
+t0 = locs(1,1);
+
 Colors = linspecer(6); 
 figure('Units', 'pixels', ...
     'Position', [100 100 600 300]);
