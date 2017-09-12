@@ -17,11 +17,14 @@ sysArduinoc = d2c(sysArduinod); % Arduino continuous system
 [Aad,Bad,Cad,Dad] = tf2ss(sysArduinod.num,sysArduinod.den) % Arduino discrete state spaces
 [Aac,Bac,Cac,Dac] = tf2ss(sysArduinoc.num,sysArduinoc.den) % Arduino continuous state spaces
 
+sysArduino2 = ss(Aac, Bac, [0 Cac(1,2)], 0); % Forces the state spaces representation to a known format
+
+estimatedRatio = (Aac(1,1)/Aac(1,2));
 
 %% PLOT FOR MODEL REFERENCE TRACKING PERFORMANCE
 
 [pks,locs] = findpeaks(LoadCell)
-t0 = locs(1,1);
+% t0 = locs(1,1);
 
 Colors = linspecer(6); 
 figure('Units', 'pixels', ...
@@ -68,8 +71,8 @@ set(gca, ...
 set([h1XLabel, h1YLabel], ...
     'FontName'   , 'AvantGarde');
 
-print -depsc2 modelReferenceTracking.eps
-saveas(gcf,'modelReferenceTracking.png')
+print -depsc2 modelReferenceTracking8.eps
+saveas(gcf,'modelReferenceTracking8.png')
 
 % % EPOS Analysis
 % Used when comparing Arduino setpoint and EPOS response

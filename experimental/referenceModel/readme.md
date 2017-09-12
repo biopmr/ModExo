@@ -26,7 +26,94 @@ In order to obtain the estimation vector Ahat, we will be looking at the positio
 
 A = [-b/J -k/J ; 1 0 ];
 
+#### State Space Models
 
+	Estimated using TFEST on time domain data "dataArduino".
+	Fit to estimation data: 99.91%                          
+	FPE: 4.548e-07, MSE: 4.523e-07                          
+	Ad = [0.05, 1, 10]
+	Aat = [-20, -200 ; 1, 0]
+	Aac = [-0.0020 -2.1035e-06 ; 1, 0]
+	Aat(1,1)/Aat(1,2) = 0.1
+	Aac(1,1)/Aac(1,2) = 949.4914
+
+	
+	Estimated using TFEST on time domain data "dataArduino".
+	Fit to estimation data: 88.51%                          
+	FPE: 0.001973, MSE: 0.001963   
+	Ad = [0.05, 1, 20]
+	Aat = [-20, -400 ; 1, 0]
+	Aac = [-0.0026 -3.6634e-06 ; 1, 0]
+	Aat(1,1)/Aat(1,2) = 0.05
+	Aac(1,1)/Aac(1,2) = 704.0654
+
+
+	Estimated using TFEST on time domain data "dataArduino".
+	Fit to estimation data: 73.26%                          
+	FPE: 0.8282, MSE: 0.8258 
+	Ad = [0.05, 1, 2]
+	Aat = [-20, -40 ; 1, 0]
+	Aac = [-0.0071 -2.9713e-06 ; 1, 0]
+	Aat(1,1)/Aat(1,2) = 0.5
+	Aac(1,1)/Aac(1,2) = 2.378,4
+
+
+	Estimated using TFEST on time domain data "dataArduino".
+	Repeating test3 but with data only until sample 835
+	Fit to estimation data: 99.97%                          
+	FPE: 7.829e-07, MSE: 7.773e-07  
+	Ad = [0.05, 1, 2]
+	Aat = [-20, -40 ; 1, 0]
+	Aac = [-0.0021 -4.2132e-07 ; 1, 0]
+	Aat(1,1)/Aat(1,2) = 0.5
+	Aac(1,1)/Aac(1,2) = 4949.3
+
+
+	Estimated using TFEST on time domain data "dataArduino".
+	Repeating test3 but with data only until sample 327
+	Fit to estimation data: 99.84%                          
+	FPE: 3.866e-07, MSE: 3.796e-07  
+	Ad = [0.05, 1, 20]
+	Aat = [-20, -400 ; 1, 0]
+	Aac = [-0.0019 -4.1947e-06 ; 1, 0]
+	Aat(1,1)/Aat(1,2) = 0.05
+	Aac(1,1)/Aac(1,2) = 449.8469
+
+	
+	Estimated using TFEST on time domain data "dataArduino" with input torque = 100mNm
+	Fit to estimation data: 99.95%                          
+	FPE: 4.183e-07, MSE: 4.169e-07  
+	Ad = [0.05, 1, 10]
+	Aat = [-20, -200 ; 1, 0]
+	Aac = [-0.0020 -2.1025e-06 ; 1, 0]
+	Aat(1,1)/Aat(1,2) = 0.1
+	Aac(1,1)/Aac(1,2) = 949.5805
+
+	Estimated using TFEST on time domain data "dataArduino".
+	With data only until sample 3984.
+	Fit to estimation data: 99.95%                          
+	FPE: 8.129e-07, MSE: 8.109e-07 
+	Ad = [0.05, 5, 2]
+	Aat = [-100, -40 ; 1, 0]
+	Aac = [-0.1010 -4.0569e-06 ; 1, 0]
+	Aat(1,1)/Aat(1,2) = 0.1
+	Aac(1,1)/Aac(1,2) = 24885
+
+	Estimated using TFEST on time domain data "dataArduino".
+	With data only until sample 469.
+	Fit to estimation data: 99.75%                          
+	FPE: 7.586e-07, MSE: 7.49e-07 
+	Ad = [0.05, 5, 20]
+	Aat = [-100, -400 ; 1, 0]
+	Aac = [-0.0581 -2.4293e-05 ; 1, 0]
+	Aat(1,1)/Aat(1,2) = 0.25
+	Aac(1,1)/Aac(1,2) = 2391.7
+
+#### Variables Definition
+
+Ad: Parameters set to Arduino
+Aat: Theoretical A matrix
+Aac: Calculated continuous Matrix
 
 
 
