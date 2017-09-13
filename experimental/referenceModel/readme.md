@@ -35,10 +35,10 @@ A = [-b/J -k/J ; 1 0 ];
 	dataArduino = iddata(X1*qc_to_rad*10000,LoadCell,'Ts', 50)
 	Fit to estimation data: 99.91%                          	
 	Ad = [0.05, 1, 10]
-	Aat = [-20, -200 ; 1, 0]
-	Aac = [-0.0020 -2.1035e-06 ; 1, 0]
-	Aat(1,1)/Aat(1,2) = 0.1
-	Aac(1,1)/Aac(1,2) = 949.4914
+	Amd = [-20, -200 ; 1, 0]
+	Aec = [-0.0020, -2.1035e-06 ; 1, 0]
+	Amd(1,1)/Amd(1,2) = 0.1
+	Aec(1,1)/Aec(1,2) = 949.4914
 
 ![Model Reference Response to Torque input of 50mNm](https://biopmr.github.io/images/modelReferenceTracking3.png)	
 
@@ -47,10 +47,10 @@ A = [-b/J -k/J ; 1 0 ];
 	dataArduino = iddata(X1*qc_to_rad*10000,LoadCell,'Ts', 50)
 	Fit to estimation data: 88.51%                          
 	Ad = [0.05, 1, 20]
-	Aat = [-20, -400 ; 1, 0]
-	Aac = [-0.0026 -3.6634e-06 ; 1, 0]
-	Aat(1,1)/Aat(1,2) = 0.05
-	Aac(1,1)/Aac(1,2) = 704.0654
+	Amd = [-20, -400 ; 1, 0]
+	Aec = [-0.0026 -3.6634e-06 ; 1, 0]
+	Amd(1,1)/Amd(1,2) = 0.05
+	Aec(1,1)/Aec(1,2) = 704.0654
 
 ![Model Reference Response to Torque input of 50mNm](https://biopmr.github.io/images/modelReferenceTracking4.png)
 
@@ -59,10 +59,10 @@ A = [-b/J -k/J ; 1 0 ];
 	dataArduino = iddata(X1*qc_to_rad*10000,LoadCell,'Ts', 50)
 	Fit to estimation data: 73.26%                          
 	Ad = [0.05, 1, 2]
-	Aat = [-20, -40 ; 1, 0]
-	Aac = [-0.0071 -2.9713e-06 ; 1, 0]
-	Aat(1,1)/Aat(1,2) = 0.5
-	Aac(1,1)/Aac(1,2) = 2.378,4
+	Amd = [-20, -40 ; 1, 0]
+	Aec = [-0.0071 -2.9713e-06 ; 1, 0]
+	Amd(1,1)/Amd(1,2) = 0.5
+	Aec(1,1)/Aec(1,2) = 2.378,4
 
 ![Model Reference Response to Torque input of 50mNm](https://biopmr.github.io/images/modelReferenceTracking5.png)
 
@@ -71,10 +71,10 @@ A = [-b/J -k/J ; 1 0 ];
 	dataArduino = iddata(X1(1:835)*qc_to_rad*10000,LoadCell,'Ts', 50)
 	Fit to estimation data: 99.97%                           
 	Ad = [0.05, 1, 2]
-	Aat = [-20, -40 ; 1, 0]
-	Aac = [-0.0021 -4.2132e-07 ; 1, 0]
-	Aat(1,1)/Aat(1,2) = 0.5
-	Aac(1,1)/Aac(1,2) = 4949.3
+	Amd = [-20, -40 ; 1, 0]
+	Aec = [-0.0021 -4.2132e-07 ; 1, 0]
+	Amd(1,1)/Amd(1,2) = 0.5
+	Aec(1,1)/Aec(1,2) = 4949.3
 
 ![Model Reference Response to Torque input of 50mNm](https://biopmr.github.io/images/modelReferenceTracking6.png)
 
@@ -83,10 +83,10 @@ A = [-b/J -k/J ; 1 0 ];
 	dataArduino = iddata(X1(1:327)*qc_to_rad*10000,LoadCell,'Ts', 50)
 	Fit to estimation data: 99.84%                          
 	Ad = [0.05, 1, 20]
-	Aat = [-20, -400 ; 1, 0]
-	Aac = [-0.0019 -4.1947e-06 ; 1, 0]
-	Aat(1,1)/Aat(1,2) = 0.05
-	Aac(1,1)/Aac(1,2) = 449.8469
+	Amd = [-20, -400 ; 1, 0]
+	Aec = [-0.0019, -4.1947e-06 ; 1, 0]
+	Amd(1,1)/Amd(1,2) = 0.05
+	Aec(1,1)/Aec(1,2) = 449.8469
 
 ![Model Reference Response to Torque input of 50mNm](https://biopmr.github.io/images/modelReferenceTracking7.png)
 
@@ -96,10 +96,10 @@ A = [-b/J -k/J ; 1 0 ];
 	Fit to estimation data: 99.95%                          
 	FPE: 4.183e-07, MSE: 4.169e-07  
 	Ad = [0.05, 1, 10]
-	Aat = [-20, -200 ; 1, 0]
-	Aac = [-0.0020 -2.1025e-06 ; 1, 0]
-	Aat(1,1)/Aat(1,2) = 0.1
-	Aac(1,1)/Aac(1,2) = 949.5805
+	Amd = [-20, -200 ; 1, 0]
+	Aec = [-0.0020, -2.1025e-06 ; 1, 0]
+	Amd(1,1)/Amd(1,2) = 0.1
+	Aec(1,1)/Aec(1,2) = 949.5805
 
 ![Model Reference Response to Torque input of 50mNm](https://biopmr.github.io/images/modelReferenceTracking8.png)
 
@@ -109,10 +109,10 @@ A = [-b/J -k/J ; 1 0 ];
 	Fit to estimation data: 99.95%                          
 	FPE: 8.129e-07, MSE: 8.109e-07 
 	Ad = [0.05, 5, 2]
-	Aat = [-100, -40 ; 1, 0]
-	Aac = [-0.1010 -4.0569e-06 ; 1, 0]
-	Aat(1,1)/Aat(1,2) = 0.1
-	Aac(1,1)/Aac(1,2) = 24885
+	Amd = [-100, -40 ; 1, 0]
+	Aec = [-0.1010, -4.0569e-06 ; 1, 0]
+	Amd(1,1)/Amd(1,2) = 2.5
+	Aec(1,1)/Aec(1,2) = 24885
 
 ![Model Reference Response to Torque input of 50mNm](https://biopmr.github.io/images/modelReferenceTracking9.png)
 
@@ -122,16 +122,24 @@ A = [-b/J -k/J ; 1 0 ];
 	Fit to estimation data: 99.75%                          
 	FPE: 7.586e-07, MSE: 7.49e-07 
 	Ad = [0.05, 5, 20]
-	Aat = [-100, -400 ; 1, 0]
-	Aac = [-0.0581 -2.4293e-05 ; 1, 0]
-	Aat(1,1)/Aat(1,2) = 0.25
-	Aac(1,1)/Aac(1,2) = 2391.7
+	Amd = [-100, -400 ; 1, 0]
+	Aec = [-0.0581, -2.4293e-05 ; 1, 0]
+	Amd(1,1)/Amd(1,2) = 0.25
+	Aec(1,1)/Aec(1,2) = 2391.7
+
+#### Discussion
+
+It is possible to observe from the data that the inertia is constant during all the tests. We will define two types of the model behaviour considering the ratio between the parameters corresponding to dumping and inertia, therefore, one where b/k > 1 and the other where b/k < 1. Each type will be stored on the vectors G and H, respectivelly. We will not use the data with less than 99% of fit to estimation.
+
+There is an unexpected behaviour with the model in the tests where [b,k]=[1,2], [b,k]=[1,20], [b,k]=[5,2], [b,k]=[5,20]. The model follows the increasing step, from 0 to 50mNm, however, when the step is decreasing, from 50 to 0mNm, the behaviour is quite different. Further investigation may be needed here, for example by estimating the parameters from the "decreasing step" and making further tests with negative torque input.
+
+
 
 #### Variables Definition
 
 Ad: Parameters set to Arduino  
-Aat: Theoretical A matrix  
-Aac: Calculated continuous Matrix  
+Amd: The model's A matrix in discrete time
+Aec: The estimated A matrix in continuous time
 
 
 

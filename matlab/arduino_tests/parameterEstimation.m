@@ -51,7 +51,7 @@ h1Legend = legend( ...
   '\theta_e', ...
   'location', 'NorthEast' );
 
-TrackingTitle  = title ('Model Reference Tracking');
+TrackingTitle  = title ('Decreasing Step');
 h1YLabel = ylabel('Angle (rad)');
 h1XLabel = xlabel('time (s)');
 
@@ -71,8 +71,8 @@ set(gca, ...
 set([h1XLabel, h1YLabel], ...
     'FontName'   , 'AvantGarde');
 
-print -depsc2 modelReferenceTracking8.eps
-saveas(gcf,'modelReferenceTracking8.png')
+print -depsc2 decreasingStep.eps
+saveas(gcf,'decreasingStep.png')
 
 % % EPOS Analysis
 % Used when comparing Arduino setpoint and EPOS response
