@@ -14,7 +14,7 @@ As already mentioned in the control structure, the High Level Controller calcula
 
 ![Model Reference Tracking](https://biopmr.github.io/images/modelReferenceTracking.png)
 
-![Model Reference Tracking 2](https://biopmr.github.io/images/modelReferenceTracking2.png)
+![Model Reference Tracking 2](https://biopmr.github.io/images/modelReferenceTracking1.png)
 
 The figures show two plots, \theta_m refers to the Model Reference Position calculated by the Arduino when submitted by a 50mNm torque input. \theta_e refers to the joint position given by the MILE Encoder in the motor. It is possible to observe that the curves are really close. Further experiments are required with higher impedance attached to the joint, however, for the analysis that will follow, we will consider that there is no significative difference in between the virtual dynamics requested by the Reference Model and the apparent dynamics performed by the Plant.
 
@@ -39,7 +39,9 @@ A = [-b/J -k/J ; 1 0 ];
 	Aac = [-0.0020 -2.1035e-06 ; 1, 0]
 	Aat(1,1)/Aat(1,2) = 0.1
 	Aac(1,1)/Aac(1,2) = 949.4914
-	
+
+![Model Reference Response to Torque input of 50mNm](https://biopmr.github.io/images/modelReferenceTracking3.png)	
+
 	Model Reference Response to Torque input of 50mNm
 	Estimated using TFEST on time domain data "dataArduino".
 	dataArduino = iddata(X1*qc_to_rad*10000,LoadCell,'Ts', 50)
@@ -49,6 +51,8 @@ A = [-b/J -k/J ; 1 0 ];
 	Aac = [-0.0026 -3.6634e-06 ; 1, 0]
 	Aat(1,1)/Aat(1,2) = 0.05
 	Aac(1,1)/Aac(1,2) = 704.0654
+
+![Model Reference Response to Torque input of 50mNm](https://biopmr.github.io/images/modelReferenceTracking4.png)
 
 	Model Reference Response to Torque input of 50mNm
 	Estimated using TFEST on time domain data "dataArduino".
@@ -60,6 +64,8 @@ A = [-b/J -k/J ; 1 0 ];
 	Aat(1,1)/Aat(1,2) = 0.5
 	Aac(1,1)/Aac(1,2) = 2.378,4
 
+![Model Reference Response to Torque input of 50mNm](https://biopmr.github.io/images/modelReferenceTracking5.png)
+
 	Model Reference Response to Torque input of 50mNm
 	Estimated using TFEST on time domain data "dataArduino".
 	dataArduino = iddata(X1(1:835)*qc_to_rad*10000,LoadCell,'Ts', 50)
@@ -70,6 +76,8 @@ A = [-b/J -k/J ; 1 0 ];
 	Aat(1,1)/Aat(1,2) = 0.5
 	Aac(1,1)/Aac(1,2) = 4949.3
 
+![Model Reference Response to Torque input of 50mNm](https://biopmr.github.io/images/modelReferenceTracking6.png)
+
 	Model Reference Response to Torque input of 50mNm
 	Estimated using TFEST on time domain data "dataArduino".
 	dataArduino = iddata(X1(1:327)*qc_to_rad*10000,LoadCell,'Ts', 50)
@@ -79,6 +87,8 @@ A = [-b/J -k/J ; 1 0 ];
 	Aac = [-0.0019 -4.1947e-06 ; 1, 0]
 	Aat(1,1)/Aat(1,2) = 0.05
 	Aac(1,1)/Aac(1,2) = 449.8469
+
+![Model Reference Response to Torque input of 50mNm](https://biopmr.github.io/images/modelReferenceTracking7.png)
 
 	Model Reference Response to Torque input of 100mNm
 	Estimated using TFEST on time domain data "dataArduino".
@@ -91,6 +101,8 @@ A = [-b/J -k/J ; 1 0 ];
 	Aat(1,1)/Aat(1,2) = 0.1
 	Aac(1,1)/Aac(1,2) = 949.5805
 
+![Model Reference Response to Torque input of 50mNm](https://biopmr.github.io/images/modelReferenceTracking8.png)
+
 	Model Reference Response to Torque input of 50mNm
 	Estimated using TFEST on time domain data "dataArduino".
 	dataArduino = iddata(X1(1:3984)*qc_to_rad*10000,LoadCell,'Ts', 50)
@@ -102,7 +114,9 @@ A = [-b/J -k/J ; 1 0 ];
 	Aat(1,1)/Aat(1,2) = 0.1
 	Aac(1,1)/Aac(1,2) = 24885
 
-	*Model Reference Response to Torque input of 50mNm*
+![Model Reference Response to Torque input of 50mNm](https://biopmr.github.io/images/modelReferenceTracking9.png)
+
+	Model Reference Response to Torque input of 50mNm
 	Estimated using TFEST on time domain data "dataArduino".
 	dataArduino = iddata(X1(1:469)*qc_to_rad*10000,LoadCell,'Ts', 50)
 	Fit to estimation data: 99.75%                          
@@ -115,7 +129,7 @@ A = [-b/J -k/J ; 1 0 ];
 
 #### Variables Definition
 
-Ad: Parameters set to Arduino 
+Ad: Parameters set to Arduino  
 Aat: Theoretical A matrix  
 Aac: Calculated continuous Matrix  
 
