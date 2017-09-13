@@ -129,10 +129,19 @@ A = [-b/J -k/J ; 1 0 ];
 
 #### Discussion
 
-It is possible to observe from the data that the inertia is constant during all the tests. We will define two types of the model behaviour considering the ratio between the parameters corresponding to dumping and inertia, therefore, one where b/k > 1 and the other where b/k < 1. Each type will be stored on the vectors G and H, respectivelly. We will not use the data with less than 99% of fit to estimation.
+It is possible to observe from the data that the inertia is constant during all the tests. We will define two types of the model behaviour considering the ratio between the parameters corresponding to dumping and inertia, therefore, one where b/k > 1 and the other where b/k < 1. G and H are matrixes containing the model's parameters, their ratio, the estimated parameters and their ratio.
+We will not use the data with less than 99% of fit to estimation.
 
-There is an unexpected behaviour with the model in the tests where [b,k]=[1,2], [b,k]=[1,20], [b,k]=[5,2], [b,k]=[5,20]. The model follows the increasing step, from 0 to 50mNm, however, when the step is decreasing, from 50 to 0mNm, the behaviour is quite different. Further investigation may be needed here, for example by estimating the parameters from the "decreasing step" and making further tests with negative torque input.
+![Model Reference Response to Torque input of 50mNm](https://biopmr.github.io/images/ratios.png)
+	Ratios of ratios
+	This figures shows the ration between the model ratios and the estimated ratios. Can we consider that curve constant? Can we find a constant that relates estimated parameters and modeled parameters?
 
+There is an unexpected behaviour with the model in the tests where [b,k]=[1,2], [b,k]=[1,20], [b,k]=[5,2], [b,k]=[5,20]. The model follows the increasing step, from 0 to 50mNm, however, when the step is decreasing, from 50 to 0mNm, the behaviour is quite different. For these reason, the data used in this analysis excluded the model response to a decreasing step. Further investigation may be needed here, for example by estimating the parameters from the "decreasing step" and making further tests with negative torque input.
+
+![Model Reference Response to Torque input of 50mNm](https://biopmr.github.io/images/decreasingStep.png)
+
+	Decreasing Step
+	The difference in the system response from 0 to 50mNm is visibly different from the system response from 50 to 0mNm. The overshoot of the first is 0.1541 rad and the second, 0.0399 rad.
 
 
 #### Variables Definition
