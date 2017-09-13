@@ -6,7 +6,7 @@ The controller implements a simple integration algorithm which calculates the ou
 
 Where X1, X2 and X3 are, respectively, angular position, angular velocity and angular acceleration. Although J, b and k could have a physical correspondence to Inertia, Dumping and Stiffness, because the process is discrete, they have no physical meaning and can be simply assumed as coefficients multiplying those variables. For that reason, those variables will be referred as the vector Ad = [ad0, ad1, ad2] = [J, b, k]. Below are described the steps to find constants that will adjust J, b and k to the international standard. 
 
-Our goal is to estimate a vector Ahat to find a vector W = [w0, w1, w2] such as Ad*W = Ahat.
+Our goal is to estimate a vector Ahat to find a vector W = [w0, w1, w2] such as Ad*times W = Ahat.
 
 #### Model Reference Tracking
 
@@ -28,59 +28,61 @@ A = [-b/J -k/J ; 1 0 ];
 
 #### State Space Models
 
+![Model Reference Response to Torque input of 50mNm](https://biopmr.github.io/images/modelReferenceTracking2.png)
+	
+	Model Reference Response to Torque input of 50mNm
 	Estimated using TFEST on time domain data "dataArduino".
-	Fit to estimation data: 99.91%                          
-	FPE: 4.548e-07, MSE: 4.523e-07                          
+	dataArduino = iddata(X1*qc_to_rad*10000,LoadCell,'Ts', 50)
+	Fit to estimation data: 99.91%                          	
 	Ad = [0.05, 1, 10]
 	Aat = [-20, -200 ; 1, 0]
 	Aac = [-0.0020 -2.1035e-06 ; 1, 0]
 	Aat(1,1)/Aat(1,2) = 0.1
 	Aac(1,1)/Aac(1,2) = 949.4914
-
 	
+	Model Reference Response to Torque input of 50mNm
 	Estimated using TFEST on time domain data "dataArduino".
+	dataArduino = iddata(X1*qc_to_rad*10000,LoadCell,'Ts', 50)
 	Fit to estimation data: 88.51%                          
-	FPE: 0.001973, MSE: 0.001963   
 	Ad = [0.05, 1, 20]
 	Aat = [-20, -400 ; 1, 0]
 	Aac = [-0.0026 -3.6634e-06 ; 1, 0]
 	Aat(1,1)/Aat(1,2) = 0.05
 	Aac(1,1)/Aac(1,2) = 704.0654
 
-
+	Model Reference Response to Torque input of 50mNm
 	Estimated using TFEST on time domain data "dataArduino".
+	dataArduino = iddata(X1*qc_to_rad*10000,LoadCell,'Ts', 50)
 	Fit to estimation data: 73.26%                          
-	FPE: 0.8282, MSE: 0.8258 
 	Ad = [0.05, 1, 2]
 	Aat = [-20, -40 ; 1, 0]
 	Aac = [-0.0071 -2.9713e-06 ; 1, 0]
 	Aat(1,1)/Aat(1,2) = 0.5
 	Aac(1,1)/Aac(1,2) = 2.378,4
 
-
+	Model Reference Response to Torque input of 50mNm
 	Estimated using TFEST on time domain data "dataArduino".
-	Repeating test3 but with data only until sample 835
-	Fit to estimation data: 99.97%                          
-	FPE: 7.829e-07, MSE: 7.773e-07  
+	dataArduino = iddata(X1(1:835)*qc_to_rad*10000,LoadCell,'Ts', 50)
+	Fit to estimation data: 99.97%                           
 	Ad = [0.05, 1, 2]
 	Aat = [-20, -40 ; 1, 0]
 	Aac = [-0.0021 -4.2132e-07 ; 1, 0]
 	Aat(1,1)/Aat(1,2) = 0.5
 	Aac(1,1)/Aac(1,2) = 4949.3
 
-
+	Model Reference Response to Torque input of 50mNm
 	Estimated using TFEST on time domain data "dataArduino".
-	Repeating test3 but with data only until sample 327
+	dataArduino = iddata(X1(1:327)*qc_to_rad*10000,LoadCell,'Ts', 50)
 	Fit to estimation data: 99.84%                          
-	FPE: 3.866e-07, MSE: 3.796e-07  
 	Ad = [0.05, 1, 20]
 	Aat = [-20, -400 ; 1, 0]
 	Aac = [-0.0019 -4.1947e-06 ; 1, 0]
 	Aat(1,1)/Aat(1,2) = 0.05
 	Aac(1,1)/Aac(1,2) = 449.8469
 
-	
-	Estimated using TFEST on time domain data "dataArduino" with input torque = 100mNm
+	Model Reference Response to Torque input of 100mNm
+	Estimated using TFEST on time domain data "dataArduino".
+	dataArduino = iddata(X1*qc_to_rad*10000,LoadCell,'Ts', 50)
 	Fit to estimation data: 99.95%                          
 	FPE: 4.183e-07, MSE: 4.169e-07  
 	Ad = [0.05, 1, 10]
@@ -89,8 +91,9 @@ A = [-b/J -k/J ; 1 0 ];
 	Aat(1,1)/Aat(1,2) = 0.1
 	Aac(1,1)/Aac(1,2) = 949.5805
 
+	Model Reference Response to Torque input of 50mNm
 	Estimated using TFEST on time domain data "dataArduino".
-	With data only until sample 3984.
+	dataArduino = iddata(X1(1:3984)*qc_to_rad*10000,LoadCell,'Ts', 50)
 	Fit to estimation data: 99.95%                          
 	FPE: 8.129e-07, MSE: 8.109e-07 
 	Ad = [0.05, 5, 2]
@@ -99,8 +102,9 @@ A = [-b/J -k/J ; 1 0 ];
 	Aat(1,1)/Aat(1,2) = 0.1
 	Aac(1,1)/Aac(1,2) = 24885
 
+	*Model Reference Response to Torque input of 50mNm*
 	Estimated using TFEST on time domain data "dataArduino".
-	With data only until sample 469.
+	dataArduino = iddata(X1(1:469)*qc_to_rad*10000,LoadCell,'Ts', 50)
 	Fit to estimation data: 99.75%                          
 	FPE: 7.586e-07, MSE: 7.49e-07 
 	Ad = [0.05, 5, 20]
@@ -111,9 +115,9 @@ A = [-b/J -k/J ; 1 0 ];
 
 #### Variables Definition
 
-Ad: Parameters set to Arduino
-Aat: Theoretical A matrix
-Aac: Calculated continuous Matrix
+Ad: Parameters set to Arduino 
+Aat: Theoretical A matrix  
+Aac: Calculated continuous Matrix  
 
 
 
