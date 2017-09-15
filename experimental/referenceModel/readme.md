@@ -125,6 +125,9 @@ A = [-b/J -k/J ; 1 0 ];
 	Amd(1,1)/Amd(1,2) = 0.25
 	Aec(1,1)/Aec(1,2) = 2391.7
 
+#### tfest
+To find detailed information on the function __tfest__: https://www.mathworks.com/help/ident/ref/tfest.html and https://stackoverflow.com/questions/16196266/tfest-matlab-how-it-works
+
 #### Discussion
 
 It is possible to observe from the data that the inertia is constant during all the tests. We will define two types of the model behaviour considering the ratio between the parameters corresponding to dumping and inertia, therefore, one where b/k > 1 and the other where b/k < 1. G and H are matrices containing the model's parameters, their ratio, the estimated parameters and their ratio.
