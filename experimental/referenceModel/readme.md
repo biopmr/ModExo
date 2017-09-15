@@ -132,7 +132,8 @@ A = [-b/J -k/J ; 1 0 ];
 It is possible to observe from the data that the inertia is constant during all the tests. We will define two types of the model behaviour considering the ratio between the parameters corresponding to dumping and inertia, therefore, one where b/k > 1 and the other where b/k < 1. G and H are matrices containing the model's parameters, their ratio, the estimated parameters and their ratio.
 We will not use the data with less than 99% of fit to estimation.
 
-![Model Reference Response to Torque input of 50mNm](https://biopmr.github.io/images/ratios.png)
+![Model Reference Response to Torque input of 50mNm](https://biopmr.github.io/images/parameterEstimationRatios.png)
+
 	Ratios of ratios
 	This figures shows the ration between the model ratios and the estimated ratios. Can we consider that curve constant? Can we find a constant that relates estimated parameters and modelled parameters?
 
