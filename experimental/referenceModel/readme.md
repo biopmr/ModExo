@@ -112,7 +112,7 @@ A = [-b/J -k/J ; 1 0 ];
 	Amd(1,1)/Amd(1,2) = 2.5
 	Aec(1,1)/Aec(1,2) = 24885
 
-![Model Reference Response to Torque input of 50mNm](https://biopmr.github.io/images/parameterEstimationRatios.png)
+![Model Reference Response to Torque input of 50mNm](https://biopmr.github.io/images/modelReferenceTracking9.png)
 
 	Model Reference Response to Torque input of 50mNm
 	Estimated using TFEST on time domain data "dataArduino".
@@ -133,7 +133,7 @@ To find detailed information on the function __tfest__: https://www.mathworks.co
 It is possible to observe from the data that the inertia is constant during all the tests. We will define two types of the model behaviour considering the ratio between the parameters corresponding to dumping and inertia, therefore, one where b/k > 1 and the other where b/k < 1. G and H are matrices containing the model's parameters, their ratio, the estimated parameters and their ratio.
 We will not use the data with less than 99% of fit to estimation.
 
-![Ratios of Ratios](https://biopmr.github.io/images/parameterEstimationRatios.png)
+![Ratios of Ratios](https://github.com/biopmr/biopmr.github.io/blob/master/images/parameterEstimationRatios.png)
 
 	Ratios of ratios
 	This figures shows the ration between the model ratios and the estimated ratios. Can we consider that curve constant? Can we find a constant that relates estimated parameters and modelled parameters?
