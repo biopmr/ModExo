@@ -112,7 +112,7 @@ A = [-b/J -k/J ; 1 0 ];
 	Amd(1,1)/Amd(1,2) = 2.5
 	Aec(1,1)/Aec(1,2) = 24885
 
-![Model Reference Response to Torque input of 50mNm](https://biopmr.github.io/images/modelReferenceTracking9.png)
+![Model Reference Response to Torque input of 50mNm](https://biopmr.github.io/images/parameterEstimationRatios.png)
 
 	Model Reference Response to Torque input of 50mNm
 	Estimated using TFEST on time domain data "dataArduino".
