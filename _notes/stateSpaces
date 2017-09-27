@@ -1,0 +1,21 @@
+State-Spaces Analysis
+
+Altough our analysis will be restricted to a one degree of freedom joint, we are concerned with modularity and dealing with any number of degrees of freedom, therefore, state spaces representation was used for it's convience when dealing with MIMO systems. 
+
+The state spaces representation describes the system equations as \textit{n} first-order differential equations or a first order vector-matrix differential equation. Amongst the advantages of using this notation are that it simplifies the mathematical representation of the system and that it allows the initial conditions to be included in the design \cite{ogata1995discrete}.
+
+States Variables
+Our states are the the position variables: position, velocity and acceleration.
+
+Discretization of Continuous-Time State-Space Equations
+x((k+1)T) = G(T)x(kT) + H(T)u(kT)
+Note that matrices G and H depend on the sampling period!
+
+[Ogata] 
+@book{ogata1995discrete,
+  title={Discrete-time control systems},
+  author={Ogata, Katsuhiko},
+  volume={8},
+  year={1995},
+  publisher={Prentice-Hall Englewood Cliffs, NJ}
+}
