@@ -15,5 +15,5 @@ The following requirements were defined for the case design:
 
 ## Pictures
 
-[![ModExo Case](https://github.com/biopmr/biopmr.github.io/blob/master/images/modexoCase.jpg)]
+[![ModExo Case](https://github.com/biopmr/biopmr.github.io/blob/master/images/modexoCase.jpg)]()
 
