@@ -1,4 +1,4 @@
-  The ModExo Portable Case was built by Priscila Veiga (@primiki), a Lab's collaborator, and designed by Priscila Veiga and Rafael Sanchez Souza (@ssraf). The result can be seen in figures that follows. 
+  The ModExo Portable Case was built by Priscila Veiga ([primiki](https://github.com/primiki)), a Lab's collaborator, and designed by Priscila Veiga and Rafael Sanchez Souza ([rafaelsanchezsouza](https://github.com/rafaelsanchezsouza)). The result can be seen in figures that follows. 
 
 ## Requirements
 The following requirements were defined for the case design:
@@ -17,8 +17,8 @@ The following requirements were defined for the case design:
 
 [![ModExo Case](https://github.com/biopmr/biopmr.github.io/blob/master/images/modexoCase.JPG)](https://github.com/biopmr/biopmr.github.io/blob/master/images/modexoCase.JPG)
 
-[![ModExo Case](https://github.com/biopmr/biopmr.github.io/blob/master/images/modexoCaseUSB.jpg)](https://github.com/biopmr/biopmr.github.io/blob/master/images/modexoCaseUSB.jpg)
+[![ModExo Case](https://github.com/biopmr/biopmr.github.io/blob/master/images/modexoCaseUSB.JPG)](https://github.com/biopmr/biopmr.github.io/blob/master/images/modexoCaseUSB.JPG)
 
-[![ModExo Case](https://github.com/biopmr/biopmr.github.io/blob/master/images/modexoCaseFan.jpg)](https://github.com/biopmr/biopmr.github.io/blob/master/images/modexoCaseFan.jpg)
+[![ModExo Case](https://github.com/biopmr/biopmr.github.io/blob/master/images/modexoCaseFan.JPG)](https://github.com/biopmr/biopmr.github.io/blob/master/images/modexoCaseFan.JPG)
 
-[![ModExo Case](https://github.com/biopmr/biopmr.github.io/blob/master/images/modexoCaseHeight.jpg)](https://github.com/biopmr/biopmr.github.io/blob/master/images/modexoCaseHeight.jpg)
+[![ModExo Case](https://github.com/biopmr/biopmr.github.io/blob/master/images/modexoCaseHeight.JPG)](https://github.com/biopmr/biopmr.github.io/blob/master/images/modexoCaseHeight.JPG)
