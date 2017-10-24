@@ -185,9 +185,9 @@ void doStartup(void)
   Serial.println("Max Profile Velocity set as 2000rpm");  
   delay(10);
   CAN.sendMsgBuf(0x601, 0, 8, set_min_position_limit);
- Serial.println("Min Position Limit defined as -2000000qc");  
+  Serial.println("Min Position Limit defined as -2000000qc");  
   delay(10);
- CAN.sendMsgBuf(0x601, 0, 8, set_max_position_limit);
+  CAN.sendMsgBuf(0x601, 0, 8, set_max_position_limit);
   Serial.println("Min Position Limit defined as 2000000qc");  
   delay(10);  
   State = PDOConfiguration;
@@ -563,6 +563,7 @@ float doStep()
 }
 //-----------------------------------------------------------------
 
+<<<<<<< HEAD
 
 unsigned char HexToDec(unsigned char data_array[])
 {
@@ -576,6 +577,8 @@ unsigned char HexToDec(unsigned char data_array[])
 }
 
 //-----------------------------------------------------------------
+=======
+>>>>>>> 51187df557a0e4ab315ae7dc0a0a5fab12fd9493
 float EncoderControl()
 {
   unsigned char len = 0;
