@@ -1,0 +1,19 @@
+Use of arduino
+x
+PC104
+LabView
+Matlab
+
+Issues
+	PID Design
+
+	Sample Time
+		If you run arduino with a blank loop() and print millis(), you would observe a sample time of betwen 1 and 2 miliseconds.
+		The sample time of the Arduino is 50ms. 
+
+		there is no delay() function running in the code
+
+		printing time
+		float arithmetic
+
+		http://www.geocomputing.co.uk/getpage.php?type=page&page=megaspeedtest

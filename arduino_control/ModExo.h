@@ -45,7 +45,7 @@ const int SPI_CS_PIN = 9;
 MCP_CAN CAN(SPI_CS_PIN); 
 
 // Sensor variables
-uint32_t encoder_data = 0;
+int32_t encoder_data = 0;
 uint32_t current_data = 0;
 int32_t actualposition_data = 0;
 int32_t loadcell_data = 0;
@@ -97,8 +97,8 @@ unsigned char pdo_actual_current_5[8] = {0x22, 0x00, 0x1A, 0x00, 0x01, 0, 0, 0};
 unsigned char set_max_following_error[8] = {0x22, 0x65, 0x60, 0, 0xD0, 7, 0, 0};
 unsigned char set_max_acceleration[8] = {0x22, 0xC5, 0x60, 0, 0x88, 0x13, 0, 0};
 unsigned char set_max_profile_velocity[8] = {0x22, 0x7F, 0x60, 0, 0xD0, 7, 0, 0};
-unsigned char set_min_position_limit[8] = {0x22, 0x7D, 0x60, 0x01, 0x20, 0x6C, 0xFB, 0xFF}; // -300000qc = 0xFFFB6C20
-unsigned char set_max_position_limit[8] = {0x22, 0x7D, 0x60, 0x02, 0xE0, 0x93, 0x04, 0}; // 300000qc = 0x0493E0
+unsigned char set_min_position_limit[8] = {0x22, 0x7D, 0x60, 0x01, 0x7F, 0x7B, 0xE1, 0xFF}; // -300000qc = 0xFFFB6C20  -2000000qc=0xFFE17B7F
+unsigned char set_max_position_limit[8] = {0x22, 0x7D, 0x60, 0x02, 0x80, 0x84, 0x1E, 0}; // 300000qc = 0x0493E0  2000000qc=0x1E8480
 
 // Commanding
 unsigned char setpoint_position[8] = {0x22, 0x62, 0x20, 0x00, 0, 0, 0, 0};
@@ -118,6 +118,11 @@ unsigned char get_actual_current[8] = {0x40, 0x78, 0x60, 0, 0, 0, 0, 0};
 
 int encoder_resolution = 2000; //2000 counts per turn
 int reduction = 100; // harmonic drive reduction
+
+int32_t last_encoder_position = 0;
+int turn_counter=0;
+int32_t angle_correction=0;
+int32_t position_difference=0;
 
 int CT_K = 0; // generic constant to be tweaked during runtime
 
@@ -180,10 +185,10 @@ void doStartup(void)
   Serial.println("Max Profile Velocity set as 2000rpm");  
   delay(10);
   CAN.sendMsgBuf(0x601, 0, 8, set_min_position_limit);
-  Serial.println("Min Position Limit defined as -300000qc");  
+ Serial.println("Min Position Limit defined as -2000000qc");  
   delay(10);
-  CAN.sendMsgBuf(0x601, 0, 8, set_max_position_limit);
-  Serial.println("Min Position Limit defined as 300000qc");  
+ CAN.sendMsgBuf(0x601, 0, 8, set_max_position_limit);
+  Serial.println("Min Position Limit defined as 2000000qc");  
   delay(10);  
   State = PDOConfiguration;
 }
@@ -557,6 +562,20 @@ float doStep()
   }
 }
 //-----------------------------------------------------------------
+
+
+unsigned char HexToDec(unsigned char data_array[])
+{
+  unsigned char decimal_value=0;
+  for (int i=0; i<sizeof(data_array); i++){
+    decimal_value <<= 8;
+    decimal_value= decimal_value | data_array[i];
+  }
+  return(decimal_value);
+
+}
+
+//-----------------------------------------------------------------
 float EncoderControl()
 {
   unsigned char len = 0;
@@ -587,6 +606,8 @@ float EncoderControl()
         actualposition_data <<= 8;
         actualposition_data = actualposition_data | buf[2];
 
+        //actualposition_data=HexToDec({buf[5],buf[4],buf[3],buf[2]}); testing
+
         // Serial.print("Actual Position: ");
         // Serial.println(actualposition_data);
 
@@ -602,6 +623,7 @@ float EncoderControl()
         encoder_data <<= 8; // bitshift equals times 2^8
         encoder_data = encoder_data | buf[5]; // sum operation
 
+
         // // load_cell information is read from buf[1], buf[2] and buf[3] and converted to decimal
         loadcell_data = buf[1];
         loadcell_data <<= 8;
@@ -615,8 +637,22 @@ float EncoderControl()
         loadcell_data_double = loadcell_data +B;
 
         encoder_data *= 200000 / 4096; //conversion to quadrature counts
+ 
+        position_difference=encoder_data-last_encoder_position;
 
-        positionSetpoint(encoder_data);
+        if (encoder_data<600000 && encoder_data>-600000){   //check if 
+          if(position_difference>120000){   // 120000=arbitrary value to verify difference
+            turn_counter-=1;                //update turn_counter          
+          }
+          else if(position_difference<-120000){
+            turn_counter+=1;
+          }
+        }
+        
+        angle_correction=encoder_data+196608*turn_counter; //
+        
+        last_encoder_position=encoder_data;  //update last_encoder_position
+        positionSetpoint(angle_correction); 
 
         contactForce = (loadcell_data + B)*A;
         contactTorque = contactForce*d; // mNm
@@ -628,6 +664,7 @@ float EncoderControl()
   }
 }
 //-----------------------------------------------------------------
+
 double differentialControl()
 {
   unsigned char len = 0;
