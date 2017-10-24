@@ -47,6 +47,7 @@ MCP_CAN CAN(SPI_CS_PIN);
 // Sensor variables
 int32_t encoder_data = 0;
 uint32_t current_data = 0;
+int current_int = 0;
 int32_t actualposition_data = 0;
 int32_t loadcell_data = 0;
 double loadcell_data_double = 0;
@@ -332,7 +333,7 @@ void DataPrint()
   Serial.print(",");
 
   // Serial.print("EPOS Current");
-  Serial.print(current_data);
+  Serial.print(current_int);
   Serial.print(",");
 
   // Serial.print("Encoder");
@@ -428,6 +429,7 @@ double gotoPositionZero()
         current_data = buf[1];
         current_data <<= 8;
         current_data = current_data | buf[0];
+        curent_int = current_data;
 
         // Serial.print("Current Data: ");
         // Serial.println(current_data);
@@ -507,6 +509,7 @@ float doStep()
         current_data = buf[1];
         current_data <<= 8;
         current_data = current_data | buf[0];
+        curent_int = current_data;
 
         // Serial.print("Current Data: ");
         // Serial.println(current_data);
@@ -595,6 +598,7 @@ float EncoderControl()
         current_data = buf[1];
         current_data <<= 8;
         current_data = current_data | buf[0];
+        curent_int = current_data;
 
         // Serial.print("Current Data: ");
         // Serial.println(current_data);
@@ -684,6 +688,7 @@ double differentialControl()
         current_data = buf[1];
         current_data <<= 8;
         current_data = current_data | buf[0];
+        curent_int = current_data;
 
         // Serial.print("Current Data: ");
         // Serial.println(current_data);
