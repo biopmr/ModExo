@@ -737,8 +737,8 @@ double differentialControl()
         contactTorque = contactForce*d; // mNm
         // contactTorque = 50; // mNm (Used for Torque Step)
 
-        x_1 = x_1 + 0.005*x_2;
-        x_2 = x_2 + 0.005*x_3;
+        x_1 = x_1 + 0.05*x_2;
+        x_2 = x_2 + 0.05*x_3;
         // x_3 = 1/j_eq*(-b_eq*x_2 - k_eq*x_1 + contactTorque);
         x_3 = 20*(-1*x_2 - 20*x_1 + contactTorque); // works
         // x_3 = 20*(contactTorque); // doesnt work
