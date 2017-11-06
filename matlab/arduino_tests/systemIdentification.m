@@ -1,21 +1,21 @@
 % Parameters
 ms_to_s = 1/1000; % converts miliseconds to seconds
 qc_to_rad = 2*pi/200000; % converts quadrature counts to radians
-% 
-% THETA = X1*qc_to_rad*10000; % converts X1 to rads
-% Times = Timems*ms_to_s; % converts Timems to seconds
-% LoadCellNm = LoadCell/1000; % converts LoadCell to Nm
  
 % Data structure
-dataArduino = iddata(X1*qc_to_rad*10000,LoadCell,'Ts', 50);
-dataArduino.OutputName  = '\Theta_{EPOS}';
-dataArduino.OutputUnit  = 'rad';
-dataArduino.InputName = 'tau_{Torque}';
-dataArduino.InputUnit = 'mNm';
-dataArduino.TimeUnit   = 'milliseconds';
+b1k2T100Data = iddata(X1*qc_to_rad*10000,LoadCell/1000,'Ts', 0.050);
+b1k2T100Data.OutputName  = '\Theta_{EPOS}';
+b1k2T100Data.OutputUnit  = 'rad';
+b1k2T100Data.InputName = 'tau_{Torque}';
+b1k2T100Data.InputUnit = 'Nm';
+b1k2T100Data.TimeUnit   = 'seconds';
+
+b1k2T100THETA = X1*qc_to_rad*10000;
+b1k2T100LoadCell = LoadCell/1000;
+b1k2T100Times = linspace(0,0.05*(length(X1)-1),length(X1))';
 
 % System Definition
-sysArduinod = tfest(dataArduino,2,0,nan,'Ts', 50); % Arduino discrete system
+sysArduinod = tfest(b1k2T100Data,2,0,nan,'Ts', 50); % Arduino discrete system
 sysArduinoc = d2c(sysArduinod); % Arduino continuous system
 
 [Aad,Bad,Cad,Dad] = tf2ss(sysArduinod.num,sysArduinod.den) % Arduino discrete state spaces
@@ -25,7 +25,7 @@ sysArduino2 = ss(Aac, Bac, [0 Cac(1,2)], 0); % Forces the state spaces represent
 
 estimatedRatio = (Aac(1,1)/Aac(1,2));
 
-%% PLOT FOR MODEL REFERENCE TRACKING PERFORMANCE
+% PLOT
 
 [pks,locs] = findpeaks(LoadCell)
 % t0 = locs(1,1);
@@ -78,16 +78,3 @@ set([h1XLabel, h1YLabel], ...
 print -depsc2 decreasingStep.eps
 saveas(gcf,'decreasingStep.png')
 
-% % EPOS Analysis
-% Used when comparing Arduino setpoint and EPOS response
-% dataEPOS = iddata(EPOSPosition*qc_to_rad,LoadCell,'Ts', 50);
-% dataEPOS.OutputName  = '\Theta_{EPOS}';
-% dataEPOS.OutputUnit  = 'rad';
-% dataEPOS.InputName = 'tau_{Torque}';
-% dataEPOS.InputUnit = 'mNm';
-% dataEPOS.TimeUnit   = 'milliseconds';
-%
-% sysEPOSd = tfest(dataEPOS,2,0,nan,'Ts', 50); % EPOS discrete system
-% sysEPOSc = d2c(sysEPOSd); % EPOS discrete system
-% [Aec,Bec,Cec,Dec] = tf2ss(sysEPOSc.num,sysEPOSc.den) % EPOS continuous state spaces
-% [Aed,Bed,Ced,Ded] = tf2ss(sysEPOSd.num,sysEPOSd.den) % EPOS discrete state spaces
