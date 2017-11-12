@@ -180,7 +180,7 @@ void doStartup(void)
   Serial.println("Max Following Error set as 2000qc");
   delay(10);
   CAN.sendMsgBuf(0x601, 0, 8, set_max_acceleration);
-  Serial.println("Max Aceeleration set as 5000rpm/s");
+  Serial.println("Max Acceleration set as 5000rpm/s");
   delay(10);
   CAN.sendMsgBuf(0x601, 0, 8, set_max_profile_velocity);
   Serial.println("Max Profile Velocity set as 2000rpm");  
@@ -566,8 +566,6 @@ float doStep()
 }
 //-----------------------------------------------------------------
 
-<<<<<<< HEAD
-
 unsigned char HexToDec(unsigned char data_array[])
 {
   unsigned char decimal_value=0;
@@ -580,8 +578,7 @@ unsigned char HexToDec(unsigned char data_array[])
 }
 
 //-----------------------------------------------------------------
-=======
->>>>>>> 51187df557a0e4ab315ae7dc0a0a5fab12fd9493
+
 float EncoderControl()
 {
   unsigned char len = 0;
