@@ -722,8 +722,26 @@ double differentialControl()
 
         if(buf[1] >= 128)
           loadcell_data |= 0xFF000000;
-
+        
+        // encoderDataRead();
+        encoder_data = buf[4];
+        encoder_data <<= 8; // bitshift equals times 2^8
+        encoder_data = encoder_data | buf[5]; // sum operation
         encoder_data *= 200000 / 4096; //conversion to quadrature counts
+        
+        position_difference=encoder_data-last_encoder_position;
+
+        if (encoder_data<600000 && encoder_data>-600000){   //check if 
+          if(position_difference>120000){   // 120000=arbitrary value to verify difference
+            turn_counter-=1;                //update turn_counter          
+          }
+          else if(position_difference<-120000){
+            turn_counter+=1;
+          }
+        }
+        
+        angle_correction=encoder_data+196608*turn_counter; //       
+        last_encoder_position=encoder_data;  //update last_encoder_position
 
         loadcell_data_double = loadcell_data; 
 
@@ -741,6 +759,7 @@ double differentialControl()
         // x_3 = 20*(contactTorque); // doesnt work
         // x_3 = 20*(-5*x_2 - 50*x_1 + contactTorque + 10*sin(x_1*(pi/(4*50000))); // anti gravity
         
+        //targetposition = 10000*x_1+angle_correction;  //Differential Mode + Encoder "Homing"
         targetposition = 10000*x_1;
         positionSetpoint(targetposition);
 
