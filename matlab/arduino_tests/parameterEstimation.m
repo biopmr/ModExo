@@ -1,6 +1,10 @@
 % Parameters
 ms_to_s = 1/1000; % converts miliseconds to seconds
 qc_to_rad = 2*pi/200000; % converts quadrature counts to radians
+% 
+% THETA = X1*qc_to_rad*10000; % converts X1 to rads
+% Times = Timems*ms_to_s; % converts Timems to seconds
+% LoadCellNm = LoadCell/1000; % converts LoadCell to Nm
  
 % Data structure
 dataArduino = iddata(X1*qc_to_rad*10000,LoadCell,'Ts', 50);

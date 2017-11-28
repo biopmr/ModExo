@@ -1,0 +1,133 @@
+Telemetry Viewer File Format v0.3
+
+Grid Settings:
+
+	column count = 8
+	row count = 8
+
+Serial Port Settings:
+
+	port = COM4
+	baud = 115200
+	packet type = ASCII CSVs
+	sample rate = 10000
+
+8 Data Structure Locations:
+
+	location = 0
+	processor index = -1
+	name = LoadCell
+	color = 0xFF0000
+	unit = 
+	conversion factor a = 1.0
+	conversion factor b = 1.0
+
+	location = 1
+	processor index = -1
+	name = X1
+	color = 0x0033FF
+	unit = 
+	conversion factor a = 1.0
+	conversion factor b = 1.0
+
+	location = 2
+	processor index = -1
+	name = X2
+	color = 0xFF9900
+	unit = 
+	conversion factor a = 1.0
+	conversion factor b = 1.0
+
+	location = 3
+	processor index = -1
+	name = X3
+	color = 0x00FF00
+	unit = 
+	conversion factor a = 1.0
+	conversion factor b = 1.0
+
+	location = 4
+	processor index = -1
+	name = EPOSPosition
+	color = 0x00FFFF
+	unit = 
+	conversion factor a = 1.0
+	conversion factor b = 1.0
+
+	location = 5
+	processor index = -1
+	name = EPOSCurrent
+	color = 0xFF0066
+	unit = 
+	conversion factor a = 1.0
+	conversion factor b = 1.0
+
+	location = 6
+	processor index = -1
+	name = Encoder
+	color = 0x999999
+	unit = 
+	conversion factor a = 1.0
+	conversion factor b = 1.0
+
+	location = 7
+	processor index = -1
+	name = Time
+	color = 0xFFFF00
+	unit = ms
+	conversion factor a = 1.0
+	conversion factor b = 1.0
+
+4 Charts:
+
+	chart type = Time Domain Chart
+	top left x = 0
+	top left y = 0
+	bottom right x = 3
+	bottom right y = 3
+	datasets count = 1
+		dataset location = 0
+	sample count = 1000
+	autoscale minimum = true
+	manual minimum = -1.0
+	autoscale maximum = true
+	manual maximum = 1.0
+
+	chart type = Time Domain Chart
+	top left x = 0
+	top left y = 4
+	bottom right x = 3
+	bottom right y = 7
+	datasets count = 1
+		dataset location = 4
+	sample count = 1000
+	autoscale minimum = true
+	manual minimum = -1.0
+	autoscale maximum = true
+	manual maximum = 1.0
+
+	chart type = Time Domain Chart
+	top left x = 4
+	top left y = 4
+	bottom right x = 7
+	bottom right y = 7
+	datasets count = 1
+		dataset location = 5
+	sample count = 1000
+	autoscale minimum = true
+	manual minimum = -1.0
+	autoscale maximum = true
+	manual maximum = 1.0
+
+	chart type = Time Domain Chart
+	top left x = 4
+	top left y = 0
+	bottom right x = 7
+	bottom right y = 3
+	datasets count = 1
+		dataset location = 1
+	sample count = 1000
+	autoscale minimum = true
+	manual minimum = -1.0
+	autoscale maximum = true
+	manual maximum = 1.0
