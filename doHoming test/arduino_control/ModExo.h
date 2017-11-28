@@ -25,6 +25,7 @@
 #include <mcp_can_dfs.h>
 
 // Define States
+#define DoHoming             10
 #define Startup               1
 #define PDOConfiguration       2
 #define Operational           3
@@ -89,7 +90,7 @@ unsigned char pdo_actual_current_5[8] = {0x22, 0x00, 0x1A, 0x00, 0x01, 0, 0, 0};
 // *****************
 
 // // Objects [Index(LSB), Index(MSB), Sub-Index]
-// unsigned char modes_of_operation[8] = {0x60, 0x60, 0x00};
+//unsigned char modes_of_operation[8] = {0x60, 0x60, 0x00};
 // unsigned char set_homing_method[8] = {0x98, 0x60, 0x00};
 // unsigned char controlword[8] = {0x40, 0x60, 0x00};
 // unsigned char position_setting_value[8] = {0x00, 0x62, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00};
@@ -103,6 +104,7 @@ unsigned char set_max_position_limit[8] = {0x22, 0x7D, 0x60, 0x02, 0x80, 0x84, 0
 
 // Commanding
 unsigned char setpoint_position[8] = {0x22, 0x62, 0x20, 0x00, 0, 0, 0, 0};
+unsigned char set_homing_position[8] = {0x00, 0x82, 0x20, 0, 0, 0, 0};
 
 // *****************
 // Object Reading
@@ -131,7 +133,6 @@ int CT_K = 0; // generic constant to be tweaked during runtime
 // ******************
 // System Parameters
 // ******************
-double x_0;
 double x_1;
 double x_2;
 double x_3;
@@ -161,12 +162,11 @@ long k_eq = k_h + k_exo; // Nm/rad
 // [[loadcell_data_double = A*(force) + B]]
 float A = 0.00764; //slop steepness
 // float B = 118712.7; //offset
-// float B = 3000; //offset
-float B = 118712.7-3000; //offset
+float B = 118712.7-25000; //offset
+// float B = 118712.7+5000; //offset
 float d = 0.105; ////distancia entre os centros dos aros da celula de carga=10,5cm
 double contactForce;
 double contactTorque;
-double stepTorque = 0;
 
 //********************
 // EPOS COMMUNICATION
@@ -227,17 +227,7 @@ void PDOConfig(void) {
   delay(10);
   State = Operational;
 }
-//-----------------------------------------------------------------
-void doHoming(void) {
-  // Set Operation Mode
-  // CAN.sendMsgBuf(0x601, 0, 8, {modes_of_operation, 0x06, 0x00});
-  delay(10);
-  // Set Homing Method
 
-  // Enable Device
-
-  // Start Homing
-}
 //-----------------------------------------------------------------
 void positionSetpoint(uint32_t angle) 
 {
@@ -319,10 +309,6 @@ void DataPrint()
   Serial.print(contactTorque);
   Serial.print(",");
 
-  // Serial.print("Load: ");
-  Serial.print(stepTorque);
-  Serial.print(",");
-
   // Serial.print("X_1: ");
   Serial.print(x_1);
   Serial.print(",");
@@ -332,8 +318,8 @@ void DataPrint()
   Serial.print(",");
 
   // Serial.print("X_3: ");
-  // Serial.print(x_3);
-  // Serial.print(",");
+  Serial.print(x_3);
+  Serial.print(",");
 
   // Serial.print("EPOS Actual Position: ");
   Serial.print(actualposition_data);
@@ -413,6 +399,10 @@ void serialController(char command)
       State = Step;
       Serial.print("Position Zero");
     break;
+    case 'h':
+      State = DoHoming;
+      Serial.print("Do Homing");
+    break;
   } 
 }
 
@@ -422,7 +412,6 @@ void serialController(char command)
 //-----------------------------------------------------------------
 double gotoPositionZero()
 {
-  stepTorque = 0;
   unsigned char len = 0;
   unsigned char buf[8]; 
 
@@ -573,10 +562,101 @@ float doStep()
   }
 }
 //-----------------------------------------------------------------
-int32_t HexToDec(int32_t data_array[4])
+//-----------------------------------------------------------------
+//0x2081 Home Position
+//0x2082 Home Position Displacement
+void doHoming(uint32_t angle) {
+
+  unsigned char len = 0;
+  unsigned char buf[8]; 
+
+  if(CAN_MSGAVAIL == CAN.checkReceive())            // check if data coming
+  {
+    CAN.readMsgBuf(&len, buf);    // read data,  len: data length, buf: data buf
+    unsigned int canId = CAN.getCanId();
+
+    switch (canId) 
+    {        
+      case 0x181:
+        current_data = buf[1];
+        current_data <<= 8;
+        current_data = current_data | buf[0];
+        current_int = current_data;
+
+        // Serial.print("Current Data: ");
+        // Serial.println(current_data);
+        break;
+      case 0x381: // reads Position Actual Value
+
+        actualposition_data = buf[5];
+        actualposition_data <<= 8;
+        actualposition_data = actualposition_data | buf[4];
+        actualposition_data <<= 8;
+        actualposition_data = actualposition_data | buf[3];
+        actualposition_data <<= 8;
+        actualposition_data = actualposition_data | buf[2];
+
+        // Serial.print("Actual Position: ");
+        // Serial.println(actualposition_data);
+
+        return(actualposition_data);
+
+        break;
+
+      // ID 321 message has information sent by the amplification board
+      // Messages coming from the amp_board has most significative bits coming first
+      case 0x321:
+        // // load_cell information is read from buf[1], buf[2] and buf[3] and converted to decimal
+        loadcell_data = buf[1];
+        loadcell_data <<= 8;
+        loadcell_data = loadcell_data | buf[2];
+        loadcell_data <<= 8;
+        loadcell_data = loadcell_data | buf[3];
+
+        if(buf[1] >= 128)
+          loadcell_data |= 0xFF000000;
+
+        encoder_data *= 200000 / 4096; //conversion to quadrature counts
+
+        loadcell_data_double = loadcell_data; 
+        // loadcell_data_double = loadcell_data_double + 130000;
+
+        // if(loadcell_data_double>-4000&&loadcell_data_double<4000)
+        //   loadcell_data_double = 0;
+
+        contactForce = (loadcell_data + B)*A;
+        contactTorque = contactForce*d; // mNm
+        contactTorque = 0; // mNm (Used for Torque Step)
+
+        x_1 = x_1 + 0.005*x_2;
+        x_2 = x_2 + 0.005*x_3;
+        // x_3 = 1/j_eq*(-b_eq*x_2 - k_eq*x_1 + contactTorque);
+        x_3 = 20*(-1*x_2 - 10*x_1 + contactTorque); // works
+        // x_3 = 20*(contactTorque); // doesnt work
+        // x_3 = 20*(-5*x_2 - 50*x_1 + contactTorque + 10*sin(x_1*(pi/(4*50000))); // anti gravity
+         
+        positionSetpoint(angle);
+
+          set_homing_position[4] = angle & 0xFF; 
+          set_homing_position[5] = (angle >> 8) & 0xFF;
+          set_homing_position[6] = (angle >> 16) & 0xFF;
+          set_homing_position[7] = (angle >> 24) & 0xFF;
+          CAN.sendMsgBuf(0x601, 0, 8, set_homing_position);
+          delay(10);
+          
+          DataPrint();
+
+        break;
+      }
+  }
+
+}
+//-----------------------------------------------------------------
+
+unsigned char HexToDec(unsigned char data_array[])
 {
-  int32_t decimal_value=0;
-  for (int i=1; i<=sizeof(data_array); i++){
+  unsigned char decimal_value=0;
+  for (int i=0; i<sizeof(data_array); i++){
     decimal_value <<= 8;
     decimal_value= decimal_value | data_array[i];
   }
@@ -616,7 +696,8 @@ float EncoderControl()
         actualposition_data = actualposition_data | buf[3];
         actualposition_data <<= 8;
         actualposition_data = actualposition_data | buf[2];
-        //actualposition_data=HexToDec(buf[5],buf[4],buf[3],buf[2]); //testing
+
+        //actualposition_data=HexToDec({buf[5],buf[4],buf[3],buf[2]}); testing
 
         // Serial.print("Actual Position: ");
         // Serial.println(actualposition_data);
@@ -677,22 +758,6 @@ float EncoderControl()
 
 double differentialControl()
 {
-
-        x_0 = (encoder_data+196608*turn_counter)/10000; // home position
-        x_1 = x_1 + 0.05*x_2;
-        x_2 = x_2 + 0.05*x_3;
-        // x_3 = 1/j_eq*(-b_eq*x_2 - k_eq*x_1 + contactTorque);
-        // x_3 = 20*(-1*x_2 - 20*x_1 + contactTorque); // works
-        // x_3 = 10*(-0.4*x_2 - 2*x_1 + contactTorque/10); // works
-        x_3 = 10*(-0.4*x_2 - 2*(x_1-x_0) + contactTorque/10); // works
-        //x_3 = 20*(-1*x_2 - 2*x_1 + stepTorque); // works
-        // x_3 = 20*(contactTorque); // doesnt work
-        // x_3 = 20*(-5*x_2 - 50*x_1 + contactTorque + 10*sin(x_1*(pi/(4*50000))); // anti gravity
-        
-        //targetposition = 10000*x_1+angle_correction;// teste modo differential+Encoder Home Control
-        targetposition = 10000*x_1;
-        positionSetpoint(targetposition);
-
   unsigned char len = 0;
   unsigned char buf[8]; 
 
@@ -745,25 +810,7 @@ double differentialControl()
         if(buf[1] >= 128)
           loadcell_data |= 0xFF000000;
 
-        // encoderDataRead();
-        encoder_data = buf[4];
-        encoder_data <<= 8; // bitshift equals times 2^8
-        encoder_data = encoder_data | buf[5]; // sum operation
-
         encoder_data *= 200000 / 4096; //conversion to quadrature counts
-        position_difference=encoder_data-last_encoder_position;
-
-        if (encoder_data<600000 && encoder_data>-600000){   //check if 
-          if(position_difference>120000){   // 120000=arbitrary value to verify difference
-            turn_counter-=1;                //update turn_counter          
-          }
-          else if(position_difference<-120000){
-            turn_counter+=1;
-          }
-        }
-        
-        //angle_correction=encoder_data+196608*turn_counter; 
-        last_encoder_position=encoder_data;  //update last_encoder_position
 
         loadcell_data_double = loadcell_data; 
 
@@ -772,7 +819,18 @@ double differentialControl()
 
         contactForce = (loadcell_data + B)*A;
         contactTorque = contactForce*d; // mNm
-        stepTorque = 6; // mNm (Used for Torque Step)
+        // contactTorque = 100; // mNm (Used for Torque Step)
+
+        x_1 = x_1 + 0.05*x_2;
+        x_2 = x_2 + 0.05*x_3;
+        // x_3 = 1/j_eq*(-b_eq*x_2 - k_eq*x_1 + contactTorque);
+        // x_3 = 20*(-1*x_2 - 20*x_1 + contactTorque); // works
+        x_3 = 20*(-0.2*x_2 - 2*x_1 + contactTorque); // works
+        // x_3 = 20*(contactTorque); // doesnt work
+        // x_3 = 20*(-5*x_2 - 50*x_1 + contactTorque + 10*sin(x_1*(pi/(4*50000))); // anti gravity
+        
+        targetposition = 10000*x_1;
+        positionSetpoint(targetposition);
 
         DataPrint();
 
@@ -861,6 +919,9 @@ void loopModExo()
     case OperationalDifferentialControl:
       differentialControl();
       break;
+    case DoHoming:
+      doHoming(100000);
+      break; 
   }
 
   if (sync_flag)
