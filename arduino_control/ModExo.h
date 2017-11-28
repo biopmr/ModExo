@@ -678,20 +678,17 @@ float EncoderControl()
 double differentialControl()
 {
 
-        x_0 = (encoder_data+196608*turn_counter)/10000; // home position
-        x_1 = x_1 + 0.05*x_2;
-        x_2 = x_2 + 0.05*x_3;
-        // x_3 = 1/j_eq*(-b_eq*x_2 - k_eq*x_1 + contactTorque);
-        // x_3 = 20*(-1*x_2 - 20*x_1 + contactTorque); // works
-        // x_3 = 10*(-0.4*x_2 - 2*x_1 + contactTorque/10); // works
-        x_3 = 10*(-0.4*x_2 - 2*(x_1-x_0) + contactTorque/10); // works
-        //x_3 = 20*(-1*x_2 - 2*x_1 + stepTorque); // works
-        // x_3 = 20*(contactTorque); // doesnt work
-        // x_3 = 20*(-5*x_2 - 50*x_1 + contactTorque + 10*sin(x_1*(pi/(4*50000))); // anti gravity
-        
-        //targetposition = 10000*x_1+angle_correction;// teste modo differential+Encoder Home Control
-        targetposition = 10000*x_1;
-        positionSetpoint(targetposition);
+  x_0 = (encoder_data+196608*turn_counter)/10000; // home position
+  x_1 = x_1 + 0.05*x_2;
+  x_2 = x_2 + 0.05*x_3;
+  // x_3 = 1/j_eq*(-b_eq*x_2 - k_eq*x_1 + contactTorque);
+  // x_3 = 10*(-0.4*x_2 - 2*x_1 + contactTorque/10); // works
+  x_3 = 10*(-0.4*x_2 - 2*(x_1-x_0) + contactTorque/10); // works
+  // x_3 = 20*(-5*x_2 - 50*x_1 + contactTorque + 10*sin(x_1*(pi/(4*50000))); // anti gravity
+  
+  //targetposition = 10000*x_1+angle_correction;// teste modo differential+Encoder Home Control
+  targetposition = 10000*x_1;
+  positionSetpoint(targetposition);
 
   unsigned char len = 0;
   unsigned char buf[8]; 
@@ -772,7 +769,7 @@ double differentialControl()
 
         contactForce = (loadcell_data + B)*A;
         contactTorque = contactForce*d; // mNm
-        stepTorque = 6; // mNm (Used for Torque Step)
+        // stepTorque = 6; // mNm (Used for Torque Step)
 
         DataPrint();
 
