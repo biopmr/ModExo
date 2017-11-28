@@ -131,6 +131,7 @@ int CT_K = 0; // generic constant to be tweaked during runtime
 // ******************
 // System Parameters
 // ******************
+double x_0;
 double x_1;
 double x_2;
 double x_3;
@@ -160,10 +161,12 @@ long k_eq = k_h + k_exo; // Nm/rad
 // [[loadcell_data_double = A*(force) + B]]
 float A = 0.00764; //slop steepness
 // float B = 118712.7; //offset
-float B = 118712.7+5000; //offset
+float B = 3000; //offset
+// float B = 118712.7+5000; //offset
 float d = 0.105; ////distancia entre os centros dos aros da celula de carga=10,5cm
 double contactForce;
 double contactTorque;
+double stepTorque = 0;
 
 //********************
 // EPOS COMMUNICATION
@@ -316,6 +319,10 @@ void DataPrint()
   Serial.print(contactTorque);
   Serial.print(",");
 
+  // Serial.print("Load: ");
+  Serial.print(stepTorque);
+  Serial.print(",");
+
   // Serial.print("X_1: ");
   Serial.print(x_1);
   Serial.print(",");
@@ -325,8 +332,8 @@ void DataPrint()
   Serial.print(",");
 
   // Serial.print("X_3: ");
-  Serial.print(x_3);
-  Serial.print(",");
+  // Serial.print(x_3);
+  // Serial.print(",");
 
   // Serial.print("EPOS Actual Position: ");
   Serial.print(actualposition_data);
@@ -415,6 +422,7 @@ void serialController(char command)
 //-----------------------------------------------------------------
 double gotoPositionZero()
 {
+  stepTorque = 0;
   unsigned char len = 0;
   unsigned char buf[8]; 
 
@@ -429,7 +437,7 @@ double gotoPositionZero()
         current_data = buf[1];
         current_data <<= 8;
         current_data = current_data | buf[0];
-        curent_int = current_data;
+        current_int = current_data;
 
         // Serial.print("Current Data: ");
         // Serial.println(current_data);
@@ -509,7 +517,7 @@ float doStep()
         current_data = buf[1];
         current_data <<= 8;
         current_data = current_data | buf[0];
-        curent_int = current_data;
+        current_int = current_data;
 
         // Serial.print("Current Data: ");
         // Serial.println(current_data);
@@ -565,13 +573,10 @@ float doStep()
   }
 }
 //-----------------------------------------------------------------
-
-<<<<<<< HEAD
-
-unsigned char HexToDec(unsigned char data_array[])
+int32_t HexToDec(int32_t data_array[4])
 {
-  unsigned char decimal_value=0;
-  for (int i=0; i<sizeof(data_array); i++){
+  int32_t decimal_value=0;
+  for (int i=1; i<=sizeof(data_array); i++){
     decimal_value <<= 8;
     decimal_value= decimal_value | data_array[i];
   }
@@ -580,8 +585,7 @@ unsigned char HexToDec(unsigned char data_array[])
 }
 
 //-----------------------------------------------------------------
-=======
->>>>>>> 51187df557a0e4ab315ae7dc0a0a5fab12fd9493
+
 float EncoderControl()
 {
   unsigned char len = 0;
@@ -598,7 +602,7 @@ float EncoderControl()
         current_data = buf[1];
         current_data <<= 8;
         current_data = current_data | buf[0];
-        curent_int = current_data;
+        current_int = current_data;
 
         // Serial.print("Current Data: ");
         // Serial.println(current_data);
@@ -612,8 +616,7 @@ float EncoderControl()
         actualposition_data = actualposition_data | buf[3];
         actualposition_data <<= 8;
         actualposition_data = actualposition_data | buf[2];
-
-        //actualposition_data=HexToDec({buf[5],buf[4],buf[3],buf[2]}); testing
+        //actualposition_data=HexToDec(buf[5],buf[4],buf[3],buf[2]); //testing
 
         // Serial.print("Actual Position: ");
         // Serial.println(actualposition_data);
@@ -688,7 +691,7 @@ double differentialControl()
         current_data = buf[1];
         current_data <<= 8;
         current_data = current_data | buf[0];
-        curent_int = current_data;
+        current_int = current_data;
 
         // Serial.print("Current Data: ");
         // Serial.println(current_data);
@@ -726,7 +729,25 @@ double differentialControl()
         if(buf[1] >= 128)
           loadcell_data |= 0xFF000000;
 
+        // encoderDataRead();
+        encoder_data = buf[4];
+        encoder_data <<= 8; // bitshift equals times 2^8
+        encoder_data = encoder_data | buf[5]; // sum operation
+
         encoder_data *= 200000 / 4096; //conversion to quadrature counts
+        position_difference=encoder_data-last_encoder_position;
+
+        if (encoder_data<600000 && encoder_data>-600000){   //check if 
+          if(position_difference>120000){   // 120000=arbitrary value to verify difference
+            turn_counter-=1;                //update turn_counter          
+          }
+          else if(position_difference<-120000){
+            turn_counter+=1;
+          }
+        }
+        
+        //angle_correction=encoder_data+196608*turn_counter; 
+        last_encoder_position=encoder_data;  //update last_encoder_position
 
         loadcell_data_double = loadcell_data; 
 
@@ -735,15 +756,20 @@ double differentialControl()
 
         contactForce = (loadcell_data + B)*A;
         contactTorque = contactForce*d; // mNm
-        // contactTorque = 50; // mNm (Used for Torque Step)
+        stepTorque = 6; // mNm (Used for Torque Step)
 
-        x_1 = x_1 + 0.005*x_2;
-        x_2 = x_2 + 0.005*x_3;
+        x_0 = (encoder_data+196608*turn_counter)/10000; // home position
+        x_1 = x_1 + 0.05*x_2;
+        x_2 = x_2 + 0.05*x_3;
         // x_3 = 1/j_eq*(-b_eq*x_2 - k_eq*x_1 + contactTorque);
-        x_3 = 20*(-1*x_2 - 20*x_1 + contactTorque); // works
+        // x_3 = 20*(-1*x_2 - 20*x_1 + contactTorque); // works
+        // x_3 = 20*(-0.2*x_2 - 2*x_1 + contactTorque); // works
+         x_3 = 20*(-0.2*x_2 - 2*(x_1-x_0) + contactTorque); // works
+        //x_3 = 20*(-1*x_2 - 2*x_1 + stepTorque); // works
         // x_3 = 20*(contactTorque); // doesnt work
         // x_3 = 20*(-5*x_2 - 50*x_1 + contactTorque + 10*sin(x_1*(pi/(4*50000))); // anti gravity
         
+        //targetposition = 10000*x_1+angle_correction;// teste modo differential+Encoder Home Control
         targetposition = 10000*x_1;
         positionSetpoint(targetposition);
 
