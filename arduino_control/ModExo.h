@@ -161,8 +161,8 @@ long k_eq = k_h + k_exo; // Nm/rad
 // [[loadcell_data_double = A*(force) + B]]
 float A = 0.00764; //slop steepness
 // float B = 118712.7; //offset
-float B = 3000; //offset
-// float B = 118712.7+5000; //offset
+// float B = 3000; //offset
+float B = 118712.7+5000; //offset
 float d = 0.105; ////distancia entre os centros dos aros da celula de carga=10,5cm
 double contactForce;
 double contactTorque;
